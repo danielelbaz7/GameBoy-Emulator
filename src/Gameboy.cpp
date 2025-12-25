@@ -1,5 +1,5 @@
 #include <vector>
-#include "Gameboy.h"
+#include "../Gameboy.h"
 
 uint8_t Gameboy::read(uint16_t address) {
     if (address <= 0x3FFF) {
