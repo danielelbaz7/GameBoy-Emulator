@@ -16,7 +16,7 @@ class Gameboy {
     uint8_t oam[0xA0]{}; //object attribute memory, stores up to 40 sprites, 160 bytes
     uint8_t io[0x80]{}; //input output ports, stores data about different physical pieces of the gameboy (like buttons)
     uint8_t hram[0x7F]{}; //close to cpu, small amt of memory, fast
-    uint8_t ieReg{0}; //interrupt enable register, only 5 bits used, stores what hardware events can interrupt cpu
+    uint8_t ieReg{}; //interrupt enable register, only 5 bits used, stores what hardware events can interrupt cpu
 
     //there is also some forbidden and unused memory we do not have implemented
 
@@ -39,6 +39,6 @@ class Gameboy {
     uint8_t currentRomWindow = 1;
 
 public:
-    uint8_t read(uint8_t address);
-    void write(uint8_t address);
+    uint8_t read(uint16_t address);
+    void write(uint16_t address);
 };
