@@ -339,6 +339,71 @@ uint8_t Gameboy::OP_0x0F() {
     return 1;
 }
 
+//load the next two bytes into de
+uint8_t Gameboy::OP_0x11() {
+    uint8_t lowByte = read(++pc);
+    uint8_t highByte = read(++pc);
+    de.reg16 = (highByte << 8u) | lowByte;
+    return 3;
+}
+
+//store contents of register a in memory location specified by de
+uint8_t Gameboy::OP_0x12() {
+    uint16_t memoryLocation = de.reg16;
+    write(memoryLocation, af.a);
+    return 2;
+}
+
+//Increment the contents of register pair DE by 1.
+uint8_t Gameboy::OP_0x13() {
+    de.reg16++;
+    return 2;
+}
+
+//Increment the contents of register D by 1.
+uint8_t Gameboy::OP_0x14(){
+    uint8_t old = de.d;
+    de.d++;
+    setFlag('Z', de.d==0);
+    setFlag('N', false);
+    setFlag('H', ((old & 0x0F) + (1 & 0x0F)) > 0x0F);
+    return 1;
+}
+
+//Decrement the contents of register D by 1.
+uint8_t Gameboy::OP_0x15(){
+    uint8_t old = de.d;
+    de.d--;
+    setFlag('Z', de.d==0);
+    setFlag('N', true);
+    setFlag('H', (old & 0x0F) == 0x00);
+    return 1;
+}
+
+//load immediate into d
+uint8_t Gameboy::OP_0x16(){
+    de.d = read(++pc);
+    return 2;
+}
+
+//Rotate the contents of Register A to the left through the carry flag
+uint8_t Gameboy::OP_0x17() {
+    //puts the old bit in the 0th bit spot
+    uint8_t oldBit7 = (af.a & 0x80) >> 7u;
+    //shift left
+    af.a = af.a << 1u;
+    //set bit 0 to carry flag
+    af.a |= ((af.f & FLAG_C) >> 5u);
+
+    setFlag('Z', false);
+    setFlag('N', false);
+    setFlag('H', false);
+    setFlag('C', oldBit7 == 0x01);
+
+    return 1;
+}
+
+
 
 
 

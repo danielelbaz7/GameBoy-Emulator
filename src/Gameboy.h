@@ -35,8 +35,6 @@ union hl{
     };
 };
 
-
-
 class Gameboy {
     
 public:
