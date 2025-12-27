@@ -113,6 +113,38 @@ void Gameboy::write(uint16_t address, uint8_t byteToWrite) {
         return;
     }
 
+    if (address <= 0xDFFF) {
+        wram[address - 0xC000] = byteToWrite;
+        return;
+    }
+
+    if (address <= 0xFDFF) {
+        wram[address - 0xE000] = byteToWrite;
+        return;
+    }
+
+    if (address <= 0xFE9F) {
+        oam[address - 0xFE00] = byteToWrite;
+        return;
+    }
+
+    if (address <= 0xFEFF) {
+        return;
+    }
+
+    if (address <= 0xFF7F) {
+        io[address - 0xFF00] = byteToWrite;
+        return;
+    }
+
+    if (address <= 0xFFFE) {
+        hram[address - 0xFF80] = byteToWrite;
+        return;
+    }
     
+    if (address == 0xFFFF) {
+        ieReg = byteToWrite;
+        return;
+    }
 
 }
