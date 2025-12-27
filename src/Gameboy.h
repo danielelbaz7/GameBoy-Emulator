@@ -1,6 +1,47 @@
 #pragma once
+#include <cstdint>
+#include <vector>
+
+
+struct RegisterPair {
+    union {
+        struct {
+            uint8_t low;
+            uint8_t high;
+        };
+        uint16_t reg16;
+    };
+};
+
+
+
 
 class Gameboy {
+    
+public:
+    uint8_t read(uint16_t address);
+    void write(uint16_t address, uint8_t byteToWrite);
+
+private:
+    // CPU Registers
+    // Uses union to store the pairs as both 8-bit and 16-bit registers (in the same memory location)
+    // Ex. bc.reg16 = 0x1234; bc.high = 0x12; bc.low = 0x34;
+    // initialize to their default values after the boot rom
+    RegisterPair af{0x01B0};
+    RegisterPair bc{0x0013};
+    RegisterPair de{0x00D8};
+    RegisterPair hl{0x014D};
+
+    uint16_t sp{0xFFFE}; //stack pointer, initialized to highest bit of high ram
+    uint16_t pc{0x0100}; //program counter
+
+    // Flag bits in the F register (lower byte of AF)
+    const uint8_t FLAG_Z = 0x80; // 1000 0000
+    const uint8_t FLAG_N = 0x40; // 0100 0000
+    const uint8_t FLAG_H = 0x20; // 0010 0000
+    const uint8_t FLAG_C = 0x10; // 0001 0000
+
+
     // All addresses/memory available to the Gameboy, 16-bit addresses
     // Video Memory (VRAM): 8000-9FFF (8KB)
     uint8_t vram[0x2000]{};
@@ -23,7 +64,6 @@ class Gameboy {
     //--CARTRIDGE--
 
     // External RAM, can be a lot more than 8KB but we can only see (8KB) at a time, used for save files (.sav)
-
     std::vector<uint8_t> eRam;
 
     //this controls whether eram is enabled for reading and writing. this was physically stored, not a memory
@@ -37,7 +77,7 @@ class Gameboy {
     // Memory banks for ROM (16KB each)
     //0000-3FFF
     //4000-7FFF this bank is a sliding window
-    // We store the entire ROM data but can only access it in two banks, this is the entire ROM data
+    // We store the entire ROM data but can only access it in two banks, this is the entire ROM data in bytes
     std::vector<uint8_t> rom;
     //stores the current 16kb window we are storing in the bank and are able to look at
     uint8_t currentRomWindow = 1;
@@ -48,7 +88,20 @@ class Gameboy {
 
     uint8_t bankModeToUse{ROM_MODE};
 
-public:
-    uint8_t read(uint16_t address);
-    void write(uint16_t address, uint8_t byteToWrite);
+
+    uint8_t registers [0x08]{};
+
+    void LoadRom(char const* filename);
+
+    //opcode functions
+    uint8_t OP_0x00();
+    uint8_t OP_0x01();
+    uint8_t OP_0x02();
+    uint8_t OP_0x03();
+    uint8_t OP_0x04();
+    uint8_t OP_0x05();
+    uint8_t OP_0x06();
+    uint8_t OP_0x07();
+        
+
 };

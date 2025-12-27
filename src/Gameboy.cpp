@@ -1,4 +1,6 @@
 #include <vector>
+#include <fstream>
+#include <iostream>
 #include "./Gameboy.h"
 
 uint8_t Gameboy::read(uint16_t address) {
@@ -148,3 +150,101 @@ void Gameboy::write(uint16_t address, uint8_t byteToWrite) {
     }
 
 }
+
+//rom loading function
+
+void Gameboy::LoadRom(char const* filename) {
+    //create an input file stream that beings at the end, get the size, read into the vector 
+    std::ifstream file(filename, std::ios::binary | std::ios::ate);
+    if(file.is_open()) {
+        std::streampos filesize = file.tellg();
+        if(filesize == -1) {
+            std::cout << "Invalid Rom" << std::endl;
+        }
+        file.seekg(0, std::ios::beg);
+        rom.resize(static_cast<size_t>(filesize));
+        file.read(reinterpret_cast<char*>(rom.data()), filesize);
+    }
+    return;
+}
+
+// OPCODES
+
+// OP_[ROW][COLUMN]
+// Ex. x7 (row) xA (column) = OP_0x7A
+
+uint8_t Gameboy::OP_0x00() {
+    return 1;
+}
+
+//Load the 2 bytes of immediate data into register pair BC.
+uint8_t Gameboy::OP_0x01() {
+    pc++;
+    uint8_t lowByte = read(pc);
+    pc++;
+    uint8_t highByte = read(pc);
+    bc.reg16 = (highByte << 8u) | lowByte;
+    return 3;
+}
+
+//Store the contents of register A in the memory location specified by register pair BC.
+uint8_t Gameboy::OP_0x02() {
+    uint8_t valueToWrite = af.high;
+    write(bc.reg16, valueToWrite);
+    return 2;
+}
+
+//Increment the contents of register pair BC by 1.
+uint8_t Gameboy::OP_0x03() {
+    bc.reg16++;
+    return 2;
+}
+
+//Increment the contents of register B by 1.
+uint8_t Gameboy::OP_0x04(){
+    bool halfCarry = (bc.high & 0x0F) == 0x0F;
+    bc.high++;
+
+    //Flag Updates:
+    // Zero Flag (Z)
+    if (bc.high == 0) af.low |= FLAG_Z;
+    else              af.low &= ~FLAG_Z;
+    // Subtract Flag (N) | Always cleared for INC
+    af.low &= ~FLAG_N;
+    // Half-Carry Flag (H)
+    if (halfCarry) af.low |= FLAG_H;
+    else           af.low &= ~FLAG_H;
+
+    af.low &= 0xF0;
+
+    return 1;
+}
+
+//Decrement the contents of register B by 1.
+uint8_t Gameboy::OP_0x05(){
+    bool h = (bc.high & 0x0F) == 0;
+
+    bc.high--;
+
+    // Flag Updates:
+    // Zero Flag (Z)
+    if (bc.high == 0) af.low |= FLAG_Z;
+    else              af.low &= ~FLAG_Z;
+    // Subtract Flag (N)
+    af.low |= FLAG_N;
+    // Half-Carry Flag (H)
+    if (h) af.low |= FLAG_H;
+    else    af.low &= ~FLAG_H;
+
+    af.low &= 0xF0;
+    
+    return 1;
+}
+
+// Load the 8-bit immediate operand d8 into register B.
+uint8_t Gameboy::OP_0x06(){
+    pc++;
+    bc.high = read(pc);
+    return 2;
+}
+
