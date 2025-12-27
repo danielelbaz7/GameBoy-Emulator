@@ -173,6 +173,8 @@ void Gameboy::setFlag(char flagName, bool flagValue) {
 bool Gameboy::readFlag(char flagName) const {
     switch (flagName) {
         case 'Z':
+            //if the whole thing is 0, that means the flag is zero so we can return false
+            //if it isnt zero, the flag is not zero so we return true
             return (af.f & (FLAG_Z)) != 0;
         case 'N':
             return (af.f & (FLAG_N)) != 0;
@@ -344,6 +346,7 @@ uint8_t Gameboy::OP_0x0F() {
     return 1;
 }
 
+//TO IMPLEMENT
 uint8_t Gameboy::OP_0x10() {
     //stop command, we will not implement halting the cpu for now
     return 1;
@@ -403,7 +406,7 @@ uint8_t Gameboy::OP_0x17() {
     //shift left
     af.a = af.a << 1u;
     //set bit 0 to carry flag
-    af.a |= ((af.f & FLAG_C) >> 5u);
+    af.a |= ((af.f & FLAG_C) >> 4u);
 
     setFlag('Z', false);
     setFlag('N', false);
@@ -415,8 +418,12 @@ uint8_t Gameboy::OP_0x17() {
 
 //Jump s8 steps from the current address in the program counter (PC). (Jump relative.)
 uint8_t Gameboy::OP_0x18() {
+<<<<<<< HEAD
     pc++;
     auto jumpSteps = read(pc);
+=======
+    auto jumpSteps = static_cast<int8_t>(read(++pc));
+>>>>>>> 618ba0b3e7a2d68cde49c320eaa450051347acbf
     pc += jumpSteps;
     // adjust for the automatic pc increment after opcode function
     pc--;
@@ -439,6 +446,7 @@ uint8_t Gameboy::OP_0x1A() {
     return 2;
 }
 
+<<<<<<< HEAD
 // ROW x2
 // If the Z flag is 0, jump s8 steps from the current address stored in the pc
 uint8_t Gameboy::OP_0x20() {
@@ -454,6 +462,67 @@ uint8_t Gameboy::OP_0x20() {
     return 2;
 }
 
+=======
+//decrement de by 1
+uint8_t Gameboy::OP_0x1B() {
+    de.reg16--;
+    return 2;
+}
+>>>>>>> 618ba0b3e7a2d68cde49c320eaa450051347acbf
 
+//increment register e's contents by 1
+uint8_t Gameboy::OP_0x1C(){
+    uint8_t old = de.e;
+    de.e++;
+    setFlag('Z', de.e==0);
+    setFlag('N', false);
+    setFlag('H', ((old & 0x0F) + (1 & 0x0F)) > 0x0F);
+    return 1;
+}
 
+//Decrement the contents of register e by 1.
+uint8_t Gameboy::OP_0x1D(){
+    uint8_t old = de.e;
+    de.e--;
+    setFlag('Z', de.e==0);
+    setFlag('N', true);
+    setFlag('H', (old & 0x0F) == 0x00);
+    return 1;
+}
+
+//load immediate into e
+uint8_t Gameboy::OP_0x1E(){
+    de.e = read(++pc);
+    return 2;
+}
+
+//Rotate the contents of Register A to the right through the carry flag
+uint8_t Gameboy::OP_0x1F() {
+    //gets old 0 bit
+    uint8_t oldBit0 = (af.a & 0x01);
+    //shift right
+    af.a = af.a >> 1u;
+    //set bit 7 to carry flag
+    af.a |= ((af.f & FLAG_C) << 3u);
+
+    setFlag('Z', false);
+    setFlag('N', false);
+    setFlag('H', false);
+    setFlag('C', oldBit0 == 0x01);
+
+    return 1;
+}
+
+//if z flag is 0,jump (immediate s8) steps from the current address. otherwise, go to the end of the instruction
+uint8_t Gameboy::OP_0x20() {
+    if (!readFlag('Z')) {
+        auto jumpSteps = static_cast<int8_t>(read(++pc));
+        pc += jumpSteps;
+        //decrement since we will increment right after the instruction
+        pc--;
+        return 3;
+    }
+    pc++;
+    return 2;
+}
 
