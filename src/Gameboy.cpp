@@ -241,7 +241,7 @@ uint8_t Gameboy::OP_0x05(){
     bc.b--;
     setFlag('Z', bc.b==0);
     setFlag('N', true);
-    setFlag('H', (old & 0x0F) == 0x0F);
+    setFlag('H', (old & 0x0F) == 0x00);
     return 1;
 }
 
@@ -267,6 +267,79 @@ uint8_t Gameboy::OP_0x07() {
 
     return 1;
 }
+
+//Store lower byte of SP in address of 16bit immediate, higher in imm+1
+uint8_t Gameboy::OP_0x08() {
+    uint8_t spLower = (sp & 0x00FF);
+    write(++pc, spLower);
+    uint8_t spHigher = (sp & 0xFF00) >> 8u;
+    write(++pc, spHigher);
+    return 5;
+}
+
+//stores hl + bc in hl
+uint8_t Gameboy::OP_0x09() {
+    uint16_t oldHl = hl.reg16;
+    hl.reg16 = oldHl + bc.reg16;
+    setFlag('N', false);
+    setFlag('H', ((oldHl & 0x0FFF) + (bc.reg16 & 0x0FFF)) > 0x0FFF);
+    setFlag('C', (oldHl + bc.reg16) > 0xFFFF);
+    return 2;
+}
+
+//store memory[bc] in a
+uint8_t Gameboy::OP_0x0A() {
+    af.a = read(bc.reg16);
+    return 2;
+}
+
+//decrement bc by 1
+uint8_t Gameboy::OP_0x0B() {
+    bc.reg16--;
+    return 2;
+}
+
+//increment register c by 1
+uint8_t Gameboy::OP_0x0C() {
+    uint8_t old = bc.c;
+    bc.c++;
+    setFlag('Z', bc.c == 0);
+    setFlag('N', false);
+    setFlag('H', ((old & 0x0F) + (1 & 0x0F)) > 0x0F);
+    return 1;
+}
+
+//Decrement the contents of register C by 1.
+uint8_t Gameboy::OP_0x0D(){
+    uint8_t old = bc.c;
+    bc.c--;
+    setFlag('Z', bc.c==0);
+    setFlag('N', true);
+    setFlag('H', (old & 0x0F) == 0x00);
+    return 1;
+}
+
+//load immediate into c
+uint8_t Gameboy::OP_0x0E(){
+    bc.c = read(++pc);
+    return 2;
+}
+
+//Rotate the contents of Register A to the right
+uint8_t Gameboy::OP_0x0F() {
+    uint8_t oldBit0 = (af.a & 0x01) << 7u;
+    af.a = af.a >> 1u;
+    af.a |= oldBit0;
+
+    setFlag('Z', false);
+    setFlag('N', false);
+    setFlag('H', false);
+    setFlag('C', oldBit0 == 0x80);
+
+    return 1;
+}
+
+
 
 
 

@@ -126,6 +126,20 @@ private:
     uint8_t OP_0x05();
     uint8_t OP_0x06();
     uint8_t OP_0x07();
-        
 
+    uint8_t OP_0x08();
+
+    uint8_t OP_0x09();
+
+    uint8_t OP_0x0A();
+
+    uint8_t OP_0x0B();
+
+    uint8_t OP_0x0C();
+
+    uint8_t OP_0x0D();
+
+    uint8_t OP_0x0E();
+
+    uint8_t OP_0x0F();
 };
