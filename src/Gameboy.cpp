@@ -62,7 +62,6 @@ uint8_t Gameboy::read(uint16_t address) {
 
 }
 
-
 void Gameboy::write(uint16_t address, uint8_t byteToWrite) {
     //handles eram disable/enable
     if (address <= 0x1FFF) {
@@ -151,6 +150,36 @@ void Gameboy::write(uint16_t address, uint8_t byteToWrite) {
 
 }
 
+//flag setting
+void Gameboy::setFlag(char flagName, bool flagValue) {
+    switch (flagName) {
+        case 'Z':
+            flagValue ? af.f |= (FLAG_Z) : af.f & ~FLAG_Z;
+        case 'N':
+            flagValue ? af.f |= (FLAG_N) : af.f & ~FLAG_N;
+        case 'H':
+            flagValue ? af.f |= (FLAG_H) : af.f & ~FLAG_H;
+        case 'C':
+            flagValue ? af.f |= (FLAG_C) : af.f & ~FLAG_C;
+        default: break;
+    }
+}
+
+bool Gameboy::readFlag(char flagName) const {
+    switch (flagName) {
+        case 'Z':
+            return (af.f & (FLAG_Z)) != 0;
+        case 'N':
+            return (af.f & (FLAG_N)) != 0;
+        case 'H':
+            return (af.f & (FLAG_H)) != 0;
+        case 'C':
+            return (af.f & (FLAG_C)) != 0;
+        default: return false;;
+    }
+}
+
+
 //rom loading function
 
 void Gameboy::LoadRom(char const* filename) {
@@ -162,10 +191,9 @@ void Gameboy::LoadRom(char const* filename) {
             std::cout << "Invalid Rom" << std::endl;
         }
         file.seekg(0, std::ios::beg);
-        rom.resize(static_cast<size_t>(filesize));
+        rom.resize(filesize);
         file.read(reinterpret_cast<char*>(rom.data()), filesize);
     }
-    return;
 }
 
 // OPCODES
@@ -179,18 +207,15 @@ uint8_t Gameboy::OP_0x00() {
 
 //Load the 2 bytes of immediate data into register pair BC.
 uint8_t Gameboy::OP_0x01() {
-    pc++;
-    uint8_t lowByte = read(pc);
-    pc++;
-    uint8_t highByte = read(pc);
+    uint8_t lowByte = read(++pc);
+    uint8_t highByte = read(++pc);
     bc.reg16 = (highByte << 8u) | lowByte;
     return 3;
 }
 
 //Store the contents of register A in the memory location specified by register pair BC.
 uint8_t Gameboy::OP_0x02() {
-    uint8_t valueToWrite = af.high;
-    write(bc.reg16, valueToWrite);
+    write(bc.reg16, af.a);
     return 2;
 }
 
@@ -202,49 +227,46 @@ uint8_t Gameboy::OP_0x03() {
 
 //Increment the contents of register B by 1.
 uint8_t Gameboy::OP_0x04(){
-    bool halfCarry = (bc.high & 0x0F) == 0x0F;
-    bc.high++;
-
-    //Flag Updates:
-    // Zero Flag (Z)
-    if (bc.high == 0) af.low |= FLAG_Z;
-    else              af.low &= ~FLAG_Z;
-    // Subtract Flag (N) | Always cleared for INC
-    af.low &= ~FLAG_N;
-    // Half-Carry Flag (H)
-    if (halfCarry) af.low |= FLAG_H;
-    else           af.low &= ~FLAG_H;
-
-    af.low &= 0xF0;
-
+    uint8_t old = bc.b;
+    bc.b++;
+    setFlag('Z', bc.b==0);
+    setFlag('N', false);
+    setFlag('H', ((old & 0x0F) + (1 & 0x0F)) > 0x0F);
     return 1;
 }
 
 //Decrement the contents of register B by 1.
 uint8_t Gameboy::OP_0x05(){
-    bool h = (bc.high & 0x0F) == 0;
-
-    bc.high--;
-
-    // Flag Updates:
-    // Zero Flag (Z)
-    if (bc.high == 0) af.low |= FLAG_Z;
-    else              af.low &= ~FLAG_Z;
-    // Subtract Flag (N)
-    af.low |= FLAG_N;
-    // Half-Carry Flag (H)
-    if (h) af.low |= FLAG_H;
-    else    af.low &= ~FLAG_H;
-
-    af.low &= 0xF0;
-    
+    uint8_t old = bc.b;
+    bc.b--;
+    setFlag('Z', bc.b==0);
+    setFlag('N', true);
+    setFlag('H', (old & 0x0F) == 0x0F);
     return 1;
 }
 
 // Load the 8-bit immediate operand d8 into register B.
 uint8_t Gameboy::OP_0x06(){
-    pc++;
-    bc.high = read(pc);
+    bc.b = read(++pc);
     return 2;
 }
+
+//Rotate the contents of Register A to the left
+uint8_t Gameboy::OP_0x07() {
+    //puts the old bit in the 0th bit spot
+    uint8_t oldBit7 = (af.a & 0x80) >> 7u;
+    //shift left
+    af.a = af.a << 1u;
+    //set bit 0 to old bit 7
+    af.a |= oldBit7;
+
+    setFlag('Z', false);
+    setFlag('N', false);
+    setFlag('H', false);
+    setFlag('C', oldBit7 == 0x01);
+
+    return 1;
+}
+
+
 

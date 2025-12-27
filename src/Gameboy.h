@@ -3,16 +3,37 @@
 #include <vector>
 
 
-struct RegisterPair {
-    union {
-        struct {
-            uint8_t low;
-            uint8_t high;
-        };
-        uint16_t reg16;
+union af{
+    uint16_t reg16;
+    struct {
+        uint8_t f;
+        uint8_t a;
     };
 };
 
+union bc{
+    uint16_t reg16;
+    struct {
+        uint8_t c;
+        uint8_t b;
+    };
+};
+
+union de{
+    uint16_t reg16;
+    struct {
+        uint8_t e;
+        uint8_t d;
+    };
+};
+
+union hl{
+    uint16_t reg16;
+    struct {
+        uint8_t l;
+        uint8_t h;
+    };
+};
 
 
 
@@ -21,16 +42,19 @@ class Gameboy {
 public:
     uint8_t read(uint16_t address);
     void write(uint16_t address, uint8_t byteToWrite);
+    void setFlag(char flagName, bool flagValue);
+
+    bool readFlag(char flagName) const;
 
 private:
     // CPU Registers
     // Uses union to store the pairs as both 8-bit and 16-bit registers (in the same memory location)
-    // Ex. bc.reg16 = 0x1234; bc.high = 0x12; bc.low = 0x34;
+    // Ex. bc.reg16 = 0x1234; bc.b = bc's high value = 0x12; bc.c = bc's low value = 0x34;
     // initialize to their default values after the boot rom
-    RegisterPair af{0x01B0};
-    RegisterPair bc{0x0013};
-    RegisterPair de{0x00D8};
-    RegisterPair hl{0x014D};
+    af af{0x01B0};
+    bc bc{0x0013};
+    de de{0x00D8};
+    hl hl{0x014D};
 
     uint16_t sp{0xFFFE}; //stack pointer, initialized to highest bit of high ram
     uint16_t pc{0x0100}; //program counter
