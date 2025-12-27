@@ -503,3 +503,35 @@ uint8_t Gameboy::OP_0x20() {
     return 2;
 }
 
+
+//Load the 2 bytes of immediate data into register pair HL.
+uint8_t Gameboy::OP_0x21() {
+    uint8_t low = read(++pc);
+    uint8_t high = read(++pc);
+    hl.h = high;
+    hl.l = low;
+    return 3;
+}
+
+//Store the contents of register A into the memory location specified by register pair HL, and simultaneously increment the contents of HL.
+uint8_t Gameboy::OP_0x22() {
+    write(hl.reg16, af.a);
+    hl.reg16++;
+    return 2;
+}
+
+//Increment the contents of register pair HL by 1.
+uint8_t Gameboy::OP_0x23() {
+    hl.reg16++;
+    return 2;
+}
+
+//Increment the contents of register H by 1.
+uint8_t Gameboy::OP_0x24(){
+    uint8_t oldh1 = hl.h;
+    hl.h++;
+    setFlag('Z', hl.h==0);
+    setFlag('N', false);
+    setFlag('H', ((oldh1 & 0x0F) + (1 & 0x0F)) > 0x0F);
+    return 1;
+}
