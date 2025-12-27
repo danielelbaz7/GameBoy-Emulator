@@ -152,4 +152,10 @@ private:
     uint8_t OP_0x19();
     uint8_t OP_0x1A();
     
+    uint8_t OP_0x20();
+    uint8_t OP_0x21();
+    uint8_t OP_0x22();
+    uint8_t OP_0x23();
+    uint8_t OP_0x24();
+    
 };
