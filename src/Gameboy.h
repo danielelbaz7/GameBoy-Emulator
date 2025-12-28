@@ -156,7 +156,50 @@ private:
     uint8_t OP_0x23();
     uint8_t OP_0x24();
     uint8_t OP_0x25();
+    uint8_t OP_0x26();
+    uint8_t OP_0x27();
+    uint8_t OP_0x28();
+    uint8_t OP_0x29();
+    uint8_t OP_0x2A();
+    uint8_t OP_0x2B();
+    uint8_t OP_0x2C();
+    uint8_t OP_0x2D();
+    uint8_t OP_0x2E();
+    uint8_t OP_0x2F();
 
     uint8_t OP_0x30();
+    uint8_t OP_0x31();
+    uint8_t OP_0x32();
+    uint8_t OP_0x33();
+    uint8_t OP_0x34();
+    uint8_t OP_0x35();
+    uint8_t OP_0x36();
+    uint8_t OP_0x37();
+    uint8_t OP_0x38();
+    uint8_t OP_0x39();
+    uint8_t OP_0x3A();
+    uint8_t OP_0x3B();
+    uint8_t OP_0x3C();
+    uint8_t OP_0x3D();
+    uint8_t OP_0x3E();
+    uint8_t OP_0x3F();
+
+    uint8_t OP_0x40();
+    uint8_t OP_0x41();
+    uint8_t OP_0x42();
+    uint8_t OP_0x43();
+    uint8_t OP_0x44();
+    uint8_t OP_0x45();
+    uint8_t OP_0x46();
+    uint8_t OP_0x47();
+    uint8_t OP_0x48();
+    uint8_t OP_0x49();
+    uint8_t OP_0x4A();
+    uint8_t OP_0x4B();
+    uint8_t OP_0x4C();
+    uint8_t OP_0x4D();
+    uint8_t OP_0x4E();
+    uint8_t OP_0x4F();
+
     
 };
