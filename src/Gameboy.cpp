@@ -3,6 +3,8 @@
 #include <iostream>
 #include "./Gameboy.h"
 
+#include "OpcodeHelpers.h"
+
 uint8_t Gameboy::read(uint16_t address) {
     if (address <= 0x3FFF) {
         return rom[address];
@@ -152,7 +154,7 @@ void Gameboy::write(uint16_t address, uint8_t byteToWrite) {
 
 //flag setting
 // added breaks and '&=' instead of just '&'
-void Gameboy::setFlag(char flagName, bool flagValue) {
+void Gameboy::setFlag(unsigned char flagName, bool flagValue) {
     switch (flagName) {
         case 'Z':
             flagValue ? af.f |= (FLAG_Z) : af.f &= ~FLAG_Z;
@@ -170,7 +172,7 @@ void Gameboy::setFlag(char flagName, bool flagValue) {
     }
 }
 
-bool Gameboy::readFlag(char flagName) const {
+bool Gameboy::readFlag(unsigned char flagName) const {
     switch (flagName) {
         case 'Z':
             //if the whole thing is 0, that means the flag is zero so we can return false
@@ -1409,93 +1411,83 @@ uint8_t Gameboy::OP_0x8F() {
 // ROW x9
 //subtract b from a
 uint8_t Gameboy::OP_0x90() {
-    uint8_t old = af.a;
-    af.a -= bc.b;
-    setFlag('Z', af.a == 0);
-    setFlag('N', true);
-    setFlag('H', (old & 0xF) < (bc.b & 0x0F));
-    setFlag('C', old < bc.b);
-    return 1;
+    return OpcodeHelpers::SUB(af.a, bc.b, *this);
 }
 
 //subtract c from a
 uint8_t Gameboy::OP_0x91() {
-    uint8_t old = af.a;
-    af.a -= bc.c;
-    setFlag('Z', af.a == 0);
-    setFlag('N', true);
-    setFlag('H', (old & 0xF) < (bc.c & 0x0F));
-    setFlag('C', old < bc.c);
-    return 1;
+    return OpcodeHelpers::SUB(af.a, bc.c, *this);
 }
 
 //subtract d from a
 uint8_t Gameboy::OP_0x92() {
-    uint8_t old = af.a;
-    af.a -= de.d;
-    setFlag('Z', af.a == 0);
-    setFlag('N', true);
-    setFlag('H', (old & 0xF) < (de.d & 0x0F));
-    setFlag('C', old < de.d);
-    return 1;
+    return OpcodeHelpers::SUB(af.a, de.d, *this);
 }
 
 //subtract e from a
 uint8_t Gameboy::OP_0x93() {
-    uint8_t old = af.a;
-    af.a -= de.e;
-    setFlag('Z', af.a == 0);
-    setFlag('N', true);
-    setFlag('H', (old & 0xF) < (de.e & 0x0F));
-    setFlag('C', old < de.e);
-    return 1;
+    return OpcodeHelpers::SUB(af.a, de.e, *this);
 }
 
 //subtract h from a
 uint8_t Gameboy::OP_0x94() {
-    uint8_t old = af.a;
-    af.a -= hl.h;
-    setFlag('Z', af.a == 0);
-    setFlag('N', true);
-    setFlag('H', (old & 0xF) < (hl.h & 0x0F));
-    setFlag('C', old < hl.h);
-    return 1;
+    return OpcodeHelpers::SUB(af.a, hl.h, *this);
 }
 
 //subtract l from a
 uint8_t Gameboy::OP_0x95() {
-    uint8_t old = af.a;
-    af.a -= hl.l;
-    setFlag('Z', af.a == 0);
-    setFlag('N', true);
-    setFlag('H', (old & 0xF) < (hl.l & 0x0F));
-    setFlag('C', old < hl.l);
-    return 1;
+    return OpcodeHelpers::SUB(af.a, hl.l, *this);
 }
 
 //subtract the contents of memory at HL from a
 uint8_t Gameboy::OP_0x96() {
-    uint8_t old = af.a;
-    uint8_t hlMemory = read(hl.reg16);
-    af.a -= hlMemory;
-    setFlag('Z', af.a == 0);
-    setFlag('N', true);
-    setFlag('H', (old & 0xF) < (hlMemory & 0x0F));
-    setFlag('C', old < hlMemory);
-    return 1;
+    return OpcodeHelpers::SUB(af.a, read(hl.reg16), *this);
 }
 
 //subtract a from a, trivial but kept same logic
 uint8_t Gameboy::OP_0x97() {
-    uint8_t old = af.a;
-    af.a -= af.a;
-    setFlag('Z', af.a == 0);
-    setFlag('N', true);
-    setFlag('H', (old & 0xF) < (old & 0x0F));
-    setFlag('C', old < old);
-    return 1;
+    return OpcodeHelpers::SUB(af.a, af.a, *this);
 }
 
+//subtract b register and carry flag from a
+uint8_t Gameboy::OP_0x98() {
+    return OpcodeHelpers::SBC(af.a, bc.b, *this);
+}
+
+//subtract c register and carry flag from a
+uint8_t Gameboy::OP_0x99() {
+    return OpcodeHelpers::SBC(af.a, bc.c, *this);
+}
+
+//subtract d register and carry flag from a
+uint8_t Gameboy::OP_0x9A() {
+    return OpcodeHelpers::SBC(af.a, de.d, *this);
+}
+
+//subtract e register and carry flag from a
+uint8_t Gameboy::OP_0x9B() {
+    return OpcodeHelpers::SBC(af.a, de.e, *this);
+}
+
+//subtract h register and carry flag from a
+uint8_t Gameboy::OP_0x9C() {
+    return OpcodeHelpers::SBC(af.a, hl.h, *this);
+}
+
+//subtract l register and carry flag from a
+uint8_t Gameboy::OP_0x9D() {
+    return OpcodeHelpers::SBC(af.a, hl.l, *this);
+}
+
+//subtract e register and carry flag from a
+uint8_t Gameboy::OP_0x9E() {
+    return OpcodeHelpers::SBC(af.a, read(hl.reg16), *this);
+}
+
+//subtract e register and carry flag from a
+uint8_t Gameboy::OP_0x9F() {
+    return OpcodeHelpers::SBC(af.a, af.a, *this);
+}
 
 // ROW xA
 
@@ -1597,3 +1589,84 @@ uint8_t Gameboy::OP_0xA7() {
 }
 
 // rest of xA
+
+//ROW xB
+//logical or of a and b, stored in a
+uint8_t Gameboy::OP_0xB0() {
+    return OpcodeHelpers::OR(af.a, bc.b, *this);
+}
+
+//logical or of a and c, stored in a
+uint8_t Gameboy::OP_0xB1() {
+    return OpcodeHelpers::OR(af.a, bc.c, *this);
+}
+
+//logical or of a and d, stored in a
+uint8_t Gameboy::OP_0xB2() {
+    return OpcodeHelpers::OR(af.a, de.d, *this);
+}
+
+//logical or of a and e, stored in a
+uint8_t Gameboy::OP_0xB3() {
+    return OpcodeHelpers::OR(af.a, de.e, *this);
+}
+
+//logical or of a and h, stored in a
+uint8_t Gameboy::OP_0xB4() {
+    return OpcodeHelpers::OR(af.a, hl.h, *this);
+}
+
+//logical or of a and l, stored in a
+uint8_t Gameboy::OP_0xB5() {
+    return OpcodeHelpers::OR(af.a, hl.l, *this);
+}
+
+//logical or of a and contents of memory at address in hl, stored in a
+uint8_t Gameboy::OP_0xB6() {
+    return OpcodeHelpers::OR(af.a, read(hl.reg16), *this);
+}
+
+//logical or of a and a, stored in a
+uint8_t Gameboy::OP_0xB7() {
+    return OpcodeHelpers::OR(af.a, af.a, *this);
+}
+
+//calculate a-b and set flags accordingly. same as SUB except we do not change the value of a
+uint8_t Gameboy::OP_0xB8() {
+    return OpcodeHelpers::OR(af.a, bc.b, *this);
+}
+
+//calculate a-c and set flags accordingly. same as SUB except we do not change the value of a
+uint8_t Gameboy::OP_0xB9() {
+    return OpcodeHelpers::OR(af.a, bc.c, *this);
+}
+
+//calculate a-d and set flags accordingly. same as SUB except we do not change the value of a
+uint8_t Gameboy::OP_0xBA() {
+    return OpcodeHelpers::OR(af.a, de.d, *this);
+}
+
+//calculate a-e and set flags accordingly. same as SUB except we do not change the value of a
+uint8_t Gameboy::OP_0xBB() {
+    return OpcodeHelpers::OR(af.a, de.e, *this);
+}
+
+//calculate a-h and set flags accordingly. same as SUB except we do not change the value of a
+uint8_t Gameboy::OP_0xBC() {
+    return OpcodeHelpers::OR(af.a, hl.h, *this);
+}
+
+//calculate a-h and set flags accordingly. same as SUB except we do not change the value of a
+uint8_t Gameboy::OP_0xBD() {
+    return OpcodeHelpers::OR(af.a, hl.l, *this);
+}
+
+//calculate a- memory at hl and set flags accordingly. same as SUB except we do not change the value of a
+uint8_t Gameboy::OP_0xBE() {
+    return OpcodeHelpers::OR(af.a, read(hl.reg16), *this);
+}
+
+//calculate a-a and set flags accordingly. same as SUB except we do not change the value of a
+uint8_t Gameboy::OP_0xBF() {
+    return OpcodeHelpers::OR(af.a, af.a, *this);
+}

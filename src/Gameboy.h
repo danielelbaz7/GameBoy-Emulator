@@ -40,9 +40,9 @@ class Gameboy {
 public:
     uint8_t read(uint16_t address);
     void write(uint16_t address, uint8_t byteToWrite);
-    void setFlag(char flagName, bool flagValue);
+    void setFlag(unsigned char flagName, bool flagValue);
 
-    bool readFlag(char flagName) const;
+    bool readFlag(unsigned char flagName) const;
 
 private:
     // CPU Registers
@@ -302,4 +302,22 @@ private:
     uint8_t OP_0xAD();
     uint8_t OP_0xAE();
     uint8_t OP_0xAF();
+
+    uint8_t OP_0xB0();
+    uint8_t OP_0xB1();
+    uint8_t OP_0xB2();
+    uint8_t OP_0xB3();
+    uint8_t OP_0xB4();
+    uint8_t OP_0xB5();
+    uint8_t OP_0xB6();
+    uint8_t OP_0xB7();
+    uint8_t OP_0xB8();
+    uint8_t OP_0xB9();
+    uint8_t OP_0xBA();
+    uint8_t OP_0xBB();
+    uint8_t OP_0xBC();
+    uint8_t OP_0xBD();
+    uint8_t OP_0xBE();
+    uint8_t OP_0xBF();
+
 };

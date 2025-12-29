@@ -5,4 +5,6 @@ set(CMAKE_CXX_STANDARD 20)
 
 add_executable(GameBoyEmulator src/main.cpp
         src/Gameboy.cpp
-        src/Gameboy.h)
+        src/Gameboy.h
+        src/OpcodeHelpers.cpp
+        src/OpcodeHelpers.h)
