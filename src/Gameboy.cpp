@@ -1170,3 +1170,345 @@ uint8_t Gameboy::OP_0x7F() {
 }
 
 // ROW x8
+// Add the contents of register B to the contents of register A, and store the results in register A.
+uint8_t Gameboy::OP_0x80() {
+    oldA = af.a;
+    af.a = af.a + bc.b;
+
+    setFlag('Z', af.a == 0);
+    setFlag('N', false);
+    setFlag('H', ((oldA & 0x0F) + (bc.b & 0x0F)) > 0x0F);
+    setFlag('C', (static_cast<uint16_t>(oldA) + static_cast<uint16_t>(bc.b)) > 0xFF);
+
+    return 1;
+}
+
+// Add the contents of register C to the contents of register A, and store the results in register A.
+uint8_t Gameboy::OP_0x81() {
+    oldA = af.a;
+    af.a = af.a + bc.c;
+
+    setFlag('Z', af.a == 0);
+    setFlag('N', false);
+    setFlag('H', ((oldA & 0x0F) + (bc.c & 0x0F)) > 0x0F);
+    setFlag('C', (static_cast<uint16_t>(oldA) + static_cast<uint16_t>(bc.c)) > 0xFF);
+
+    return 1;
+}
+
+//Add the contents of register D to the contents of register A, and store the results in register A.
+uint8_t Gameboy::OP_0x82() {
+    oldA = af.a;
+    af.a = af.a + de.d;
+
+    setFlag('Z', af.a == 0);
+    setFlag('N', false);
+    setFlag('H', ((oldA & 0x0F) + (de.d & 0x0F)) > 0x0F);
+    setFlag('C', (static_cast<uint16_t>(oldA) + static_cast<uint16_t>(de.d)) > 0xFF);
+
+    return 1;
+}
+
+// Add the contents of register E to the contents of register A, and store the results in register A.
+uint8_t Gameboy::OP_0x83() {
+    oldA = af.a;
+    af.a = af.a + de.e;
+
+    setFlag('Z', af.a == 0);
+    setFlag('N', false);
+    setFlag('H', ((oldA & 0x0F) + (de.e & 0x0F)) > 0x0F);
+    setFlag('C', (static_cast<uint16_t>(oldA) + static_cast<uint16_t>(de.e)) > 0xFF);
+
+    return 1;
+}
+
+// Add the contents of register H to the contents of register A, and store the results in register A.
+uint8_t Gameboy::OP_0x84() {
+    oldA = af.a;
+    af.a = af.a + hl.h;
+
+    setFlag('Z', af.a == 0);
+    setFlag('N', false);
+    setFlag('H', ((oldA & 0x0F) + (hl.h & 0x0F)) > 0x0F);
+    setFlag('C', (static_cast<uint16_t>(oldA) + static_cast<uint16_t>(hl.h)) > 0xFF);
+
+    return 1;
+}
+
+// Add the contents of register L to the contents of register A, and store the results in register A.
+uint8_t Gameboy::OP_0x85() {
+    oldA = af.a;
+    af.a = af.a + hl.l;
+
+    setFlag('Z', af.a == 0);
+    setFlag('N', false);
+    setFlag('H', ((oldA & 0x0F) + (hl.l & 0x0F)) > 0x0F);
+    setFlag('C', (static_cast<uint16_t>(oldA) + static_cast<uint16_t>(hl.l)) > 0xFF);
+
+    return 1;
+}
+
+// Add the contents of memory specified by register pair HL to the contents of register A, and store the results in register A.
+uint8_t Gameboy::OP_0x86() {
+    uint8_t val = read(hl.reg16);
+    oldA = af.a;
+    af.a = af.a + val;
+
+    setFlag('Z', af.a == 0);
+    setFlag('N', false);
+    setFlag('H', ((oldA & 0x0F) + (val & 0x0F)) > 0x0F);
+    setFlag('C', (static_cast<uint16_t>(oldA) + static_cast<uint16_t>(val)) > 0xFF);
+
+    return 2;
+}
+
+// Add the contents of register A to the contents of register A, and store the results in register A.
+uint8_t Gameboy::OP_0x87() {
+    oldA = af.a;
+    uint8_t val = af.a;
+    af.a = af.a + val;
+
+    setFlag('Z', af.a == 0);
+    setFlag('N', false);
+    setFlag('H', ((oldA & 0x0F) + (val & 0x0F)) > 0x0F);
+    setFlag('C', (static_cast<uint16_t>(oldA) + static_cast<uint16_t>(val)) > 0xFF);
+
+    return 1;
+}
+
+// Add the contents of register B and the CY flag to the contents of register A, and store the results in register A.
+uint8_t Gameboy::OP_0x88() {
+    uint8_t cy = readFlag('C') ? 1 : 0;
+    uint8_t oldA = af.a;
+    uint16_t result = static_cast<uint16_t>(oldA) + static_cast<uint16_t>(bc.b) + cy;
+    
+    af.a = static_cast<uint8_t>(result);
+
+    setFlag('Z', af.a == 0);
+    setFlag('N', false);
+    setFlag('H', ((oldA & 0x0F) + (bc.b & 0x0F) + cy) > 0x0F);
+    setFlag('C', (result > 0xFF));
+
+    return 1;
+}
+
+// Add the contents of register C and the CY flag to the contents of register A, and store the results in register A.
+uint8_t Gameboy::OP_0x89() {
+    uint8_t cy = readFlag('C') ? 1 : 0;
+    uint8_t oldA = af.a;
+    uint16_t result = static_cast<uint16_t>(oldA) + static_cast<uint16_t>(bc.c) + cy;
+    
+    af.a = static_cast<uint8_t>(result);
+
+    setFlag('Z', af.a == 0);
+    setFlag('N', false);
+    setFlag('H', ((oldA & 0x0F) + (bc.c & 0x0F) + cy) > 0x0F);
+    setFlag('C', (result > 0xFF));
+
+    return 1;
+}
+
+// Add the contents of register D and the CY flag to the contents of register A, and store the results in register A.
+uint8_t Gameboy::OP_0x8A() {
+    uint8_t cy = readFlag('C') ? 1 : 0;
+    uint8_t oldA = af.a;
+    uint16_t result = static_cast<uint16_t>(oldA) + static_cast<uint16_t>(de.d) + cy;
+    
+    af.a = static_cast<uint8_t>(result);
+
+    setFlag('Z', af.a == 0);
+    setFlag('N', false);
+    setFlag('H', ((oldA & 0x0F) + (de.d & 0x0F) + cy) > 0x0F);
+    setFlag('C', (result > 0xFF));
+
+    return 1;
+}
+
+// Add the contents of register E and the CY flag to the contents of register A, and store the results in register A.
+uint8_t Gameboy::OP_0x8B() {
+    uint8_t cy = readFlag('C') ? 1 : 0;
+    uint8_t oldA = af.a;
+    uint16_t result = static_cast<uint16_t>(oldA) + static_cast<uint16_t>(de.e) + cy;
+    
+    af.a = static_cast<uint8_t>(result);
+
+    setFlag('Z', af.a == 0);
+    setFlag('N', false);
+    setFlag('H', ((oldA & 0x0F) + (de.e & 0x0F) + cy) > 0x0F);
+    setFlag('C', (result > 0xFF));
+
+    return 1;
+}
+
+// Add the contents of register H and the CY flag to the contents of register A, and store the results in register A.
+uint8_t Gameboy::OP_0x8C() {
+    uint8_t cy = readFlag('C') ? 1 : 0;
+    uint8_t oldA = af.a;
+    uint16_t result = static_cast<uint16_t>(oldA) + static_cast<uint16_t>(hl.h) + cy;
+    
+    af.a = static_cast<uint8_t>(result);
+
+    setFlag('Z', af.a == 0);
+    setFlag('N', false);
+    setFlag('H', ((oldA & 0x0F) + (hl.h & 0x0F) + cy) > 0x0F);
+    setFlag('C', (result > 0xFF));
+
+    return 1;
+}
+
+// Add the contents of register L and the CY flag to the contents of register A, and store the results in register A
+uint8_t Gameboy::OP_0x8D() {
+    uint8_t cy = readFlag('C') ? 1 : 0;
+    uint8_t oldA = af.a;
+    uint16_t result = static_cast<uint16_t>(oldA) + static_cast<uint16_t>(hl.l) + cy;
+    
+    af.a = static_cast<uint8_t>(result);
+
+    setFlag('Z', af.a == 0);
+    setFlag('N', false);
+    setFlag('H', ((oldA & 0x0F) + (hl.l & 0x0F) + cy) > 0x0F);
+    setFlag('C', (result > 0xFF));
+
+    return 1;
+}
+
+// Add the contents of memory specified by register pair HL and the CY flag to the contents of register A, and store the results in register A.
+uint8_t Gameboy::OP_0x8E() {
+    uint8_t cy = readFlag('C') ? 1 : 0;
+    uint8_t oldA = af.a;
+    uint16_t val = static_cast<uint16_t>(read(hl.reg16));
+    uint16_t result = static_cast<uint16_t>(oldA) + val + cy;
+    
+    af.a = static_cast<uint8_t>(result);
+
+    setFlag('Z', af.a == 0);
+    setFlag('N', false);
+    setFlag('H', ((oldA & 0x0F) + (val & 0x0F) + cy) > 0x0F);
+    setFlag('C', (result > 0xFF));
+
+    return 2;
+}
+
+// Add the contents of register A and the CY flag to the contents of register A, and store the results in register A.
+uint8_t Gameboy::OP_0x8F() {
+    uint8_t cy = readFlag('C') ? 1 : 0;
+    uint8_t oldA = af.a;
+    uint16_t result = static_cast<uint16_t>(oldA) + static_cast<uint16_t>(oldA) + cy;
+    
+    af.a = static_cast<uint8_t>(result);
+
+    setFlag('Z', af.a == 0);
+    setFlag('N', false);
+    setFlag('H', ((oldA & 0x0F) + (oldA & 0x0F) + cy) > 0x0F);
+    setFlag('C', (result > 0xFF));
+
+    return 1;
+}
+
+
+// ROW x9
+uint8_t Gameboy::OP_0x90() {
+    makeEmulator();
+    
+}
+
+// ROW xA
+
+// Take the logical AND for each bit of the contents of register B and the contents of register A, and store the results in register A.
+uint8_t Gameboy::OP_0xA0() {
+    uint8_t result = af.a & bc.b;
+    af.a = result;
+
+    setFlag('Z', af.a ==0);
+    setFlag('N', false);
+    setFlag('H', true);
+    setFlag('C', false)
+    return 1;
+}
+
+// Take the logical AND for each bit of the contents of register C and the contents of register A, and store the results in register A.
+uint8_t Gameboy::OP_0xA1() {
+    uint8_t result = af.a & bc.c;
+    af.a = result;
+
+    setFlag('Z', af.a ==0);
+    setFlag('N', false);
+    setFlag('H', true);
+    setFlag('C', false)
+    return 1;
+}
+
+
+// Take the logical AND for each bit of the contents of register D and the contents of register A, and store the results in register A.
+uint8_t Gameboy::OP_0xA2() {
+    uint8_t result = af.a & de.d;
+    af.a = result;
+
+    setFlag('Z', af.a ==0);
+    setFlag('N', false);
+    setFlag('H', true);
+    setFlag('C', false)
+    return 1;
+}
+
+// Take the logical AND for each bit of the contents of register E and the contents of register A, and store the results in register A.
+uint8_t Gameboy::OP_0xA3() {
+    uint8_t result = af.a & de.e;
+    af.a = result;
+
+    setFlag('Z', af.a ==0);
+    setFlag('N', false);
+    setFlag('H', true);
+    setFlag('C', false)
+    return 1;
+}
+
+// Take the logical AND for each bit of the contents of register H and the contents of register A, and store the results in register A.
+uint8_t Gameboy::OP_0xA4() {
+    uint8_t result = af.a & hl.h;
+    af.a = result;
+
+    setFlag('Z', af.a ==0);
+    setFlag('N', false);
+    setFlag('H', true);
+    setFlag('C', false)
+    return 1;
+}
+
+// Take the logical AND for each bit of the contents of register L and the contents of register A, and store the results in register A.
+uint8_t Gameboy::OP_0xA5() {
+    uint8_t result = af.a & hl.l;
+    af.a = result;
+
+    setFlag('Z', af.a ==0);
+    setFlag('N', false);
+    setFlag('H', true);
+    setFlag('C', false)
+    return 1;
+}
+
+// Take the logical AND for each bit of the contents of memory specified by register pair HL and the contents of register A, and store the results in register A.
+uint8_t Gameboy::OP_0xA6() {
+    uint8_t result = af.a & read(hl.reg16);
+    af.a = result;
+
+    setFlag('Z', af.a ==0);
+    setFlag('N', false);
+    setFlag('H', true);
+    setFlag('C', false)
+    return 2;
+}
+
+// Take the logical AND for each bit of the contents of register A and the contents of register A, and store the results in register A.
+uint8_t Gameboy::OP_0xA7() {
+    uint8_t result = af.a & af.a;
+    af.a = result;
+
+    setFlag('Z', af.a ==0);
+    setFlag('N', false);
+    setFlag('H', true);
+    setFlag('C', false)
+    return 1;
+}
+
+// rest of xA
