@@ -1407,10 +1407,95 @@ uint8_t Gameboy::OP_0x8F() {
 
 
 // ROW x9
+//subtract b from a
 uint8_t Gameboy::OP_0x90() {
-    makeEmulator();
-    
+    uint8_t old = af.a;
+    af.a -= bc.b;
+    setFlag('Z', af.a == 0);
+    setFlag('N', true);
+    setFlag('H', (old & 0xF) < (bc.b & 0x0F));
+    setFlag('C', old < bc.b);
+    return 1;
 }
+
+//subtract c from a
+uint8_t Gameboy::OP_0x91() {
+    uint8_t old = af.a;
+    af.a -= bc.c;
+    setFlag('Z', af.a == 0);
+    setFlag('N', true);
+    setFlag('H', (old & 0xF) < (bc.c & 0x0F));
+    setFlag('C', old < bc.c);
+    return 1;
+}
+
+//subtract d from a
+uint8_t Gameboy::OP_0x92() {
+    uint8_t old = af.a;
+    af.a -= de.d;
+    setFlag('Z', af.a == 0);
+    setFlag('N', true);
+    setFlag('H', (old & 0xF) < (de.d & 0x0F));
+    setFlag('C', old < de.d);
+    return 1;
+}
+
+//subtract e from a
+uint8_t Gameboy::OP_0x93() {
+    uint8_t old = af.a;
+    af.a -= de.e;
+    setFlag('Z', af.a == 0);
+    setFlag('N', true);
+    setFlag('H', (old & 0xF) < (de.e & 0x0F));
+    setFlag('C', old < de.e);
+    return 1;
+}
+
+//subtract h from a
+uint8_t Gameboy::OP_0x94() {
+    uint8_t old = af.a;
+    af.a -= hl.h;
+    setFlag('Z', af.a == 0);
+    setFlag('N', true);
+    setFlag('H', (old & 0xF) < (hl.h & 0x0F));
+    setFlag('C', old < hl.h);
+    return 1;
+}
+
+//subtract l from a
+uint8_t Gameboy::OP_0x95() {
+    uint8_t old = af.a;
+    af.a -= hl.l;
+    setFlag('Z', af.a == 0);
+    setFlag('N', true);
+    setFlag('H', (old & 0xF) < (hl.l & 0x0F));
+    setFlag('C', old < hl.l);
+    return 1;
+}
+
+//subtract the contents of memory at HL from a
+uint8_t Gameboy::OP_0x96() {
+    uint8_t old = af.a;
+    uint8_t hlMemory = read(hl.reg16);
+    af.a -= hlMemory;
+    setFlag('Z', af.a == 0);
+    setFlag('N', true);
+    setFlag('H', (old & 0xF) < (hlMemory & 0x0F));
+    setFlag('C', old < hlMemory);
+    return 1;
+}
+
+//subtract a from a
+uint8_t Gameboy::OP_0x97() {
+    uint8_t old = af.a;
+    af.a -= af.a;
+    setFlag('Z', af.a == 0);
+    setFlag('N', true);
+    setFlag('H', (old & 0xF) < (old & 0x0F));
+    setFlag('C', old < old);
+    return 1;
+}
+
 
 // ROW xA
 
