@@ -321,4 +321,8 @@ private:
     uint8_t OP_0xBF();
 
     uint8_t OP_0xC0();
+
+    uint8_t OP_0xC1();
+
+    uint8_t OP_0xC2();
 };

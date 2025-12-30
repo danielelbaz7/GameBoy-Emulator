@@ -1672,8 +1672,8 @@ uint8_t Gameboy::OP_0xBF() {
 }
 
 //ROW xC
-//loads the contents of memory at the address in sp into the lower byte of pc, then increments and
-//does the same for the higher byte
+//if zero flag is zero (meaning last op not 0) loads the contents of memory at the address in sp into
+//the lower byte of pc, then increments and does the same for the higher byte
 uint8_t Gameboy::OP_0xC0() {
     if (!readFlag('Z')) {
         uint8_t lowerByte = read(sp++);
@@ -1689,5 +1689,50 @@ uint8_t Gameboy::OP_0xC0() {
 uint8_t Gameboy::OP_0xC1() {
     bc.c = read(sp++);
     bc.b = read(sp++);
-    return 5;
+    return 3;
 }
+
+//jump to immediate 16 bit address, otherwise increment to next instruction
+uint8_t Gameboy::OP_0xC2() {
+    if (!readFlag('Z')) {
+        uint16_t newAddress = read(++pc);
+        newAddress |= (read(++pc) << 8u);
+        pc = newAddress;
+        pc--;
+        return 4;
+    }
+
+    pc += 2;
+    return 3;
+}
+
+//jump to immediate
+uint8_t Gameboy::OP_0xC3() {
+    uint16_t newAddress = read(++pc);
+    newAddress |= (read(++pc) << 8u);
+    pc = newAddress;
+    pc--;
+    return 4;
+}
+
+//call to immediate and push the next address to stack
+//needs to be fixed
+uint8_t Gameboy::OP_0xC4() {
+    if (!readFlag('Z')) {
+        uint16_t newAddress = read(++pc);
+        newAddress |= (read(++pc) << 8u);
+
+        write(--sp, ++pc);
+        write(--sp, ++pc);
+
+        pc = newAddress;
+        pc--;
+        return 6;
+    }
+
+    pc += 2;
+    return 3;
+}
+
+
+
