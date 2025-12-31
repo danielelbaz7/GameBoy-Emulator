@@ -1855,7 +1855,7 @@ uint8_t Gameboy::OP_0xC6() {
     return 2;
 }
 
-//push pc onto stack, load the 0th byte of memory into the pc, RST 0
+//push pc onto stack, load the 0th byte of page 0 memory into the pc, RST 0
 uint8_t Gameboy::OP_0xC7() {
     pc++;
     //write to memory the return address which is just the pc incremented
@@ -1962,7 +1962,7 @@ uint8_t Gameboy::OP_0xCE() {
     return 2;
 }
 
-//push pc onto stack, load the 1st (0+1) byte of memory into the pc, RST 1
+//push pc onto stack, load the 2nd (0x08) byte of page 0 memory into the pc, RST 1
 uint8_t Gameboy::OP_0xCF() {
     pc++;
     //write to memory the return address which is just the pc incremented
@@ -1971,7 +1971,7 @@ uint8_t Gameboy::OP_0xCF() {
     write(--sp, static_cast<uint8_t>(pc & 0xFF00) >> 8u);
     write(--sp, static_cast<uint8_t>(pc & 0x00FF));
 
-    pc = 0x0001;
+    pc = 0x0008;
     pc--;
     return 4;
 }
@@ -1992,7 +1992,7 @@ uint8_t Gameboy::OP_0xD0() {
     return 2;
 }
 
-//pop the contents of memory at sp into bc
+//pop the contents of memory at sp into de
 uint8_t Gameboy::OP_0xD1() {
     de.e = read(sp++);
     de.d = read(sp++);
@@ -2036,7 +2036,7 @@ uint8_t Gameboy::OP_0xD4() {
     return 3;
 }
 
-//push bc onto the stack
+//push de onto the stack
 uint8_t Gameboy::OP_0xD5() {
     //high byte first
     write(--sp, de.d);
@@ -2050,7 +2050,7 @@ uint8_t Gameboy::OP_0xD6() {
     return OpcodeHelpers::SUB(af.a, read(++pc), *this) + 1;
 }
 
-//push pc onto stack, load the 2nd byte of memory into the pc, RST 2
+//push pc onto stack, load the 3rd byte of page 0 memory into the pc, RST 2
 uint8_t Gameboy::OP_0xD7() {
     pc++;
     //write to memory the return address which is just the pc incremented
@@ -2059,7 +2059,7 @@ uint8_t Gameboy::OP_0xD7() {
     write(--sp, static_cast<uint8_t>(pc & 0xFF00) >> 8u);
     write(--sp, static_cast<uint8_t>(pc & 0x00FF));
 
-    pc = 0x0002;
+    pc = 0x0010;
     pc--;
     return 4;
 }
@@ -2128,7 +2128,7 @@ uint8_t Gameboy::OP_0xDE() {
     return OpcodeHelpers::SBC(af.a, read(++pc), *this) + 1;
 }
 
-//push pc onto stack, load the 3rd byte of memory into the pc, RST 3
+//push pc onto stack, load the 3rd byte of page 0 memory into the pc, RST 3
 uint8_t Gameboy::OP_0xDF() {
     pc++;
     //write to memory the return address which is just the pc incremented
@@ -2137,7 +2137,77 @@ uint8_t Gameboy::OP_0xDF() {
     write(--sp, static_cast<uint8_t>(pc & 0xFF00) >> 8u);
     write(--sp, static_cast<uint8_t>(pc & 0x00FF));
 
-    pc = 0x0003;
+    pc = 0x0018;
     pc--;
     return 4;
 }
+
+//ROW xE
+//loads the contents of register A into the mem at the address specified by the immediate, where the immediate
+//specifies the least significant byte of the memory, and FF is always the most significant byte
+uint8_t Gameboy::OP_0xE0() {
+    uint16_t newAddress = 0xFF00;
+    newAddress |= read(++pc);
+
+    write(newAddress, af.a);
+    return 3;
+}
+
+//pop the contents of memory at sp into bc
+uint8_t Gameboy::OP_0xE1() {
+    hl.l = read(sp++);
+    hl.h = read(sp++);
+    return 3;
+}
+
+//load the contents of A into memory at address specified by 0xFF(contents of C).
+uint8_t Gameboy::OP_0xE2() {
+    uint16_t newAddress = 0xFF00;
+    newAddress |= bc.c;
+
+    write(newAddress, af.a);
+    return 3;
+}
+
+//push hl onto the stack
+uint8_t Gameboy::OP_0xE5() {
+    //high byte first
+    write(--sp, hl.h);
+    write(--sp, hl.l);
+    return 4;
+}
+
+//RST 4
+uint8_t Gameboy::OP_0xE7() {
+    pc++;
+    //write to memory the return address which is just the pc incremented
+    //first the high byte, then the low
+
+    write(--sp, static_cast<uint8_t>(pc & 0xFF00) >> 8u);
+    write(--sp, static_cast<uint8_t>(pc & 0x00FF));
+
+    pc = 0x0020;
+    pc--;
+    return 4;
+}
+
+//load HL into stack pointer
+uint8_t Gameboy::OP_0xE9() {
+    pc = hl.reg16
+    return 1;
+}
+
+//RST 5
+uint8_t Gameboy::OP_0xEF() {
+    pc++;
+    //write to memory the return address which is just the pc incremented
+    //first the high byte, then the low
+
+    write(--sp, static_cast<uint8_t>(pc & 0xFF00) >> 8u);
+    write(--sp, static_cast<uint8_t>(pc & 0x00FF));
+
+    pc = 0x0028;
+    pc--;
+    return 4;
+}
+
