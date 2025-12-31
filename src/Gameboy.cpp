@@ -1586,9 +1586,104 @@ uint8_t Gameboy::OP_0xA7() {
     setFlag('H', true);
     setFlag('C', false);
     return 1;
+
 }
 
-// rest of xA
+// Take the logical exclusive-OR for each bit of the contents of register B and the contents of register A, and store the results in register A.
+uint8_t Gameboy::OP_0xA8() {
+    af.a = af.a ^ bc.b;
+
+    setFlag('Z', af.a ==0);
+    setFlag('N', false);
+    setFlag('H', false);
+    setFlag('C', false);
+
+    return 1;
+}
+
+// Take the logical exclusive-OR for each bit of the contents of register C and the contents of register A, and store the results in register A.
+uint8_t Gameboy::OP_0xA9() {
+    af.a = af.a ^ bc.c;
+
+    setFlag('Z', af.a ==0);
+    setFlag('N', false);
+    setFlag('H', false);
+    setFlag('C', false);
+
+    return 1;
+}
+
+// Take the logical exclusive-OR for each bit of the contents of register D and the contents of register A, and store the results in register A.
+uint8_t Gameboy::OP_0xAA() {
+    af.a = af.a ^ de.d;
+
+    setFlag('Z', af.a ==0);
+    setFlag('N', false);
+    setFlag('H', false);
+    setFlag('C', false);
+
+    return 1;
+}
+
+// Take the logical exclusive-OR for each bit of the contents of register E and the contents of register A, and store the results in register A.
+uint8_t Gameboy::OP_0xAB() {
+    af.a = af.a ^ de.e;
+
+    setFlag('Z', af.a ==0);
+    setFlag('N', false);
+    setFlag('H', false);
+    setFlag('C', false);
+
+    return 1;
+}
+
+// Take the logical exclusive-OR for each bit of the contents of register H and the contents of register A, and store the results in register A.
+uint8_t Gameboy::OP_0xAC() {
+    af.a = af.a ^ hl.h;
+
+    setFlag('Z', af.a ==0);
+    setFlag('N', false);
+    setFlag('H', false);
+    setFlag('C', false);
+
+    return 1;
+}
+
+// Take the logical exclusive-OR for each bit of the contents of register L and the contents of register A, and store the results in register A.
+uint8_t Gameboy::OP_0xAD() {
+    af.a = af.a ^ hl.l;
+
+    setFlag('Z', af.a ==0);
+    setFlag('N', false);
+    setFlag('H', false);
+    setFlag('C', false);
+
+    return 1;
+}
+
+// Take the logical exclusive-OR for each bit of the contents of memory specified by register pair HL and the contents of register A, and store the results in register A.
+uint8_t Gameboy::OP_0xAE() {
+    af.a = af.a ^ read(hl.reg16);
+
+    setFlag('Z', af.a ==0);
+    setFlag('N', false);
+    setFlag('H', false);
+    setFlag('C', false);
+
+    return 2;
+}
+
+// Take the logical exclusive-OR for each bit of the contents of register A and the contents of register A, and store the results in register A.
+uint8_t Gameboy::OP_0xAF() {
+    af.a = af.a ^ af.a;
+
+    setFlag('Z', af.a ==0);
+    setFlag('N', false);
+    setFlag('H', false);
+    setFlag('C', false);
+
+    return 1;
+}
 
 //ROW xB
 //logical or of a and b, stored in a
