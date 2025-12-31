@@ -331,9 +331,24 @@ private:
     uint8_t OP_0xC8();
     uint8_t OP_0xC9();
     uint8_t OP_0xCA();
-    uint8_t OP_0xCB();
     uint8_t OP_0xCC();
     uint8_t OP_0xCD();
     uint8_t OP_0xCE();
     uint8_t OP_0xCF();
+
+    uint8_t OP_0xD0();
+    uint8_t OP_0xD1();
+    uint8_t OP_0xD2();
+    uint8_t OP_0xD3();
+    uint8_t OP_0xD4();
+    uint8_t OP_0xD5();
+    uint8_t OP_0xD6();
+    uint8_t OP_0xD7();
+    uint8_t OP_0xD8();
+    uint8_t OP_0xD9();
+    uint8_t OP_0xDA();
+    uint8_t OP_0xDC();
+    uint8_t OP_0xDD();
+    uint8_t OP_0xDE();
+    uint8_t OP_0xDF();
 };
