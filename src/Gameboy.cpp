@@ -1692,7 +1692,7 @@ uint8_t Gameboy::OP_0xC1() {
     return 3;
 }
 
-//jump to immediate 16 bit address, otherwise increment to next instruction
+//jump to immediate 16 bit address if NZ, otherwise increment to next instruction
 uint8_t Gameboy::OP_0xC2() {
     if (!readFlag('Z')) {
         uint16_t newAddress = read(++pc);
@@ -1715,15 +1715,19 @@ uint8_t Gameboy::OP_0xC3() {
     return 4;
 }
 
-//call to immediate and push the next address to stack
-//needs to be fixed
+//call to immediate and push the next address to stack if NZ
 uint8_t Gameboy::OP_0xC4() {
     if (!readFlag('Z')) {
         uint16_t newAddress = read(++pc);
         newAddress |= (read(++pc) << 8u);
 
-        write(--sp, ++pc);
-        write(--sp, ++pc);
+        uint16_t returnAddress = ++pc;
+
+        //write to memory the return address which is just the program counter incremented
+        //first the high byte, then the low
+
+        write(--sp, static_cast<uint8_t>(returnAddress & 0xFF00) >> 8u);
+        write(--sp, static_cast<uint8_t>(returnAddress & 0x00FF));
 
         pc = newAddress;
         pc--;
@@ -1734,5 +1738,145 @@ uint8_t Gameboy::OP_0xC4() {
     return 3;
 }
 
+//push bc onto the stack
+uint8_t Gameboy::OP_0xC5() {
+    //high byte first
+    write(--sp, bc.b);
+    write(--sp, bc.c);
+    return 4;
+}
 
+//add the immediate 8 bit operand to the register A
+uint8_t Gameboy::OP_0xC6() {
+    uint8_t oldA = af.a;
+    uint8_t bitToAdd = read(++pc);
+    af.a = af.a + bitToAdd;
 
+    setFlag('Z', af.a == 0);
+    setFlag('N', false);
+    setFlag('H', ((oldA & 0x0F) + (bitToAdd & 0x0F)) > 0x0F);
+    setFlag('C', (static_cast<uint16_t>(oldA) + static_cast<uint16_t>(bitToAdd)) > 0xFF);
+
+    return 2;
+}
+
+//push pc onto stack, load the 0th byte of memory into the pc, RST 0
+uint8_t Gameboy::OP_0xC7() {
+    pc++;
+    //write to memory the return address which is just the pc incremented
+    //first the high byte, then the low
+
+    write(--sp, static_cast<uint8_t>(pc & 0xFF00) >> 8u);
+    write(--sp, static_cast<uint8_t>(pc & 0x00FF));
+
+    pc = 0x0000;
+    pc--;
+    return 4;
+}
+
+//return if zero, same as c0 but with the Z flag being 1
+uint8_t Gameboy::OP_0xC8() {
+    if (readFlag('Z')) {
+        uint8_t lowerByte = read(sp++);
+        pc = lowerByte;
+        uint8_t higherByte = read(sp++);
+        pc |= (higherByte << 8u);
+        return 5;
+    }
+    return 2;
+}
+
+//return, same as c0 but we don't care about the z flag
+uint8_t Gameboy::OP_0xC9() {
+    uint8_t lowerByte = read(sp++);
+    pc = lowerByte;
+    uint8_t higherByte = read(sp++);
+    pc |= (higherByte << 8u);
+    return 4;
+}
+
+//jump to immediate 16 bit address if Z, otherwise increment to next instruction
+uint8_t Gameboy::OP_0xCA() {
+    if (readFlag('Z')) {
+        uint16_t newAddress = read(++pc);
+        newAddress |= (read(++pc) << 8u);
+        pc = newAddress;
+        pc--;
+        return 4;
+    }
+
+    pc += 2;
+    return 3;
+}
+
+//call to immediate and push the next address to stack if zero flag
+uint8_t Gameboy::OP_0xCC() {
+    if (readFlag('Z')) {
+        uint16_t newAddress = read(++pc);
+        newAddress |= (read(++pc) << 8u);
+
+        uint16_t returnAddress = ++pc;
+
+        //write to memory the return address which is just the program counter incremented
+        //first the high byte, then the low
+
+        write(--sp, static_cast<uint8_t>(returnAddress & 0xFF00) >> 8u);
+        write(--sp, static_cast<uint8_t>(returnAddress & 0x00FF));
+
+        pc = newAddress;
+        pc--;
+        return 6;
+    }
+
+    pc += 2;
+    return 3;
+}
+
+//call to immediate and push the next address to stack
+uint8_t Gameboy::OP_0xCD() {
+    uint16_t newAddress = read(++pc);
+    newAddress |= (read(++pc) << 8u);
+
+    uint16_t returnAddress = ++pc;
+
+    //write to memory the return address which is just the program counter incremented
+    //first the high byte, then the low
+
+    write(--sp, static_cast<uint8_t>(returnAddress & 0xFF00) >> 8u);
+    write(--sp, static_cast<uint8_t>(returnAddress & 0x00FF));
+
+    pc = newAddress;
+    pc--;
+    return 6;
+}
+
+//add contents of immediate and CY flag to register A, store in register A
+uint8_t Gameboy::OP_0xCE() {
+    uint8_t cy = readFlag('C') ? 1 : 0;
+    uint8_t oldA = af.a;
+    uint8_t bitToAdd = read(++pc);
+    uint16_t result = static_cast<uint16_t>(oldA) + static_cast<uint16_t>(bitToAdd) + cy;
+
+    af.a = static_cast<uint8_t>(result);
+
+    setFlag('Z', af.a == 0);
+    setFlag('N', false);
+    setFlag('H', ((oldA & 0x0F) + (bitToAdd & 0x0F) + cy) > 0x0F);
+    setFlag('C', (result > 0xFF));
+
+    return 2;
+}
+
+//push pc onto stack, load the 1st (0+1) byte of memory into the pc, RST 0
+uint8_t Gameboy::OP_0xCF() {
+    pc++;
+    //write to memory the return address which is just the pc incremented
+    //first the high byte, then the low
+
+    write(--sp, static_cast<uint8_t>(pc & 0xFF00) >> 8u);
+    write(--sp, static_cast<uint8_t>(pc & 0x00FF));
+
+    pc = 0x0001;
+    pc--;
+    return 4;
+}
