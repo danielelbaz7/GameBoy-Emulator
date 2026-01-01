@@ -72,8 +72,9 @@ uint8_t Gameboy::read(uint16_t address) {
 }
 
 void Gameboy::write(uint16_t address, uint8_t byteToWrite) {
-    if (address == 0xFF02 && ((byteToWrite & 0x80) != 0)) {
-        std::cout << read(0xFF01);
+    //if sc is telling it to print, print from sb
+    if (address == 0xFF02 && ((byteToWrite == 0x81))) {
+        std::cout << read(0xFF01) << std::flush;
     }
     //handles eram disable/enable
     if (address <= 0x1FFF) {
@@ -732,7 +733,6 @@ uint8_t Gameboy::OP_0x17() {
 uint8_t Gameboy::OP_0x18() {
     auto jumpSteps = static_cast<int8_t>(read(++pc));
     pc += jumpSteps;
-    // adjust for the automatic pc increment after opcode function
     return 3;
 }
 
@@ -1018,7 +1018,7 @@ uint8_t Gameboy::OP_0x34() {
     return 3;
 }
 
-//decrement HL by 1
+//decrement memory at HL by 1
 uint8_t Gameboy::OP_0x35() {
     uint8_t oldHl = read(hl.reg16);
     write(hl.reg16, oldHl-1);
