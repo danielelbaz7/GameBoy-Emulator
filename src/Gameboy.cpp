@@ -3,6 +3,8 @@
 #include <iostream>
 #include "./Gameboy.h"
 
+#include <thread>
+
 #include "OpcodeHelpers.h"
 
 Gameboy::Gameboy() {
@@ -160,17 +162,18 @@ void Gameboy::write(uint16_t address, uint8_t byteToWrite) {
 
 // Step function, executes exactly one instruction
 uint8_t Gameboy::Step() {
+    if (halted) {
+        return 1;
+    }
     // get opcode
-    // run opcode function
-    // increment pc++
+    // decode and run opcode function
     uint8_t opcode = read(pc);
-    
-    //95
-    //1001 0101
-    //*opcodeTable[1001][0101]();
-    
+        // std::cout << opcode << std::endl;
+    uint8_t cycleCount = (this->*opcodeTable[opcode])();
+    //always increment after, we built it to expect this
     pc++;
-    return 1;
+        //std::this_thread::sleep_for(std::chrono::seconds(1));
+    return cycleCount * 4;
 }
 
 
