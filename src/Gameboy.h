@@ -43,6 +43,10 @@ public:
     void setFlag(unsigned char flagName, bool flagValue);
     bool readFlag(unsigned char flagName) const;
 
+    void run();
+    void cycle();
+
+
 private:
     // CPU Registers
     // Uses union to store the pairs as both 8-bit and 16-bit registers (in the same memory location)
@@ -52,6 +56,7 @@ private:
     bc bc{0x0013};
     de de{0x00D8};
     hl hl{0x014D};
+
 
     uint16_t sp{0xFFFE}; //stack pointer, initialized to highest bit of high ram
     uint16_t pc{0x0100}; //program counter
@@ -64,7 +69,6 @@ private:
 
     //ime used to disable or enable all interrupts, IME=1/true is enabled, IME=0/false is disabled
     bool IME{}; //interrupt master enable flag
-
 
     // All addresses/memory available to the Gameboy, 16-bit addresses
     // Video Memory (VRAM): 8000-9FFF (8KB)
@@ -112,8 +116,10 @@ private:
 
     uint8_t bankModeToUse{ROM_MODE};
 
-
     void LoadRom(char const* filename);
+
+    bool stopped = false;
+    bool halted = false;
 
     //opcode functions
     uint8_t OP_0x00();
@@ -375,4 +381,6 @@ private:
     uint8_t OP_0xFB();
     uint8_t OP_0xFE();
     uint8_t OP_0xFF();
+
+    using OpcodeFunction = void (Gameboy::*) ();
 };

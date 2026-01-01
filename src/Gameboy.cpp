@@ -152,6 +152,39 @@ void Gameboy::write(uint16_t address, uint8_t byteToWrite) {
 
 }
 
+// Run function
+void Gameboy::run() {
+    if (stopped) {
+        // dont do shit
+        // check for restart indicators
+        return;
+    }
+    if (halted) {
+        // do everything but pc increment and read instruction (no cpu things)
+        // update other timers
+        return;
+    }
+    cycle();
+
+    return;
+}
+
+// Cycle function
+void Gameboy::cycle() {
+    // get opcode
+    // run opcode function
+    // increment pc++
+    uint8_t opcode = read(pc);
+    
+    //95
+    //1001 0101
+    //*opcodeTable[1001][0101]();
+    
+    pc++;
+    return;
+}
+
+
 //flag setting
 // added breaks and '&=' instead of just '&'
 void Gameboy::setFlag(unsigned char flagName, bool flagValue) {
@@ -348,9 +381,10 @@ uint8_t Gameboy::OP_0x0F() {
     return 1;
 }
 
-//TO IMPLEMENT
+//STOP FUNCTION
+// when exiting 'stop', incremement pc twice because two byte instruction ( 0x 10 00)
 uint8_t Gameboy::OP_0x10() {
-    //stop command, we will not implement halting the cpu for now
+    stopped = true;
     return 1;
 }
 
@@ -1113,8 +1147,11 @@ uint8_t Gameboy::OP_0x75() {
 }
 
 // HALT INSTRUCTION
+// pauses the CPU in a low-power state to save battery while keeping peripheral systems like the LCD and RAM active.
+// The CPU remains frozen at the current Program Counter until it is "woken up" by a hardware interrupt or a system reset. 
+// Once an interrupt occurs, the CPU resumes execution, either by jumping to an interrupt handler or simply continuing to the next instruction.
 uint8_t Gameboy::OP_0x76() {
-    // implement later
+    halted = true;
     return 1;
 }
 
