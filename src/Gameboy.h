@@ -38,6 +38,8 @@ union hl{
 class Gameboy {
     
 public:
+    Gameboy();
+
     uint8_t read(uint16_t address);
     void write(uint16_t address, uint8_t byteToWrite);
     void setFlag(unsigned char flagName, bool flagValue);
@@ -382,5 +384,9 @@ private:
     uint8_t OP_0xFE();
     uint8_t OP_0xFF();
 
-    using OpcodeFunction = void (Gameboy::*) ();
+    uint8_t OP_NULL(); //function to point to if there is no opcode at that index. ex: 0xE3
+
+    using OpcodeFunction = uint8_t (Gameboy::*) ();
+    OpcodeFunction opcodeTable[256];
+
 };

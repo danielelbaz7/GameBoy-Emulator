@@ -5,6 +5,281 @@
 
 #include "OpcodeHelpers.h"
 
+Gameboy::Gameboy() {
+    //initialize the opcode table upon gameboy object construction
+    opcodeTable[0x00] = &Gameboy::OP_0x00;
+    opcodeTable[0x01] = &Gameboy::OP_0x01;
+    opcodeTable[0x02] = &Gameboy::OP_0x02;
+    opcodeTable[0x03] = &Gameboy::OP_0x03;
+    opcodeTable[0x04] = &Gameboy::OP_0x04;
+    opcodeTable[0x05] = &Gameboy::OP_0x05;
+    opcodeTable[0x06] = &Gameboy::OP_0x06;
+    opcodeTable[0x07] = &Gameboy::OP_0x07;
+    opcodeTable[0x08] = &Gameboy::OP_0x08;
+    opcodeTable[0x09] = &Gameboy::OP_0x09;
+    opcodeTable[0x0A] = &Gameboy::OP_0x0A;
+    opcodeTable[0x0B] = &Gameboy::OP_0x0B;
+    opcodeTable[0x0C] = &Gameboy::OP_0x0C;
+    opcodeTable[0x0D] = &Gameboy::OP_0x0D;
+    opcodeTable[0x0E] = &Gameboy::OP_0x0E;
+    opcodeTable[0x0F] = &Gameboy::OP_0x0F;
+
+    opcodeTable[0x10] = &Gameboy::OP_0x10;
+    opcodeTable[0x11] = &Gameboy::OP_0x11;
+    opcodeTable[0x12] = &Gameboy::OP_0x12;
+    opcodeTable[0x13] = &Gameboy::OP_0x13;
+    opcodeTable[0x14] = &Gameboy::OP_0x14;
+    opcodeTable[0x15] = &Gameboy::OP_0x15;
+    opcodeTable[0x16] = &Gameboy::OP_0x16;
+    opcodeTable[0x17] = &Gameboy::OP_0x17;
+    opcodeTable[0x18] = &Gameboy::OP_0x18;
+    opcodeTable[0x19] = &Gameboy::OP_0x19;
+    opcodeTable[0x1A] = &Gameboy::OP_0x1A;
+    opcodeTable[0x1B] = &Gameboy::OP_0x1B;
+    opcodeTable[0x1C] = &Gameboy::OP_0x1C;
+    opcodeTable[0x1D] = &Gameboy::OP_0x1D;
+    opcodeTable[0x1E] = &Gameboy::OP_0x1E;
+    opcodeTable[0x1F] = &Gameboy::OP_0x1F;
+
+    opcodeTable[0x20] = &Gameboy::OP_0x20;
+    opcodeTable[0x21] = &Gameboy::OP_0x21;
+    opcodeTable[0x22] = &Gameboy::OP_0x22;
+    opcodeTable[0x23] = &Gameboy::OP_0x23;
+    opcodeTable[0x24] = &Gameboy::OP_0x24;
+    opcodeTable[0x25] = &Gameboy::OP_0x25;
+    opcodeTable[0x26] = &Gameboy::OP_0x26;
+    opcodeTable[0x27] = &Gameboy::OP_0x27;
+    opcodeTable[0x28] = &Gameboy::OP_0x28;
+    opcodeTable[0x29] = &Gameboy::OP_0x29;
+    opcodeTable[0x2A] = &Gameboy::OP_0x2A;
+    opcodeTable[0x2B] = &Gameboy::OP_0x2B;
+    opcodeTable[0x2C] = &Gameboy::OP_0x2C;
+    opcodeTable[0x2D] = &Gameboy::OP_0x2D;
+    opcodeTable[0x2E] = &Gameboy::OP_0x2E;
+    opcodeTable[0x2F] = &Gameboy::OP_0x2F;
+
+    opcodeTable[0x30] = &Gameboy::OP_0x30;
+    opcodeTable[0x31] = &Gameboy::OP_0x31;
+    opcodeTable[0x32] = &Gameboy::OP_0x32;
+    opcodeTable[0x33] = &Gameboy::OP_0x33;
+    opcodeTable[0x34] = &Gameboy::OP_0x34;
+    opcodeTable[0x35] = &Gameboy::OP_0x35;
+    opcodeTable[0x36] = &Gameboy::OP_0x36;
+    opcodeTable[0x37] = &Gameboy::OP_0x37;
+    opcodeTable[0x38] = &Gameboy::OP_0x38;
+    opcodeTable[0x39] = &Gameboy::OP_0x39;
+    opcodeTable[0x3A] = &Gameboy::OP_0x3A;
+    opcodeTable[0x3B] = &Gameboy::OP_0x3B;
+    opcodeTable[0x3C] = &Gameboy::OP_0x3C;
+    opcodeTable[0x3D] = &Gameboy::OP_0x3D;
+    opcodeTable[0x3E] = &Gameboy::OP_0x3E;
+    opcodeTable[0x3F] = &Gameboy::OP_0x3F;
+
+    opcodeTable[0x40] = &Gameboy::OP_0x40;
+    opcodeTable[0x41] = &Gameboy::OP_0x41;
+    opcodeTable[0x42] = &Gameboy::OP_0x42;
+    opcodeTable[0x43] = &Gameboy::OP_0x43;
+    opcodeTable[0x44] = &Gameboy::OP_0x44;
+    opcodeTable[0x45] = &Gameboy::OP_0x45;
+    opcodeTable[0x46] = &Gameboy::OP_0x46;
+    opcodeTable[0x47] = &Gameboy::OP_0x47;
+    opcodeTable[0x48] = &Gameboy::OP_0x48;
+    opcodeTable[0x49] = &Gameboy::OP_0x49;
+    opcodeTable[0x4A] = &Gameboy::OP_0x4A;
+    opcodeTable[0x4B] = &Gameboy::OP_0x4B;
+    opcodeTable[0x4C] = &Gameboy::OP_0x4C;
+    opcodeTable[0x4D] = &Gameboy::OP_0x4D;
+    opcodeTable[0x4E] = &Gameboy::OP_0x4E;
+    opcodeTable[0x4F] = &Gameboy::OP_0x4F;
+
+    opcodeTable[0x50] = &Gameboy::OP_0x50;
+    opcodeTable[0x51] = &Gameboy::OP_0x51;
+    opcodeTable[0x52] = &Gameboy::OP_0x52;
+    opcodeTable[0x53] = &Gameboy::OP_0x53;
+    opcodeTable[0x54] = &Gameboy::OP_0x54;
+    opcodeTable[0x55] = &Gameboy::OP_0x55;
+    opcodeTable[0x56] = &Gameboy::OP_0x56;
+    opcodeTable[0x57] = &Gameboy::OP_0x57;
+    opcodeTable[0x58] = &Gameboy::OP_0x58;
+    opcodeTable[0x59] = &Gameboy::OP_0x59;
+    opcodeTable[0x5A] = &Gameboy::OP_0x5A;
+    opcodeTable[0x5B] = &Gameboy::OP_0x5B;
+    opcodeTable[0x5C] = &Gameboy::OP_0x5C;
+    opcodeTable[0x5D] = &Gameboy::OP_0x5D;
+    opcodeTable[0x5E] = &Gameboy::OP_0x5E;
+    opcodeTable[0x5F] = &Gameboy::OP_0x5F;
+
+    opcodeTable[0x60] = &Gameboy::OP_0x60;
+    opcodeTable[0x61] = &Gameboy::OP_0x61;
+    opcodeTable[0x62] = &Gameboy::OP_0x62;
+    opcodeTable[0x63] = &Gameboy::OP_0x63;
+    opcodeTable[0x64] = &Gameboy::OP_0x64;
+    opcodeTable[0x65] = &Gameboy::OP_0x65;
+    opcodeTable[0x66] = &Gameboy::OP_0x66;
+    opcodeTable[0x67] = &Gameboy::OP_0x67;
+    opcodeTable[0x68] = &Gameboy::OP_0x68;
+    opcodeTable[0x69] = &Gameboy::OP_0x69;
+    opcodeTable[0x6A] = &Gameboy::OP_0x6A;
+    opcodeTable[0x6B] = &Gameboy::OP_0x6B;
+    opcodeTable[0x6C] = &Gameboy::OP_0x6C;
+    opcodeTable[0x6D] = &Gameboy::OP_0x6D;
+    opcodeTable[0x6E] = &Gameboy::OP_0x6E;
+    opcodeTable[0x6F] = &Gameboy::OP_0x6F;
+
+    opcodeTable[0x70] = &Gameboy::OP_0x70;
+    opcodeTable[0x71] = &Gameboy::OP_0x71;
+    opcodeTable[0x72] = &Gameboy::OP_0x72;
+    opcodeTable[0x73] = &Gameboy::OP_0x73;
+    opcodeTable[0x74] = &Gameboy::OP_0x74;
+    opcodeTable[0x75] = &Gameboy::OP_0x75;
+    opcodeTable[0x76] = &Gameboy::OP_0x76;
+    opcodeTable[0x77] = &Gameboy::OP_0x77;
+    opcodeTable[0x78] = &Gameboy::OP_0x78;
+    opcodeTable[0x79] = &Gameboy::OP_0x79;
+    opcodeTable[0x7A] = &Gameboy::OP_0x7A;
+    opcodeTable[0x7B] = &Gameboy::OP_0x7B;
+    opcodeTable[0x7C] = &Gameboy::OP_0x7C;
+    opcodeTable[0x7D] = &Gameboy::OP_0x7D;
+    opcodeTable[0x7E] = &Gameboy::OP_0x7E;
+    opcodeTable[0x7F] = &Gameboy::OP_0x7F;
+
+    opcodeTable[0x80] = &Gameboy::OP_0x80;
+    opcodeTable[0x81] = &Gameboy::OP_0x81;
+    opcodeTable[0x82] = &Gameboy::OP_0x82;
+    opcodeTable[0x83] = &Gameboy::OP_0x83;
+    opcodeTable[0x84] = &Gameboy::OP_0x84;
+    opcodeTable[0x85] = &Gameboy::OP_0x85;
+    opcodeTable[0x86] = &Gameboy::OP_0x86;
+    opcodeTable[0x87] = &Gameboy::OP_0x87;
+    opcodeTable[0x88] = &Gameboy::OP_0x88;
+    opcodeTable[0x89] = &Gameboy::OP_0x89;
+    opcodeTable[0x8A] = &Gameboy::OP_0x8A;
+    opcodeTable[0x8B] = &Gameboy::OP_0x8B;
+    opcodeTable[0x8C] = &Gameboy::OP_0x8C;
+    opcodeTable[0x8D] = &Gameboy::OP_0x8D;
+    opcodeTable[0x8E] = &Gameboy::OP_0x8E;
+    opcodeTable[0x8F] = &Gameboy::OP_0x8F;
+
+    opcodeTable[0x90] = &Gameboy::OP_0x90;
+    opcodeTable[0x91] = &Gameboy::OP_0x91;
+    opcodeTable[0x92] = &Gameboy::OP_0x92;
+    opcodeTable[0x93] = &Gameboy::OP_0x93;
+    opcodeTable[0x94] = &Gameboy::OP_0x94;
+    opcodeTable[0x95] = &Gameboy::OP_0x95;
+    opcodeTable[0x96] = &Gameboy::OP_0x96;
+    opcodeTable[0x97] = &Gameboy::OP_0x97;
+    opcodeTable[0x98] = &Gameboy::OP_0x98;
+    opcodeTable[0x99] = &Gameboy::OP_0x99;
+    opcodeTable[0x9A] = &Gameboy::OP_0x9A;
+    opcodeTable[0x9B] = &Gameboy::OP_0x9B;
+    opcodeTable[0x9C] = &Gameboy::OP_0x9C;
+    opcodeTable[0x9D] = &Gameboy::OP_0x9D;
+    opcodeTable[0x9E] = &Gameboy::OP_0x9E;
+    opcodeTable[0x9F] = &Gameboy::OP_0x9F;
+
+    opcodeTable[0xA0] = &Gameboy::OP_0xA0;
+    opcodeTable[0xA1] = &Gameboy::OP_0xA1;
+    opcodeTable[0xA2] = &Gameboy::OP_0xA2;
+    opcodeTable[0xA3] = &Gameboy::OP_0xA3;
+    opcodeTable[0xA4] = &Gameboy::OP_0xA4;
+    opcodeTable[0xA5] = &Gameboy::OP_0xA5;
+    opcodeTable[0xA6] = &Gameboy::OP_0xA6;
+    opcodeTable[0xA7] = &Gameboy::OP_0xA7;
+    opcodeTable[0xA8] = &Gameboy::OP_0xA8;
+    opcodeTable[0xA9] = &Gameboy::OP_0xA9;
+    opcodeTable[0xAA] = &Gameboy::OP_0xAA;
+    opcodeTable[0xAB] = &Gameboy::OP_0xAB;
+    opcodeTable[0xAC] = &Gameboy::OP_0xAC;
+    opcodeTable[0xAD] = &Gameboy::OP_0xAD;
+    opcodeTable[0xAE] = &Gameboy::OP_0xAE;
+    opcodeTable[0xAF] = &Gameboy::OP_0xAF;
+
+    opcodeTable[0xB0] = &Gameboy::OP_0xB0;
+    opcodeTable[0xB1] = &Gameboy::OP_0xB1;
+    opcodeTable[0xB2] = &Gameboy::OP_0xB2;
+    opcodeTable[0xB3] = &Gameboy::OP_0xB3;
+    opcodeTable[0xB4] = &Gameboy::OP_0xB4;
+    opcodeTable[0xB5] = &Gameboy::OP_0xB5;
+    opcodeTable[0xB6] = &Gameboy::OP_0xB6;
+    opcodeTable[0xB7] = &Gameboy::OP_0xB7;
+    opcodeTable[0xB8] = &Gameboy::OP_0xB8;
+    opcodeTable[0xB9] = &Gameboy::OP_0xB9;
+    opcodeTable[0xBA] = &Gameboy::OP_0xBA;
+    opcodeTable[0xBB] = &Gameboy::OP_0xBB;
+    opcodeTable[0xBC] = &Gameboy::OP_0xBC;
+    opcodeTable[0xBD] = &Gameboy::OP_0xBD;
+    opcodeTable[0xBE] = &Gameboy::OP_0xBE;
+    opcodeTable[0xBF] = &Gameboy::OP_0xBF;
+
+    opcodeTable[0xC0] = &Gameboy::OP_0xC0;
+    opcodeTable[0xC1] = &Gameboy::OP_0xC1;
+    opcodeTable[0xC2] = &Gameboy::OP_0xC2;
+    opcodeTable[0xC3] = &Gameboy::OP_0xC3;
+    opcodeTable[0xC4] = &Gameboy::OP_0xC4;
+    opcodeTable[0xC5] = &Gameboy::OP_0xC5;
+    opcodeTable[0xC6] = &Gameboy::OP_0xC6;
+    opcodeTable[0xC7] = &Gameboy::OP_0xC7;
+    opcodeTable[0xC8] = &Gameboy::OP_0xC8;
+    opcodeTable[0xC9] = &Gameboy::OP_0xC9;
+    opcodeTable[0xCA] = &Gameboy::OP_0xCA;
+    opcodeTable[0xCB] = &Gameboy::OP_NULL;
+    opcodeTable[0xCC] = &Gameboy::OP_0xCC;
+    opcodeTable[0xCD] = &Gameboy::OP_0xCD;
+    opcodeTable[0xCE] = &Gameboy::OP_0xCE;
+    opcodeTable[0xCF] = &Gameboy::OP_0xCF;
+
+    opcodeTable[0xD0] = &Gameboy::OP_0xD0;
+    opcodeTable[0xD1] = &Gameboy::OP_0xD1;
+    opcodeTable[0xD2] = &Gameboy::OP_0xD2;
+    opcodeTable[0xD3] = &Gameboy::OP_NULL;
+    opcodeTable[0xD4] = &Gameboy::OP_0xD4;
+    opcodeTable[0xD5] = &Gameboy::OP_0xD5;
+    opcodeTable[0xD6] = &Gameboy::OP_0xD6;
+    opcodeTable[0xD7] = &Gameboy::OP_0xD7;
+    opcodeTable[0xD8] = &Gameboy::OP_0xD8;
+    opcodeTable[0xD9] = &Gameboy::OP_0xD9;
+    opcodeTable[0xDA] = &Gameboy::OP_0xDA;
+    opcodeTable[0xDB] = &Gameboy::OP_NULL;
+    opcodeTable[0xDC] = &Gameboy::OP_0xDC;
+    opcodeTable[0xDD] = &Gameboy::OP_NULL;
+    opcodeTable[0xDE] = &Gameboy::OP_0xDE;
+    opcodeTable[0xDF] = &Gameboy::OP_0xDF;
+
+    opcodeTable[0xE0] = &Gameboy::OP_0xE0;
+    opcodeTable[0xE1] = &Gameboy::OP_0xE1;
+    opcodeTable[0xE2] = &Gameboy::OP_0xE2;
+    opcodeTable[0xE3] = &Gameboy::OP_NULL;
+    opcodeTable[0xE4] = &Gameboy::OP_NULL;
+    opcodeTable[0xE5] = &Gameboy::OP_0xE5;
+    opcodeTable[0xE6] = &Gameboy::OP_0xE6;
+    opcodeTable[0xE7] = &Gameboy::OP_0xE7;
+    opcodeTable[0xE8] = &Gameboy::OP_0xE8;
+    opcodeTable[0xE9] = &Gameboy::OP_0xE9;
+    opcodeTable[0xEA] = &Gameboy::OP_0xEA;
+    opcodeTable[0xEB] = &Gameboy::OP_NULL;
+    opcodeTable[0xEC] = &Gameboy::OP_NULL;
+    opcodeTable[0xED] = &Gameboy::OP_NULL;
+    opcodeTable[0xEE] = &Gameboy::OP_0xEE;
+    opcodeTable[0xEF] = &Gameboy::OP_0xEF;
+
+    opcodeTable[0xF0] = &Gameboy::OP_0xF0;
+    opcodeTable[0xF1] = &Gameboy::OP_0xF1;
+    opcodeTable[0xF2] = &Gameboy::OP_0xF2;
+    opcodeTable[0xF3] = &Gameboy::OP_0xF3;
+    opcodeTable[0xF4] = &Gameboy::OP_NULL;
+    opcodeTable[0xF5] = &Gameboy::OP_0xF5;
+    opcodeTable[0xF6] = &Gameboy::OP_0xF6;
+    opcodeTable[0xF7] = &Gameboy::OP_0xF7;
+    opcodeTable[0xF8] = &Gameboy::OP_0xF8;
+    opcodeTable[0xF9] = &Gameboy::OP_0xF9;
+    opcodeTable[0xFA] = &Gameboy::OP_0xFA;
+    opcodeTable[0xFB] = &Gameboy::OP_0xFB;
+    opcodeTable[0xFC] = &Gameboy::OP_NULL;
+    opcodeTable[0xFD] = &Gameboy::OP_NULL;
+    opcodeTable[0xFE] = &Gameboy::OP_0xFE;
+    opcodeTable[0xFF] = &Gameboy::OP_0xFF;
+}
+
 uint8_t Gameboy::read(uint16_t address) {
     if (address <= 0x3FFF) {
         return rom[address];
@@ -2413,6 +2688,13 @@ uint8_t Gameboy::OP_0xFF() {
     pc--;
     return 4;
 }
+
+//for calling incorrect opcodes
+uint8_t Gameboy::OP_NULL() {
+    return 1;
+}
+
+
 
 
 
