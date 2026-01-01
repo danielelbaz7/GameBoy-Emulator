@@ -157,20 +157,6 @@ void Gameboy::write(uint16_t address, uint8_t byteToWrite) {
 
 }
 
-// Run function, this will run the processor
-void Gameboy::Run() {
-    if (stopped) {
-        // dont do shit
-        // check for restart indicators
-        return;
-    }
-    if (halted) {
-        // do everything but pc increment and read instruction (no cpu things)
-        // update other timers
-        return;
-    }
-    Step();
-}
 
 // Step function, executes exactly one instruction
 uint8_t Gameboy::Step() {
@@ -178,14 +164,13 @@ uint8_t Gameboy::Step() {
     // run opcode function
     // increment pc++
     uint8_t opcode = read(pc);
-    std::cout << opcode;
     
     //95
     //1001 0101
     //*opcodeTable[1001][0101]();
     
     pc++;
-    return;
+    return 1;
 }
 
 

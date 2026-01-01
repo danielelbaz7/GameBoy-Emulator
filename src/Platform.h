@@ -8,8 +8,12 @@
 
 //the platform class holds the actual entire computer's logic, pulling from gameboy, ppu, etc.
 class Platform {
-    Gameboy gb{};
+public:
+    Platform(const char* filename);
     void Run();
+
+private:
+    Gameboy gb{};
 
 };
 

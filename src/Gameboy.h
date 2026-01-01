@@ -49,7 +49,6 @@ public:
 
     bool stopped = false;
 
-    void Run();
     uint8_t Step();
 
 
