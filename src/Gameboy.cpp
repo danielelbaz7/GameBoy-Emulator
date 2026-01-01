@@ -166,6 +166,10 @@ uint8_t Gameboy::Step() {
     if (halted) {
         return 1;
     }
+    std::cout << "pc=" << std::hex << std::setw(4) << std::setfill('0') << (pc)
+          << " val=" << std::setw(2) << (int)read(pc)
+          << std::dec << "\n";
+
     // get opcode
     // decode and run opcode function
     uint8_t opcode = read(pc);
@@ -721,11 +725,9 @@ uint8_t Gameboy::OP_0x17() {
 
 //Jump s8 steps from the current address in the program counter (PC). (Jump relative.)
 uint8_t Gameboy::OP_0x18() {
-    pc++;
     auto jumpSteps = static_cast<int8_t>(read(++pc));
     pc += jumpSteps;
     // adjust for the automatic pc increment after opcode function
-    pc--;
     return 3;
 }
 
@@ -801,8 +803,6 @@ uint8_t Gameboy::OP_0x20() {
     if (!readFlag('Z')) {
         auto jumpSteps = static_cast<int8_t>(read(++pc));
         pc += jumpSteps;
-        //decrement since we will increment right after the instruction
-        pc--;
         return 3;
     }
     pc++;
@@ -887,12 +887,10 @@ uint8_t Gameboy::OP_0x27() {
 
 //If the Z flag is 1, jump s8 steps from the current address stored in the pc 
 uint8_t Gameboy::OP_0x28() {
-    pc++;
-    auto jumpSteps = static_cast<int8_t>(read(pc));
+    auto jumpSteps = static_cast<int8_t>(read(++pc));
     // if z flag is 1
     if (readFlag('Z')) {
         pc += jumpSteps;
-        pc --; // adjust for automatic pc increment after opcode function
         return 3;
     }
     return 2;
@@ -978,7 +976,6 @@ uint8_t Gameboy::OP_0x30() {
         auto jumpSteps = static_cast<int8_t>(read(++pc));
         pc += jumpSteps;
         //decrement since we will increment right after the instruction
-        pc--;
         return 3;
     }
     pc++;
@@ -1044,12 +1041,10 @@ uint8_t Gameboy::OP_0x37() {
 
 // If the C flag is 1, jump s8 steps from the current address stored in the pc
 uint8_t Gameboy::OP_0x38() {
-    pc++;
-    int8_t jumpSteps = static_cast<int8_t>(read(pc));
+    int8_t jumpSteps = static_cast<int8_t>(read(++pc));
     // if z flag is 0
     if (readFlag('C')) {
         pc += jumpSteps;
-        pc --; // adjust for automatic pc increment after opcode function
         return 3;
     }
     // otherwise do nothing

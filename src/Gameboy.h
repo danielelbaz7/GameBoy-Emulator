@@ -50,6 +50,7 @@ public:
     bool stopped = false;
 
     uint8_t Step();
+    std::vector<uint8_t> rom;
 
 
 private:
@@ -111,7 +112,7 @@ private:
     //0000-3FFF
     //4000-7FFF this bank is a sliding window
     // We store the entire ROM data but can only access it in two banks, this is the entire ROM data in bytes
-    std::vector<uint8_t> rom;
+
     //stores the current 16kb window we are storing in the bank and are able to look at
     uint8_t currentRomWindow = 1;
 

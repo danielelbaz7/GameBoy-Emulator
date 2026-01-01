@@ -4,6 +4,8 @@
 
 #include "Platform.h"
 
+#include <iostream>
+
 Platform::Platform(const char* filename) {
     gb.LoadRom(filename);
 }
