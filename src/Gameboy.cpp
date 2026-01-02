@@ -188,7 +188,7 @@ uint8_t Gameboy::Step() {
 }
 
 
-//flag setting
+// flag setting
 // added breaks and '&=' instead of just '&'
 void Gameboy::setFlag(unsigned char flagName, bool flagValue) {
     switch (flagName) {

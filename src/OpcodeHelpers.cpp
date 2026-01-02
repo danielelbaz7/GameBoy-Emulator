@@ -23,8 +23,8 @@ uint8_t OpcodeHelpers::SBC(uint8_t &a, uint8_t toSubtract, Gameboy& gb) {
 
     gb.setFlag('Z', a == 0);
     gb.setFlag('N', true);
-    gb.setFlag('H', (old & 0xF) < (flagValue+(toSubtract & 0xF)));
-    gb.setFlag('C', old < (flagValue+toSubtract));
+    gb.setFlag('H', (old & 0x0F) < static_cast<uint16_t>(flagValue+(toSubtract & 0x0F)));
+    gb.setFlag('C', old < static_cast<uint16_t>(flagValue+toSubtract));
     return 1;
 }
 
@@ -46,17 +46,12 @@ uint8_t OpcodeHelpers::CP(uint8_t a, uint8_t toSubtract, Gameboy& gb) {
     return 1;
 }
 
-uint8_t OpcodeHelpers::RLC(uint8_t &a, Gameboy& gb) {
-    //puts the old bit in the 0th bit spot
-    uint8_t oldBit7 = (a & 0x80) >> 7u;
-    //shift left
-    a = a << 1u;
-    //set bit 0 to old bit 7
-    a |= oldBit7;
+uint8_t OpcodeHelpers::RES(uint8_t &reg, uint8_t bit) {
+    reg &= ~(0x01 << bit);
+    return 2;
+}
 
-    gb.setFlag('Z', a == 0);
-    gb.setFlag('N', false);
-    gb.setFlag('H', false);
-    gb.setFlag('C', oldBit7 == 0x01);
+uint8_t OpcodeHelpers::SET(uint8_t &reg, uint8_t bit) {
+    reg &= (0x01 << bit);
     return 2;
 }
