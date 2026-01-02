@@ -122,7 +122,7 @@ private:
 
     uint8_t bankModeToUse{ROM_MODE};
 
-    void BuildOpcodeTable();
+    void BuildOpcodeTables();
 
     bool halted = false;
 
@@ -387,6 +387,8 @@ private:
     uint8_t OP_0xFE();
     uint8_t OP_0xFF();
 
+    uint8_t OP_NULL(); //function to point to if there is no opcode at that index. ex: 0xE3
+
     uint8_t OP_0xCB00();
     uint8_t OP_0xCB01();
     uint8_t OP_0xCB02();
@@ -399,12 +401,43 @@ private:
     uint8_t OP_0xCB09();
     uint8_t OP_0xCB0A();
     uint8_t OP_0xCB0B();
+    uint8_t OP_0xCB0C();
+    uint8_t OP_0xCB0D();
     uint8_t OP_0xCB0E();
     uint8_t OP_0xCB0F();
 
-    uint8_t OP_NULL(); //function to point to if there is no opcode at that index. ex: 0xE3
+    uint8_t OP_0xCB10();
+    uint8_t OP_0xCB11();
+    uint8_t OP_0xCB12();
+    uint8_t OP_0xCB13();
+    uint8_t OP_0xCB14();
+    uint8_t OP_0xCB15();
+    uint8_t OP_0xCB16();
+    uint8_t OP_0xCB17();
+    uint8_t OP_0xCB18();
+    uint8_t OP_0xCB19();
+    uint8_t OP_0xCB1A();
+    uint8_t OP_0xCB1B();
+    uint8_t OP_0xCB1C();
+    uint8_t OP_0xCB1D();
+    uint8_t OP_0xCB1E();
+    uint8_t OP_0xCB1F();
 
+    uint8_t OP_Row8ToBNonRef(uint8_t &reg, uint8_t bit);
+    uint8_t OP_Row8ToBRef(uint16_t address, uint8_t bit);
+    uint8_t OP_RowCToFNonRef(uint8_t &reg, uint8_t bit);
+    uint8_t OP_RowCToFRef(uint16_t address, uint8_t bit);
+    
     using OpcodeFunction = uint8_t (Gameboy::*) ();
     OpcodeFunction opcodeTable[256];
+
+    //this type will allow us to make each index in the table point to a function of a different type
+    //everything can be a member function of gameboy and it can all be done simply
+    using CBopcodeFunction = std::variant<
+        uint8_t (Gameboy::*)(),            // standard opcodes, written mostly by jackson
+        uint8_t (Gameboy::*)(uint8_t),     // helper function wrapper, does not need to modify memory just a register
+        uint8_t (Gameboy::*)(uint16_t)     // helper function wrapper that does need to modify memory
+    >;
+    CBopcodeFunction CBopcodeTable[256];
 
 };

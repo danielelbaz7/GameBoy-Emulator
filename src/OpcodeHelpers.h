@@ -16,7 +16,16 @@ namespace OpcodeHelpers {
     uint8_t OR(uint8_t &a, uint8_t toOrWith, Gameboy& gb);
     uint8_t CP(uint8_t a, uint8_t toOrWith, Gameboy& gb);
 
-    uint8_t RLC(uint8_t &a, Gameboy& gb); 
+    uint8_t RES(uint8_t &reg, uint8_t bit);
+    uint8_t SET(uint8_t &reg, uint8_t bit);
+    
+    uint8_t RES(uint16_t address, uint8_t bit);
+    uint8_t SET(uint16_t address, uint8_t bit);
+
+    uint8_t OpcodeHelpers::RLC(uint8_t &reg, Gameboy& gb);
+    uint8_t OpcodeHelpers::RRC(uint8_t &reg, Gameboy& gb);
+    uint8_t OpcodeHelpers::RL(uint8_t &reg, Gameboy& gb);
+
 
 };
 
