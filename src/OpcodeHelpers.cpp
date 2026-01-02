@@ -70,8 +70,32 @@ uint8_t OpcodeHelpers::SET(uint8_t address, uint8_t bit) {
     return 4;
 }
 
+uint8_t OpcodeHelpers::BIT(uint16_t address, uint8_t bit, Gameboy &gb) {
+    uint8_t mask = (1u << bit);
+    uint8_t value = gb.read(address);
 
-//alr lemme show u why im the master
+    // 0110 (val)
+    // 0100 (bit/mask)
+    // 0100 (result -> not zero so Z is false)
+
+    // set Z flag to true is mask & value are zero (bit in value is zero)
+    gb.setFlag('Z', (mask & value) == 0);
+    gb.setFlag('N', false);
+    gb.setFlag('H', true);
+
+    return 3;
+}
+
+uint8_t OpcodeHelpers::BIT(uint8_t &reg, uint8_t bit, Gameboy& gb) {
+    uint8_t mask = (1u << bit);
+    
+    gb.setFlag('Z', (mask & reg) == 0);
+    gb.setFlag('N', false);
+    gb.setFlag('H', true);
+
+    return 2;
+}
+
 uint8_t OpcodeHelpers::RLC(uint8_t &reg, Gameboy& gb) {
     //puts the old bit in the 0th bit spot
     uint8_t oldBit7 = (reg & 0x80) >> 7u;

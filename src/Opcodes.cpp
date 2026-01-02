@@ -2559,24 +2559,3 @@ uint8_t Gameboy::OP_0xCB10() {
     
 }
 
-
-//this will be a wrapper that will call the OpcodeHelper function, the non reference version
-//meaning we just pass a register not a memory address. this is so the table can be an array
-//of gameboy member functions, the next 2 are for rows 8 to B
-uint8_t Gameboy::OP_Row8ToBNonRef(uint8_t &reg, uint8_t bit) {
-    return OpcodeHelpers::RES(reg=reg, bit);
-}
-
-//reference version of above
-uint8_t Gameboy::OP_Row8ToBRef(uint16_t address, uint8_t bit) {
-    return OpcodeHelpers::RES(address=address, bit);
-}
-
-//same as above but for Rows C to F
-uint8_t Gameboy::OP_RowCToFNonRef(uint8_t &reg, uint8_t bit) {
-    return OpcodeHelpers::SET(reg=reg, bit);
-}
-
-uint8_t Gameboy::OP_RowCToFRef(uint16_t address, uint8_t bit) {
-    return OpcodeHelpers::SET(address=address, bit);
-}

@@ -27,6 +27,11 @@ namespace OpcodeHelpers {
     uint8_t OpcodeHelpers::RL(uint8_t &reg, Gameboy& gb);
 
 
+    uint8_t BIT(uint16_t address, uint8_t bit, Gameboy& gb);
+    uint8_t BIT(uint8_t &reg, uint8_t bit, Gameboy& gb);
+
+
+
 };
 
 
