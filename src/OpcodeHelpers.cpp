@@ -45,3 +45,18 @@ uint8_t OpcodeHelpers::CP(uint8_t a, uint8_t toSubtract, Gameboy& gb) {
     gb.setFlag('C', a < toSubtract);
     return 1;
 }
+
+uint8_t OpcodeHelpers::RLC(uint8_t &a, Gameboy& gb) {
+    //puts the old bit in the 0th bit spot
+    uint8_t oldBit7 = (a & 0x80) >> 7u;
+    //shift left
+    a = a << 1u;
+    //set bit 0 to old bit 7
+    a |= oldBit7;
+
+    gb.setFlag('Z', a == 0);
+    gb.setFlag('N', false);
+    gb.setFlag('H', false);
+    gb.setFlag('C', oldBit7 == 0x01);
+    return 2;
+}

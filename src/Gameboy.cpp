@@ -2695,6 +2695,47 @@ uint8_t Gameboy::OP_NULL() {
 }
 
 
+// CB Functions
 
+// Row 0x
 
+// Rotate the contents of register B to the left. 
+uint8_t Gameboy::OP_0xCB00() {
+    return OpcodeHelpers::RLC(bc.b, *this);
+}
+
+//Rotate the contents of register C to the left.
+uint8_t Gameboy::OP_0xCB01() {
+    return OpcodeHelpers::RLC(bc.c, *this);
+}
+
+//Rotate the contents of register D to the left.
+uint8_t Gameboy::OP_0xCB02() {
+    return OpcodeHelpers::RLC(de.d, *this);
+}
+
+//Rotate the contents of register D to the left.
+uint8_t Gameboy::OP_0xCB03() {
+    return OpcodeHelpers::RLC(de.d, *this);
+}
+
+// Rotate the contents of register E to the left
+uint8_t Gameboy::OP_0xCB04() {
+    return OpcodeHelpers::RLC(de.e, *this);
+}
+
+// Rotate the contents of register L to the left
+uint8_t Gameboy::OP_0xCB05() {
+    return OpcodeHelpers::RLC(hl.l, *this);
+}
+
+// Rotate the contents of memory specified by register pair HL to the left. 
+uint8_t Gameboy::OP_0xCB06() {
+    // returns 2 + 2 (read)
+    uint8_t value = read(hl.reg16);
+    OpcodeHelpers::RLC(value, *this);
+    write(hl.reg16, value);
+
+    return 4;
+}
 

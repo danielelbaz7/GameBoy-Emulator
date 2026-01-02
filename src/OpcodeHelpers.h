@@ -16,6 +16,7 @@ namespace OpcodeHelpers {
     uint8_t OR(uint8_t &a, uint8_t toOrWith, Gameboy& gb);
     uint8_t CP(uint8_t a, uint8_t toOrWith, Gameboy& gb);
 
+    uint8_t RLC(uint8_t &a, Gameboy& gb); 
 
 };
 

@@ -387,6 +387,21 @@ private:
     uint8_t OP_0xFE();
     uint8_t OP_0xFF();
 
+    uint8_t OP_0xCB00();
+    uint8_t OP_0xCB01();
+    uint8_t OP_0xCB02();
+    uint8_t OP_0xCB03();
+    uint8_t OP_0xCB04();
+    uint8_t OP_0xCB05();
+    uint8_t OP_0xCB06();
+    uint8_t OP_0xCB07();
+    uint8_t OP_0xCB08();
+    uint8_t OP_0xCB09();
+    uint8_t OP_0xCB0A();
+    uint8_t OP_0xCB0B();
+    uint8_t OP_0xCB0E();
+    uint8_t OP_0xCB0F();
+
     uint8_t OP_NULL(); //function to point to if there is no opcode at that index. ex: 0xE3
 
     using OpcodeFunction = uint8_t (Gameboy::*) ();
