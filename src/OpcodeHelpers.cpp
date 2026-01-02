@@ -57,16 +57,16 @@ uint8_t OpcodeHelpers::SET(uint8_t &reg, uint8_t bit) {
 }
 
 uint8_t OpcodeHelpers::RES(uint16_t address, uint8_t bit, Gameboy& gb) {
-    uint8_t reg = gb.read(address);
-    reg &= ~(0x01 << bit);
-    gb.write(address, reg);
+    uint8_t byteAtAddress = gb.read(address);
+    byteAtAddress &= ~(0x01 << bit);
+    gb.write(address, byteAtAddress);
     return 4;
 }
 
 uint8_t OpcodeHelpers::SET(uint16_t address, uint8_t bit, Gameboy& gb) {
-    uint8_t reg = gb.read(address);
-    reg |= (0x01 << bit);
-    gb.write(address, reg);
+    uint8_t byteAtAddress = gb.read(address);
+    byteAtAddress |= (0x01 << bit);
+    gb.write(address, byteAtAddress);
     return 4;
 }
 

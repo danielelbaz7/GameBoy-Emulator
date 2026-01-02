@@ -180,8 +180,13 @@ uint8_t Gameboy::Step() {
     // get opcode
     // decode and run opcode function
     uint8_t opcode = read(pc);
-        // std::cout << opcode << std::endl;
-    uint8_t cycleCount = (this->*opcodeTable[opcode])();
+    uint8_t cycleCount;
+    if (opcode == 0xCB) {
+        uint8_t CBOpcode = read(++pc);
+        cycleCount = (this->*CBopcodeTable[CBOpcode])();
+    } else {
+        cycleCount = (this->*opcodeTable[opcode])();
+    }
     //always increment after, we built it to expect this
     pc++;
     return cycleCount * 4;
