@@ -22,17 +22,18 @@ namespace OpcodeHelpers {
     uint8_t RES(uint16_t address, uint8_t bit, Gameboy& gb);
     uint8_t SET(uint16_t address, uint8_t bit, Gameboy& gb);
 
-    uint8_t OpcodeHelpers::RLC(uint8_t &reg, Gameboy& gb);
-    uint8_t OpcodeHelpers::RRC(uint8_t &reg, Gameboy& gb);
-    uint8_t OpcodeHelpers::RL(uint8_t &reg, Gameboy& gb);
-
+    uint8_t RLC(uint8_t &reg, Gameboy& gb);
+    uint8_t RRC(uint8_t &reg, Gameboy& gb);
+    uint8_t RL(uint8_t &reg, Gameboy& gb);
+    uint8_t RR(uint8_t &reg, Gameboy& gb);
+    uint8_t SLA(uint8_t &reg, Gameboy& gb);
+    uint8_t SRA(uint8_t &reg, Gameboy& gb);
+    uint8_t SWAP(uint8_t &reg, Gameboy& gb);
+    uint8_t SRL(uint8_t &reg, Gameboy& gb);
 
     uint8_t BIT(uint16_t address, uint8_t bit, Gameboy& gb);
     uint8_t BIT(uint8_t &reg, uint8_t bit, Gameboy& gb);
 
-
-
 };
-
 
 #endif //GAMEBOYEMULATOR_OPCODEHELPERS_H
