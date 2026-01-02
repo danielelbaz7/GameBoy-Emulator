@@ -69,7 +69,7 @@ uint8_t OpcodeHelpers::SET(uint16_t address, uint8_t bit, Gameboy& gb) {
     gb.write(address, reg);
     return 4;
 }
-
+// Copy the complement of the contents of bit BIT in register X to the Z flag of the program
 uint8_t OpcodeHelpers::BIT(uint16_t address, uint8_t bit, Gameboy &gb) {
     uint8_t mask = (1u << bit);
     uint8_t value = gb.read(address);
@@ -86,6 +86,7 @@ uint8_t OpcodeHelpers::BIT(uint16_t address, uint8_t bit, Gameboy &gb) {
     return 3;
 }
 
+// Copy the complement of the contents of bit BIT in register REG to the Z flag of the program
 uint8_t OpcodeHelpers::BIT(uint8_t &reg, uint8_t bit, Gameboy& gb) {
     uint8_t mask = (1u << bit);
     
@@ -96,6 +97,8 @@ uint8_t OpcodeHelpers::BIT(uint8_t &reg, uint8_t bit, Gameboy& gb) {
     return 2;
 }
 
+// rotate left circular
+// old bit 7 is placed into bit 0
 uint8_t OpcodeHelpers::RLC(uint8_t &reg, Gameboy& gb) {
     //puts the old bit in the 0th bit spot
     uint8_t oldBit7 = (reg & 0x80) >> 7u;
@@ -111,6 +114,8 @@ uint8_t OpcodeHelpers::RLC(uint8_t &reg, Gameboy& gb) {
     return 2;
 }
 
+// rotate right circular
+// old bit 0 is placed into bit 7
 uint8_t OpcodeHelpers::RRC(uint8_t &reg, Gameboy& gb) {
     uint8_t oldBit0 = (reg & 0x01) << 7u;
     reg = reg >> 1u;
@@ -124,6 +129,7 @@ uint8_t OpcodeHelpers::RRC(uint8_t &reg, Gameboy& gb) {
     return 2;
 }
 
+// rotate left
 uint8_t OpcodeHelpers::RL(uint8_t &reg, Gameboy& gb) {
     //puts the old bit in the 0th bit spot
     uint8_t oldCY = gb.readFlag('C') ? 0x10 : 0;
@@ -142,6 +148,7 @@ uint8_t OpcodeHelpers::RL(uint8_t &reg, Gameboy& gb) {
     return 2;
 }
 
+// rotate right
 uint8_t OpcodeHelpers::RR(uint8_t &reg, Gameboy& gb) {
     //puts the old bit in the 0th bit spot
     uint8_t oldCY = gb.readFlag('C') ? 0x10 : 0;
@@ -160,6 +167,8 @@ uint8_t OpcodeHelpers::RR(uint8_t &reg, Gameboy& gb) {
     return 2;
 }
 
+// shift left arithmetic
+// bit 0 is set to 0
 uint8_t OpcodeHelpers::SLA(uint8_t &reg, Gameboy& gb) {
     uint8_t mask = (1u << 7u);
     // 1000 0000
@@ -189,6 +198,8 @@ uint8_t OpcodeHelpers::SRA(uint8_t &reg, Gameboy& gb) {
     return 2;
 }
 
+// high bits swapped with low bits
+// ex. 1111 0001 -> 0001 1111
 uint8_t OpcodeHelpers::SWAP(uint8_t &reg, Gameboy& gb) {
     uint8_t oldHigh = reg & 0xF0;
     uint8_t oldLow = reg & 0x0F;
