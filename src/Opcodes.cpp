@@ -2642,6 +2642,271 @@ uint8_t Gameboy::OP_0xCB1F() {
     return OpcodeHelpers::RR(af.a, *this);
 }
 
+// ROW 0xCB4
+// this sets bits in different registers or spots in memory
+
+uint8_t Gameboy::OP_0xCB40() {
+    return OpcodeHelpers::BIT(bc.b, 0, *this);
+}
+
+uint8_t Gameboy::OP_0xCB41() {
+    return OpcodeHelpers::BIT(bc.c, 0, *this);
+}
+
+uint8_t Gameboy::OP_0xCB42() {
+    return OpcodeHelpers::BIT(de.d, 0, *this);
+}
+
+uint8_t Gameboy::OP_0xCB43() {
+    return OpcodeHelpers::BIT(de.e, 0, *this);
+}
+
+uint8_t Gameboy::OP_0xCB44() {
+    return OpcodeHelpers::BIT(hl.h, 0, *this);
+}
+
+uint8_t Gameboy::OP_0xCB45() {
+    return OpcodeHelpers::BIT(hl.l, 0, *this);
+}
+
+uint8_t Gameboy::OP_0xCB46() {
+    return OpcodeHelpers::BIT(hl.reg16, 0, *this);
+}
+
+uint8_t Gameboy::OP_0xCB47() {
+    return OpcodeHelpers::BIT(af.a, 0, *this);
+}
+
+uint8_t Gameboy::OP_0xCB48() {
+    return OpcodeHelpers::BIT(bc.b, 1, *this);
+}
+
+uint8_t Gameboy::OP_0xCB49() {
+    return OpcodeHelpers::BIT(bc.c, 1, *this);
+}
+
+uint8_t Gameboy::OP_0xCB4A() {
+    return OpcodeHelpers::BIT(de.d, 1, *this);
+}
+
+uint8_t Gameboy::OP_0xCB4B() {
+    return OpcodeHelpers::BIT(de.e, 1, *this);
+}
+
+uint8_t Gameboy::OP_0xCB4C() {
+    return OpcodeHelpers::BIT(hl.h, 1, *this);
+}
+
+uint8_t Gameboy::OP_0xCB4D() {
+    return OpcodeHelpers::BIT(hl.l, 1, *this);
+}
+
+uint8_t Gameboy::OP_0xCB4E() {
+    return OpcodeHelpers::BIT(hl.reg16, 1, *this);
+}
+
+uint8_t Gameboy::OP_0xCB4F() {
+    return OpcodeHelpers::BIT(af.a, 1, *this);
+}
+
+// ROW 0xCB5
+
+uint8_t Gameboy::OP_0xCB50() {
+    return OpcodeHelpers::BIT(bc.b, 2, *this);
+}
+
+uint8_t Gameboy::OP_0xCB51() {
+    return OpcodeHelpers::BIT(bc.c, 2, *this);
+}
+
+uint8_t Gameboy::OP_0xCB52() {
+    return OpcodeHelpers::BIT(de.d, 2, *this);
+}
+
+uint8_t Gameboy::OP_0xCB53() {
+    return OpcodeHelpers::BIT(de.e, 2, *this);
+}
+
+uint8_t Gameboy::OP_0xCB54() {
+    return OpcodeHelpers::BIT(hl.h, 2, *this);
+}
+
+uint8_t Gameboy::OP_0xCB55() {
+    return OpcodeHelpers::BIT(hl.l, 2, *this);
+}
+
+uint8_t Gameboy::OP_0xCB56() {
+    return OpcodeHelpers::BIT(hl.reg16, 2, *this);
+}
+
+uint8_t Gameboy::OP_0xCB57() {
+    return OpcodeHelpers::BIT(af.a, 2, *this);
+}
+
+uint8_t Gameboy::OP_0xCB58() {
+    return OpcodeHelpers::BIT(bc.b, 3, *this);
+}
+
+uint8_t Gameboy::OP_0xCB59() {
+    return OpcodeHelpers::BIT(bc.c, 3, *this);
+}
+
+uint8_t Gameboy::OP_0xCB5A() {
+    return OpcodeHelpers::BIT(de.d, 3, *this);
+}
+
+uint8_t Gameboy::OP_0xCB5B() {
+    return OpcodeHelpers::BIT(de.e, 3, *this);
+}
+
+uint8_t Gameboy::OP_0xCB5C() {
+    return OpcodeHelpers::BIT(hl.h, 3, *this);
+}
+
+uint8_t Gameboy::OP_0xCB5D() {
+    return OpcodeHelpers::BIT(hl.l, 3, *this);
+}
+
+uint8_t Gameboy::OP_0xCB5E() {
+    return OpcodeHelpers::BIT(hl.reg16, 3, *this);
+}
+
+uint8_t Gameboy::OP_0xCB5F() {
+    return OpcodeHelpers::BIT(af.a, 3, *this);
+}
+
+// ROW 0xCB6
+
+uint8_t Gameboy::OP_0xCB60() {
+    return OpcodeHelpers::BIT(bc.b, 4, *this);
+}
+
+uint8_t Gameboy::OP_0xCB61() {
+    return OpcodeHelpers::BIT(bc.c, 4, *this);
+}
+
+uint8_t Gameboy::OP_0xCB62() {
+    return OpcodeHelpers::BIT(de.d, 4, *this);
+}
+
+uint8_t Gameboy::OP_0xCB63() {
+    return OpcodeHelpers::BIT(de.e, 4, *this);
+}
+
+uint8_t Gameboy::OP_0xCB64() {
+    return OpcodeHelpers::BIT(hl.h, 4, *this);
+}
+
+uint8_t Gameboy::OP_0xCB65() {
+    return OpcodeHelpers::BIT(hl.l, 4, *this);
+}
+
+uint8_t Gameboy::OP_0xCB66() {
+    return OpcodeHelpers::BIT(hl.reg16, 4, *this);
+}
+
+uint8_t Gameboy::OP_0xCB67() {
+    return OpcodeHelpers::BIT(af.a, 4, *this);
+}
+
+uint8_t Gameboy::OP_0xCB68() {
+    return OpcodeHelpers::BIT(bc.b, 5, *this);
+}
+
+uint8_t Gameboy::OP_0xCB69() {
+    return OpcodeHelpers::BIT(bc.c, 5, *this);
+}
+
+uint8_t Gameboy::OP_0xCB6A() {
+    return OpcodeHelpers::BIT(de.d, 5, *this);
+}
+
+uint8_t Gameboy::OP_0xCB6B() {
+    return OpcodeHelpers::BIT(de.e, 5, *this);
+}
+
+uint8_t Gameboy::OP_0xCB6C() {
+    return OpcodeHelpers::BIT(hl.h, 5, *this);
+}
+
+uint8_t Gameboy::OP_0xCB6D() {
+    return OpcodeHelpers::BIT(hl.l, 5, *this);
+}
+
+uint8_t Gameboy::OP_0xCB6E() {
+    return OpcodeHelpers::BIT(hl.reg16, 5, *this);
+}
+
+uint8_t Gameboy::OP_0xCB6F() {
+    return OpcodeHelpers::BIT(af.a, 5, *this);
+}
+
+// ROW 0xCB7
+
+uint8_t Gameboy::OP_0xCB70() {
+    return OpcodeHelpers::BIT(bc.b, 6, *this);
+}
+
+uint8_t Gameboy::OP_0xCB71() {
+    return OpcodeHelpers::BIT(bc.c, 6, *this);
+}
+
+uint8_t Gameboy::OP_0xCB72() {
+    return OpcodeHelpers::BIT(de.d, 6, *this);
+}
+
+uint8_t Gameboy::OP_0xCB73() {
+    return OpcodeHelpers::BIT(de.e, 6, *this);
+}
+
+uint8_t Gameboy::OP_0xCB74() {
+    return OpcodeHelpers::BIT(hl.h, 6, *this);
+}
+
+uint8_t Gameboy::OP_0xCB75() {
+    return OpcodeHelpers::BIT(hl.l, 6, *this);
+}
+
+uint8_t Gameboy::OP_0xCB76() {
+    return OpcodeHelpers::BIT(hl.reg16, 6, *this);
+}
+
+uint8_t Gameboy::OP_0xCB77() {
+    return OpcodeHelpers::BIT(af.a, 6, *this);
+}
+
+uint8_t Gameboy::OP_0xCB78() {
+    return OpcodeHelpers::BIT(bc.b, 7, *this);
+}
+
+uint8_t Gameboy::OP_0xCB79() {
+    return OpcodeHelpers::BIT(bc.c, 7, *this);
+}
+
+uint8_t Gameboy::OP_0xCB7A() {
+    return OpcodeHelpers::BIT(de.d, 7, *this);
+}
+
+uint8_t Gameboy::OP_0xCB7B() {
+    return OpcodeHelpers::BIT(de.e, 7, *this);
+}
+
+uint8_t Gameboy::OP_0xCB7C() {
+    return OpcodeHelpers::BIT(hl.h, 7, *this);
+}
+
+uint8_t Gameboy::OP_0xCB7D() {
+    return OpcodeHelpers::BIT(hl.l, 7, *this);
+}
+
+uint8_t Gameboy::OP_0xCB7E() {
+    return OpcodeHelpers::BIT(hl.reg16, 7, *this);
+}
+
+uint8_t Gameboy::OP_0xCB7F() {
+    return OpcodeHelpers::BIT(af.a, 7, *this);
+}
+
 
 //ROW 0xCB8
 uint8_t Gameboy::OP_0xCB80() {
@@ -2906,7 +3171,8 @@ uint8_t Gameboy::OP_0xCBBF() {
     return OpcodeHelpers::RES(af.a, 7);
 }
 
-// ROW 0xCBC — SET 0 / SET 1
+// ROW 0xCBC
+//these are the set functions, also extremely repetitive just like above, but set to 1 not 0
 
 uint8_t Gameboy::OP_0xCBC0() {
     return OpcodeHelpers::SET(bc.b, 0);
