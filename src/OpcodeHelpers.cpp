@@ -52,21 +52,21 @@ uint8_t OpcodeHelpers::RES(uint8_t &reg, uint8_t bit) {
 }
 
 uint8_t OpcodeHelpers::SET(uint8_t &reg, uint8_t bit) {
-    reg &= (0x01 << bit);
+    reg |= (0x01 << bit);
     return 2;
 }
 
-uint8_t OpcodeHelpers::RES(uint8_t address, uint8_t bit) {
-    uint8_t reg = read(address);
+uint8_t OpcodeHelpers::RES(uint16_t address, uint8_t bit, Gameboy& gb) {
+    uint8_t reg = gb.read(address);
     reg &= ~(0x01 << bit);
-    write(address, reg);
+    gb.write(address, reg);
     return 4;
 }
 
-uint8_t OpcodeHelpers::SET(uint8_t address, uint8_t bit) {
-    uint8_t reg = read(address);
-    reg &= (0x01 << bit);
-    write(address, reg);
+uint8_t OpcodeHelpers::SET(uint16_t address, uint8_t bit, Gameboy& gb) {
+    uint8_t reg = gb.read(address);
+    reg |= (0x01 << bit);
+    gb.write(address, reg);
     return 4;
 }
 
@@ -88,7 +88,7 @@ uint8_t OpcodeHelpers::BIT(uint16_t address, uint8_t bit, Gameboy &gb) {
 
 uint8_t OpcodeHelpers::BIT(uint8_t &reg, uint8_t bit, Gameboy& gb) {
     uint8_t mask = (1u << bit);
-    
+
     gb.setFlag('Z', (mask & reg) == 0);
     gb.setFlag('N', false);
     gb.setFlag('H', true);
@@ -159,61 +159,3 @@ uint8_t OpcodeHelpers::RR(uint8_t &reg, Gameboy& gb) {
 
     return 2;
 }
-
-uint8_t OpcodeHelpers::SLA(uint8_t &reg, Gameboy& gb) {
-    uint8_t mask = (1u << 7u);
-    // 1000 0000
-    gb.setFlag('C', (mask & reg) != 0);
-    // shift left
-    reg = reg << 1u;
-    gb.setFlag('Z', reg == 0);
-    gb.setFlag('N', false);
-    gb.setFlag('H', false);
-
-    return 2;
-}
-
-uint8_t OpcodeHelpers::SRA(uint8_t &reg, Gameboy& gb) {
-    uint8_t mask = 1u;
-    uint8_t old7 = (reg & 0x80);
-    gb.setFlag('C', (mask & reg) != 0);
-    // shift right
-    reg = reg >> 1u;
-    reg = reg | old7;
-    gb.setFlag('Z', reg == 0);
-    gb.setFlag('N', false);
-    gb.setFlag('H', false);
-
-    return 2;
-}
-
-uint8_t OpcodeHelpers::SWAP(uint8_t &reg, Gameboy& gb) {
-    uint8_t oldHigh = reg & 0xF0;
-    uint8_t oldLow = reg & 0x0F;
-    // adjust old bits
-    oldHigh = oldHigh >> 4u;
-    oldLow = oldLow << 4u; 
-    reg = oldLow | oldHigh;
-
-    gb.setFlag('Z', reg ==0);
-    gb.setFlag('N', false);
-    gb.setFlag('H', false);
-    gb.setFlag('C', false;)
-
-    return 2;
-    
-    
-}
-
-uint8_t OpcodeHelpers::SRL(uint8_t &reg, Gameboy& gb) {
-    uint8_t mask = 1u;
-    gb.setFlag('C', (mask & reg) != 0);
-    // shift right
-    reg = reg >> 1u;
-    gb.setFlag('Z', reg == 0);
-    gb.setFlag('N', false);
-    gb.setFlag('H', false);
-
-    return 2;
-}
-
