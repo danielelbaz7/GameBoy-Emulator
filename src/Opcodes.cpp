@@ -3024,14 +3024,17 @@ uint8_t Gameboy::OP_0xCB37() {
     return OpcodeHelpers::SWAP(af.a, *this);
 }
 
+// Shift the contents of register B to the right.
 uint8_t Gameboy::OP_0xCB38() {
     return OpcodeHelpers::SRL(bc.b, *this);
 }
 
+// Shift the contents of register C to the right.
 uint8_t Gameboy::OP_0xCB39() {
     return OpcodeHelpers::SRL(bc.c, *this);
 }
 
+// etc
 uint8_t Gameboy::OP_0xCB3A() {
     return OpcodeHelpers::SRL(de.d, *this);
 }
@@ -3063,6 +3066,7 @@ uint8_t Gameboy::OP_0xCB3F() {
 // ROW 0xCB4
 // this sets bits in different registers or spots in memory
 
+// Copy the complement of the contents of bit 0 in register B to the Z flag of the program
 uint8_t Gameboy::OP_0xCB40() {
     return OpcodeHelpers::BIT(bc.b, 0, *this);
 }
@@ -3393,18 +3397,23 @@ uint8_t Gameboy::OP_0xCB8F() {
 
 // ROW 0xCB9
 
+
+// Reset bit 0 in register B to 0.
 uint8_t Gameboy::OP_0xCB90() {
     return OpcodeHelpers::RES(bc.b, 2);
 }
 
+// Reset bit 0 in register C to 0.
 uint8_t Gameboy::OP_0xCB91() {
     return OpcodeHelpers::RES(bc.c, 2);
 }
 
+// Reset bit 0 in register D to 0.
 uint8_t Gameboy::OP_0xCB92() {
     return OpcodeHelpers::RES(de.d, 2);
 }
 
+// etc
 uint8_t Gameboy::OP_0xCB93() {
     return OpcodeHelpers::RES(de.e, 2);
 }
@@ -3592,14 +3601,17 @@ uint8_t Gameboy::OP_0xCBBF() {
 // ROW 0xCBC
 //these are the set functions, also extremely repetitive just like above, but set to 1 not 0
 
+// Set bit 0 in register B to 1.
 uint8_t Gameboy::OP_0xCBC0() {
     return OpcodeHelpers::SET(bc.b, 0);
 }
 
+// Set bit 0 in register C to 1.
 uint8_t Gameboy::OP_0xCBC1() {
     return OpcodeHelpers::SET(bc.c, 0);
 }
 
+// Set bit 0 in register D to 1.
 uint8_t Gameboy::OP_0xCBC2() {
     return OpcodeHelpers::SET(de.d, 0);
 }
