@@ -114,8 +114,7 @@ uint8_t OpcodeHelpers::RLC(uint8_t &reg, Gameboy& gb) {
     return 2;
 }
 
-// rotate right circular
-// old bit 0 is placed into bit 7
+
 uint8_t OpcodeHelpers::RRC(uint8_t &reg, Gameboy& gb) {
     uint8_t oldBit0 = (reg & 0x01) << 7u;
     reg = reg >> 1u;
