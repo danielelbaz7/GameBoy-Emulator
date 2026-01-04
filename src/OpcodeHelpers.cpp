@@ -4,7 +4,7 @@
 
 #include "OpcodeHelpers.h"
 
-uint8_t OpcodeHelpers::SUB(uint8_t &a, uint8_t toSubtract, Gameboy& gb) {
+uint8_t OpcodeHelpers::SUB(uint8_t &a, uint8_t toSubtract, CPU& gb) {
     uint8_t old = a;
     a -= toSubtract;
     gb.setFlag('Z', a == 0);
@@ -14,7 +14,7 @@ uint8_t OpcodeHelpers::SUB(uint8_t &a, uint8_t toSubtract, Gameboy& gb) {
     return 1;
 }
 
-uint8_t OpcodeHelpers::SBC(uint8_t &a, uint8_t toSubtract, Gameboy& gb) {
+uint8_t OpcodeHelpers::SBC(uint8_t &a, uint8_t toSubtract, CPU& gb) {
     uint8_t old = a;
     uint8_t flagValue = gb.readFlag('C') ? 1 : 0;
 
@@ -28,7 +28,7 @@ uint8_t OpcodeHelpers::SBC(uint8_t &a, uint8_t toSubtract, Gameboy& gb) {
     return 1;
 }
 
-uint8_t OpcodeHelpers::OR(uint8_t &a, uint8_t toOrWith, Gameboy &gb) {
+uint8_t OpcodeHelpers::OR(uint8_t &a, uint8_t toOrWith, CPU &gb) {
     a |= toOrWith;
     gb.setFlag('Z', a == 0);
     gb.setFlag('N', false);
@@ -37,7 +37,7 @@ uint8_t OpcodeHelpers::OR(uint8_t &a, uint8_t toOrWith, Gameboy &gb) {
     return 1;
 }
 
-uint8_t OpcodeHelpers::CP(uint8_t a, uint8_t toSubtract, Gameboy& gb) {
+uint8_t OpcodeHelpers::CP(uint8_t a, uint8_t toSubtract, CPU& gb) {
     uint8_t computedValue = a - toSubtract;
     gb.setFlag('Z', computedValue == 0);
     gb.setFlag('N', true);
@@ -56,21 +56,21 @@ uint8_t OpcodeHelpers::SET(uint8_t &reg, uint8_t bit) {
     return 2;
 }
 
-uint8_t OpcodeHelpers::RES(uint16_t address, uint8_t bit, Gameboy& gb) {
+uint8_t OpcodeHelpers::RES(uint16_t address, uint8_t bit, CPU& gb) {
     uint8_t byteAtAddress = gb.read(address);
     byteAtAddress &= ~(0x01 << bit);
     gb.write(address, byteAtAddress);
     return 4;
 }
 
-uint8_t OpcodeHelpers::SET(uint16_t address, uint8_t bit, Gameboy& gb) {
+uint8_t OpcodeHelpers::SET(uint16_t address, uint8_t bit, CPU& gb) {
     uint8_t byteAtAddress = gb.read(address);
     byteAtAddress |= (0x01 << bit);
     gb.write(address, byteAtAddress);
     return 4;
 }
 
-uint8_t OpcodeHelpers::BIT(uint16_t address, uint8_t bit, Gameboy &gb) {
+uint8_t OpcodeHelpers::BIT(uint16_t address, uint8_t bit, CPU &gb) {
     uint8_t mask = (1u << bit);
     uint8_t value = gb.read(address);
 
@@ -86,7 +86,7 @@ uint8_t OpcodeHelpers::BIT(uint16_t address, uint8_t bit, Gameboy &gb) {
     return 3;
 }
 
-uint8_t OpcodeHelpers::BIT(uint8_t &reg, uint8_t bit, Gameboy& gb) {
+uint8_t OpcodeHelpers::BIT(uint8_t &reg, uint8_t bit, CPU& gb) {
     uint8_t mask = (1u << bit);
 
     gb.setFlag('Z', (mask & reg) == 0);
@@ -96,7 +96,7 @@ uint8_t OpcodeHelpers::BIT(uint8_t &reg, uint8_t bit, Gameboy& gb) {
     return 2;
 }
 
-uint8_t OpcodeHelpers::RLC(uint8_t &reg, Gameboy& gb) {
+uint8_t OpcodeHelpers::RLC(uint8_t &reg, CPU& gb) {
     //puts the old bit in the 0th bit spot
     uint8_t oldBit7 = (reg & 0x80) >> 7u;
     //shift left
@@ -112,7 +112,7 @@ uint8_t OpcodeHelpers::RLC(uint8_t &reg, Gameboy& gb) {
 }
 
 
-uint8_t OpcodeHelpers::RRC(uint8_t &reg, Gameboy& gb) {
+uint8_t OpcodeHelpers::RRC(uint8_t &reg, CPU& gb) {
     uint8_t oldBit0 = (reg & 0x01) << 7u;
     reg = reg >> 1u;
     reg |= oldBit0;
@@ -125,7 +125,7 @@ uint8_t OpcodeHelpers::RRC(uint8_t &reg, Gameboy& gb) {
     return 2;
 }
 
-uint8_t OpcodeHelpers::RL(uint8_t &reg, Gameboy& gb) {
+uint8_t OpcodeHelpers::RL(uint8_t &reg, CPU& gb) {
     //puts the old bit in the 0th bit spot
     uint8_t oldCY = gb.readFlag('C') ? 0x10 : 0;
     oldCY = oldCY >> 4u;
@@ -143,7 +143,7 @@ uint8_t OpcodeHelpers::RL(uint8_t &reg, Gameboy& gb) {
     return 2;
 }
 
-uint8_t OpcodeHelpers::RR(uint8_t &reg, Gameboy& gb) {
+uint8_t OpcodeHelpers::RR(uint8_t &reg, CPU& gb) {
     //puts the old bit in the 0th bit spot
     uint8_t oldCY = gb.readFlag('C') ? 0x10 : 0;
     oldCY = oldCY << 3u;
@@ -161,7 +161,7 @@ uint8_t OpcodeHelpers::RR(uint8_t &reg, Gameboy& gb) {
     return 2;
 }
 
-uint8_t OpcodeHelpers::SWAP(uint8_t &reg, Gameboy& gb) {
+uint8_t OpcodeHelpers::SWAP(uint8_t &reg, CPU& gb) {
     uint8_t oldHigh = reg & 0xF0;
     uint8_t oldLow = reg & 0x0F;
     // adjust old bits
@@ -177,7 +177,7 @@ uint8_t OpcodeHelpers::SWAP(uint8_t &reg, Gameboy& gb) {
     return 2;
 }
 
-uint8_t OpcodeHelpers::SRL(uint8_t &reg, Gameboy& gb) {
+uint8_t OpcodeHelpers::SRL(uint8_t &reg, CPU& gb) {
     uint8_t mask = 1u;
     gb.setFlag('C', (mask & reg) != 0);
     // shift right
@@ -189,7 +189,7 @@ uint8_t OpcodeHelpers::SRL(uint8_t &reg, Gameboy& gb) {
     return 2;
 }
 
-uint8_t OpcodeHelpers::SLA(uint8_t &reg, Gameboy& gb) {
+uint8_t OpcodeHelpers::SLA(uint8_t &reg, CPU& gb) {
     uint8_t mask = (1u << 7u);
     // 1000 0000
     gb.setFlag('C', (mask & reg) != 0);
@@ -202,7 +202,7 @@ uint8_t OpcodeHelpers::SLA(uint8_t &reg, Gameboy& gb) {
     return 2;
 }
 
-uint8_t OpcodeHelpers::SRA(uint8_t &reg, Gameboy& gb) {
+uint8_t OpcodeHelpers::SRA(uint8_t &reg, CPU& gb) {
     uint8_t mask = 1u;
     uint8_t old7 = (reg & 0x80);
     gb.setFlag('C', (mask & reg) != 0);

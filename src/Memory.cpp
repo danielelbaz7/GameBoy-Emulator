@@ -1,18 +1,14 @@
-#include <vector>
+//
+// Created by Daniel Elbaz on 1/4/26.
+//
+
+#include "Memory.h"
+
 #include <fstream>
 #include <iostream>
-#include "Gameboy.h"
 
-#include <thread>
 
-#include "OpcodeHelpers.h"
-
-Gameboy::Gameboy() {
-    //initialize the opcode table upon gameboy object construction
-    this->BuildOpcodeTables();
-}
-
-uint8_t Gameboy::read(uint16_t address) {
+uint8_t Memory::read(uint16_t address) {
     if (address <= 0x3FFF) {
         return rom[address];
     }
@@ -71,11 +67,7 @@ uint8_t Gameboy::read(uint16_t address) {
 
 }
 
-void Gameboy::write(uint16_t address, uint8_t byteToWrite) {
-    //if sc is telling it to print, print from sb
-    if (address == 0xFF02 && ((byteToWrite == 0x81))) {
-        std::cout << read(0xFF01) << std::flush;
-    }
+void Memory::write(uint16_t address, uint8_t byteToWrite) {
     //handles eram disable/enable
     if (address <= 0x1FFF) {
         //takes only the lower 4 bits of the byte we are writing
@@ -163,77 +155,10 @@ void Gameboy::write(uint16_t address, uint8_t byteToWrite) {
 
 }
 
-
-// Step function, executes exactly one instruction
-uint8_t Gameboy::Step() {
-    if (halted) {
-        return 1;
-    }
-    // std::cout << "pc=" << std::hex << std::setw(4) << std::setfill('0') << (pc)
-    //       << " val=" << std::setw(2) << (int)read(pc)
-    //         << (" ")
-    //         << std::setw(2) << (int)read(pc+1)
-    //         << (" ")
-    //         << std::setw(2) << (int)read(pc+2)
-    //       << std::dec << "\n";
-
-    // get opcode
-    // decode and run opcode function
-    uint8_t opcode = read(pc);
-    uint8_t cycleCount;
-    if (opcode == 0xCB) {
-        uint8_t CBOpcode = read(++pc);
-        cycleCount = (this->*CBopcodeTable[CBOpcode])();
-    } else {
-        cycleCount = (this->*opcodeTable[opcode])();
-    }
-    //always increment after, we built it to expect this
-    pc++;
-    return cycleCount * dotsPerMCycle;
-}
-
-
-//flag setting
-// added breaks and '&=' instead of just '&'
-void Gameboy::setFlag(unsigned char flagName, bool flagValue) {
-    switch (flagName) {
-        case 'Z':
-            flagValue ? af.f |= (FLAG_Z) : af.f &= ~FLAG_Z;
-            break;
-        case 'N':
-            flagValue ? af.f |= (FLAG_N) : af.f &= ~FLAG_N;
-            break;
-        case 'H':
-            flagValue ? af.f |= (FLAG_H) : af.f &= ~FLAG_H;
-            break;
-        case 'C':
-            flagValue ? af.f |= (FLAG_C) : af.f &= ~FLAG_C;
-            break;
-        default: break;
-    }
-}
-
-bool Gameboy::readFlag(unsigned char flagName) const {
-    switch (flagName) {
-        case 'Z':
-            //if the whole thing is 0, that means the flag is zero so we can return false
-            //if it isnt zero, the flag is not zero so we return true
-            return (af.f & (FLAG_Z)) != 0;
-        case 'N':
-            return (af.f & (FLAG_N)) != 0;
-        case 'H':
-            return (af.f & (FLAG_H)) != 0;
-        case 'C':
-            return (af.f & (FLAG_C)) != 0;
-        default: return false;;
-    }
-}
-
-
 //rom loading function
 
-void Gameboy::LoadRom(char const* filename) {
-    //create an input file stream that beings at the end, get the size, read into the vector 
+void Memory::LoadRom(char const* filename) {
+    //create an input file stream that beings at the end, get the size, read into the vector
     std::ifstream file(filename, std::ios::binary | std::ios::ate);
     if(file.is_open()) {
         std::streampos filesize = file.tellg();
@@ -246,3 +171,4 @@ void Gameboy::LoadRom(char const* filename) {
     }
 }
 
+#include "Memory.h"

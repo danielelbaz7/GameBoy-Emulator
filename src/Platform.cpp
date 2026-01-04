@@ -8,11 +8,11 @@
 #include <thread>
 
 Platform::Platform(const char* filename) {
-    gb.LoadRom(filename);
+    mem.LoadRom(filename);
 }
 
 //overall run, manages input, interrupts, etc.
-void Platform::Run( ) {
+void Platform::Run() {
     unsigned int cyclesUsed = 0;
     //using steady clock so we don't realize on the user's computer system time
     auto frameStartTime =
@@ -21,12 +21,12 @@ void Platform::Run( ) {
     );
     while (true) {
 
-        if (gb.stopped) {
+        if (cpu.stopped) {
             break;
         }
 
         //only handles fetch, decode, execute, won't do anything if the gameboy is halted
-        cyclesUsed += gb.Step();
+        cyclesUsed += cpu.Step();
 
         if (cyclesUsed < TcyclesPerFrame) {
             continue;

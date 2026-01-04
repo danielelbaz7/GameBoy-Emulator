@@ -11,14 +11,14 @@ void PPU::UpdatePPU(uint8_t TcyclesSinceLastUpdate) {
     if (TcyclesSinceLastScanline > 80 && currentMode == PPUMode::OAM) {
         for (int i = 0; i < totalSprites; i++) {
             //times 4 since there are 4 bytes per sprite, 40 sprites total
-            uint8_t curSpriteYValue = gb.read(OAMStartAddress + i*bytesPerSprite);
+            uint8_t curSpriteYValue = mem.read(OAMStartAddress + i*bytesPerSprite);
             if (currentScanline < (curSpriteYValue - 16) ||
                 currentScanline >= (curSpriteYValue - 16 + spriteHeight())) {
                 continue;
             }
 
-            Sprite s{gb.read(curSpriteYValue), gb.read(1 + curSpriteYValue),
-            gb.read(2 + curSpriteYValue),gb.read(3 + curSpriteYValue)};
+            Sprite s{mem.read(curSpriteYValue), mem.read(1 + curSpriteYValue),
+            mem.read(2 + curSpriteYValue),mem.read(3 + curSpriteYValue)};
 
             //increment after using
             spriteBuffer[nextEmptySlot++] = s;
