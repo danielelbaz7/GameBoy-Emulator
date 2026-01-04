@@ -13,11 +13,11 @@ CPU::CPU(Memory &m) : mem(m) {
 }
 
 uint8_t CPU::read(uint16_t address) {
-    return mem.read(address);
+    return mem.Read(address);
 }
 
 void CPU::write(uint16_t address, uint8_t byteToWrite) {
-    return mem.write(address, byteToWrite);
+    return mem.Write(address, byteToWrite);
 }
 
 // Step function, executes exactly one instruction

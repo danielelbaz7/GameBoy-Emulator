@@ -7,8 +7,12 @@
 #include <fstream>
 #include <iostream>
 
+//write to the scanline register to indicate which scanline we are on
+void Memory::WriteScanline(uint8_t value) {
+    io[68] = value;
+}
 
-uint8_t Memory::read(uint16_t address) {
+uint8_t Memory::Read(uint16_t address) {
     if (address <= 0x3FFF) {
         return rom[address];
     }
@@ -67,7 +71,7 @@ uint8_t Memory::read(uint16_t address) {
 
 }
 
-void Memory::write(uint16_t address, uint8_t byteToWrite) {
+void Memory::Write(uint16_t address, uint8_t byteToWrite) {
     //handles eram disable/enable
     if (address <= 0x1FFF) {
         //takes only the lower 4 bits of the byte we are writing
