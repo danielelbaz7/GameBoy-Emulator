@@ -189,7 +189,7 @@ uint8_t Gameboy::Step() {
     }
     //always increment after, we built it to expect this
     pc++;
-    return cycleCount * 4;
+    return cycleCount * dotsPerMCycle;
 }
 
 

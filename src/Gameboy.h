@@ -126,6 +126,8 @@ private:
 
     bool halted = false;
 
+    const uint8_t dotsPerMCycle{4};
+
     //opcode functions
     uint8_t OP_0x00();
     uint8_t OP_0x01();

@@ -28,11 +28,11 @@ void Platform::Run( ) {
         //only handles fetch, decode, execute, won't do anything if the gameboy is halted
         cyclesUsed += gb.Step();
 
-        if (cyclesUsed < TcyclesPerSecond) {
+        if (cyclesUsed < TcyclesPerFrame) {
             continue;
         }
 
-        cyclesUsed = (TcyclesPerSecond * 2) - (cyclesUsed);
+        cyclesUsed -= TcyclesPerFrame;
         std::cout << cyclesUsed << std::endl;
 
         // both framestarttime and now() are time_points, so cast their difference's duration to microseconds
@@ -49,7 +49,6 @@ void Platform::Run( ) {
         frameStartTime = std::chrono::time_point_cast<std::chrono::microseconds>(
                 std::chrono::steady_clock::now()
             );
-
 
     }
 }
