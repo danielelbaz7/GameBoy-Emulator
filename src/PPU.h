@@ -8,11 +8,18 @@ public:
     void UpdatePPU(uint8_t TcyclesSinceLastUpdate);
 
 private:
+    uint32_t frameBuffer[144][160] = {};
+
     Gameboy& gb;
     unsigned int TcyclesSinceLastScanline{};
     uint8_t currentScanline{}; //goes from 0-153, last 10 are vblank
-    uint8_t currentMode{2};
-    bool modesCompleted[4]{}; //mode 2 is OAM, then mode 3 is drawing pixels,
+    enum class PPUMode : uint8_t {
+        HBlank = 0,
+        VBlank = 1,
+        OAM    = 2,
+        Draw   = 3
+    };
+    PPUMode currentMode{PPUMode::OAM};
     //then mode 0 is horizontal blank, and mode 1 is vertical blank
 
     //lambda function that returns the current sprite height at any point
@@ -37,7 +44,5 @@ private:
     Sprite spriteBuffer[10] = {};
     uint8_t nextEmptySlot{};
 };
-
-
 
 #endif

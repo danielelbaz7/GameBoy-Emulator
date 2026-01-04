@@ -8,7 +8,7 @@ void PPU::UpdatePPU(uint8_t TcyclesSinceLastUpdate) {
 
     //if we just hit 80 t cycles and we haven't read OAM yet, now is the time to do that
     //this takes the first 10 sprites that need to be rendered and places them into the internal sprite buffer
-    if (TcyclesSinceLastScanline > 80 && !modesCompleted[2]) {
+    if (TcyclesSinceLastScanline > 80 && currentMode == PPUMode::OAM) {
         for (int i = 0; i < totalSprites; i++) {
             //times 4 since there are 4 bytes per sprite, 40 sprites total
             uint8_t curSpriteYValue = gb.read(OAMStartAddress + i*bytesPerSprite);
@@ -28,16 +28,7 @@ void PPU::UpdatePPU(uint8_t TcyclesSinceLastUpdate) {
             }
 
         }
-        modesCompleted[2] = true;
+        currentMode = PPUMode::Draw;
     }
-
 }
-
-void PPU::BeginNewFrame() {
-    TcyclesSinceLastScanline = 0;
-    currentScanline = 0;
-    currentMode = 2;
-    std::fill(std::begin(modesCompleted), std::end(modesCompleted), false);
-}
-
 
