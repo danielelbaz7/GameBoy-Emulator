@@ -1,5 +1,6 @@
 #pragma once
 #include <cstdint>
+#include <set>
 #include <vector>
 
 
@@ -52,6 +53,9 @@ public:
     uint8_t Step();
     std::vector<uint8_t> rom;
 
+    void setOAMDisabled(const bool setTo) {
+        isOAMDisabledByPPU = setTo;
+    }
 
 private:
     // CPU Registers
@@ -666,5 +670,7 @@ private:
     using OpcodeFunction = uint8_t (Gameboy::*) ();
     OpcodeFunction opcodeTable[256]{};
     OpcodeFunction CBopcodeTable[256]{};
+
+    bool isOAMDisabledByPPU{};
 
 };

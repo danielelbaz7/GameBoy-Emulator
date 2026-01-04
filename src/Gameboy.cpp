@@ -45,7 +45,7 @@ uint8_t Gameboy::read(uint16_t address) {
 
     if (address <= 0xFE9F) {
         //sprite memory
-        return oam[address - 0xFE00];
+        return isOAMDisabledByPPU ? 0xFF : oam[address - 0xFE00];
     }
 
     if (address <= 0xFEFF) {

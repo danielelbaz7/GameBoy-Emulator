@@ -23,9 +23,7 @@ private:
     //then mode 0 is horizontal blank, and mode 1 is vertical blank
 
     //lambda function that returns the current sprite height at any point
-    [[nodiscard]] uint8_t spriteHeight() const {
-        return gb.read(0xFF40) & 0x04;
-    }
+    [[nodiscard]] uint8_t spriteHeight() const { return gb.read(0xFF40) & 0x04; }
 
     constexpr static uint16_t OAMStartAddress = 0xFE00;
     constexpr static uint8_t totalSprites = 40;
