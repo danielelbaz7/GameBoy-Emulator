@@ -101,10 +101,12 @@ void PPU::UpdatePPU(uint8_t TcyclesSinceLastUpdate) {
     else if (TcyclesSinceLastScanline >= 456 && currentMode == PPUMode::VBlank) {
         currentScanline++;
         nextEmptySlot = 0;
-        mem.WriteScanline(currentScanline);
         TcyclesSinceLastScanline -= 456;
         if (currentScanline >= 154) {
             currentScanline = 0;
+            mem.WriteScanline(currentScanline);
+            currentMode = PPUMode::OAM;
+            mem.setOAMDisabled(true);
         }
     }
 }
