@@ -49,7 +49,7 @@ uint8_t Memory::Read(uint16_t address, MemoryAccessor caller) {
     if (address <= 0x9FFF) {
         //subtract 0x8000 for the vram offset
         //disable during draw phase for cpu
-        return (ppu->currentMode==PPUMode::Draw  && caller != MemoryAccessor::PPU) ? 0xFF : vram[address - 0x8000];
+        return vram[address - 0x8000];
     }
 
     if (address <= 0xBFFF) {
@@ -69,7 +69,7 @@ uint8_t Memory::Read(uint16_t address, MemoryAccessor caller) {
 
     if (address <= 0xFE9F) {
         //sprite memory
-        return (isOAMDisabledByPPU & caller != MemoryAccessor::PPU) ? 0xFF : oam[address - 0xFE00];
+        return oam[address - 0xFE00];
     }
 
     if (address <= 0xFEFF) {
