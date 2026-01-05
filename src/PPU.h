@@ -17,7 +17,8 @@ public:
     explicit PPU(Memory& m);
     void UpdatePPU(uint8_t TcyclesSinceLastUpdate);
     PPUMode currentMode{PPUMode::OAM};
-    
+    uint32_t* getFrameBuffer() { return *frameBuffer; };
+    uint16_t getColCount() { return (sizeof(frameBuffer[0]) / 4); }
 
 private:
     const uint32_t colors[4] = {
@@ -42,9 +43,6 @@ private:
     constexpr static uint16_t OAMStartAddress = 0xFE00;
     constexpr static uint8_t totalSprites = 40;
     constexpr static uint8_t bytesPerSprite = 4;
-
-    //resets all values to that of a new frame
-    void BeginNewFrame();
 
     struct Sprite {
         uint8_t x;

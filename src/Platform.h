@@ -9,13 +9,15 @@
 
 #include <SDL2/SDL.h>
 
-//the platform class holds the actual entire computer's logic, pulling from game boy, ppu, etc.
+#include "PPU.h"
+
+//the platform class holds the actual entire computer's logic, pulling from cpu, ppu, etc.
 class Platform {
 public:
     Platform(const char* filename);
     void Run();
 
-    void DrawFramebuffer(uint32_t *frameBuffer, uint16_t rowCount);
+    void DrawFramebuffer(uint32_t *frameBuffer, uint16_t colCount);
 
 private:
     SDL_Window* window = nullptr;
@@ -24,6 +26,7 @@ private:
 
     Memory mem{};
     CPU cpu{mem};
+    PPU ppu{mem};
     const unsigned int TcyclesPerFrame{70224};
     const std::chrono::microseconds microSecondsPerFrame = std::chrono::microseconds{16744};
 

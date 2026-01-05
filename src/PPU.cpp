@@ -13,6 +13,7 @@ void PPU::UpdatePPU(uint8_t TcyclesSinceLastUpdate) {
     if (TcyclesSinceLastScanline >= 456 && currentMode == PPUMode::HBlank) {
         //reset to a new line, subtracting 456 also keeps overflow if it exists
         currentScanline++;
+        mem.WriteScanline(currentScanline);
         TcyclesSinceLastScanline -= 456;
         mem.setOAMDisabled(false);
         if (currentScanline >= 143) {
@@ -98,10 +99,10 @@ void PPU::UpdatePPU(uint8_t TcyclesSinceLastUpdate) {
 
     else if (TcyclesSinceLastScanline >= 456 && currentMode == PPUMode::VBlank) {
         currentScanline++;
+        mem.WriteScanline(currentScanline);
         TcyclesSinceLastScanline -= 456;
         if (currentScanline >= 154) {
             currentScanline = 0;
-
         }
     }
 }

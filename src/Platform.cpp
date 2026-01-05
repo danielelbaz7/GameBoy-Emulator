@@ -41,7 +41,9 @@ void Platform::Run() {
 
 
         //only handles fetch, decode, execute, won't do anything if the gameboy is halted
+        //call PPU with the same amount of instructions we used in the CPU
         uint8_t TcyclesUsedThisInstr = cpu.Step();
+        ppu.UpdatePPU(TcyclesUsedThisInstr);
         cyclesUsed += TcyclesUsedThisInstr;
 
         if (cyclesUsed < TcyclesPerFrame) {
@@ -50,6 +52,9 @@ void Platform::Run() {
 
         cyclesUsed -= TcyclesPerFrame;
         //std::cout << cyclesUsed << std::endl;
+
+        //render last so we account for the time it takes to render in our frametime waiter
+        DrawFramebuffer(ppu.getFrameBuffer(), ppu.getColCount() * 4);
 
         // both framestarttime and now() are time_points, so cast their difference's duration to microseconds
         auto timeSinceLastFrame = std::chrono::duration_cast<std::chrono::microseconds>
@@ -70,7 +75,13 @@ void Platform::Run() {
 }
 
 
-void Platform::DrawFramebuffer(uint32_t *frameBuffer, uint16_t rowCount) {
-    SDL_RenderClear(renderer);
+void Platform::DrawFramebuffer(uint32_t *frameBuffer, uint16_t colCount) {
+    //pass in the texture, nullptr means we want to update the entire screen, the framebuffer to place on the texture
+    //and then the number of bytes in a row
+    SDL_UpdateTexture(texture, nullptr, frameBuffer, colCount);
 
+    SDL_RenderClear(renderer);
+    //first nullptr means we use the entire source texture, second one means fill the entire renderer
+    SDL_RenderCopy(renderer, texture, nullptr, nullptr);
+    SDL_RenderPresent(renderer);
 }

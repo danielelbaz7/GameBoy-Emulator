@@ -11,6 +11,5 @@ int main(int argc, char* argv[]) {
     Platform platform(ROMFilename);
     platform.Run();
 
-
     return 0;
 }
