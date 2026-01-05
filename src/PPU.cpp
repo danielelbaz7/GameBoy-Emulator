@@ -25,7 +25,7 @@ void PPU::UpdatePPU(uint8_t TcyclesSinceLastUpdate) {
             
             uint8_t currentTile = Read((yTile * 32) + xTile);
 
-            uint8_t tileData[16] = mem.ReadTile(currentTile);
+            std::array<uint8_t, 16> tileData = mem.ReadTile(currentTile);
 
         }
     }
