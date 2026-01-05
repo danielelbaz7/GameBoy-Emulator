@@ -12,7 +12,7 @@ void Memory::WriteScanline(uint8_t value) {
     io[68] = value;
 }
 
-uint8_t Memory::Read(uint16_t address) {
+uint8_t Memory::Read(uint16_t address, MemoryAccessor caller) {
     if (address <= 0x3FFF) {
         return rom[address];
     }
@@ -45,7 +45,7 @@ uint8_t Memory::Read(uint16_t address) {
 
     if (address <= 0xFE9F) {
         //sprite memory
-        return isOAMDisabledByPPU ? 0xFF : oam[address - 0xFE00];
+        return (isOAMDisabledByPPU & caller == MemoryAccessor::CPU) ? 0xFF : oam[address - 0xFE00];
     }
 
     if (address <= 0xFEFF) {

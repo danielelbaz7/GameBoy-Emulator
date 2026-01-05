@@ -7,6 +7,7 @@
 #ifndef GAMEBOYEMULATOR_MEMORY_H
 #define GAMEBOYEMULATOR_MEMORY_H
 
+enum class MemoryAccessor { CPU, PPU };
 
 class Memory {
 public:
@@ -14,7 +15,7 @@ public:
 
     void WriteScanline(uint8_t value);
 
-    uint8_t Read(uint16_t address);
+    uint8_t Read(uint16_t address, MemoryAccessor caller = MemoryAccessor::CPU);
     void Write(uint16_t address, uint8_t byteToWrite);
 
     void setOAMDisabled(const bool setTo) {
@@ -70,6 +71,7 @@ private:
     uint8_t bankModeToUse{ROM_MODE};
 
     bool isOAMDisabledByPPU{};
+
 };
 
 

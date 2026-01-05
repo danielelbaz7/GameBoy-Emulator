@@ -4,7 +4,7 @@
 
 class PPU {
 public:
-    explicit PPU(Memory& m) : mem(m)  {mem.WriteScanline(currentScanline);}
+    explicit PPU(Memory& m);
     void UpdatePPU(uint8_t TcyclesSinceLastUpdate);
 
 private:
