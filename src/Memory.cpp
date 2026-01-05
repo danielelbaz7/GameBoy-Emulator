@@ -6,6 +6,29 @@
 
 #include <fstream>
 #include <iostream>
+#include <array>
+#include <cstdint>
+#include "PPU.h"
+
+
+std::array<uint8_t, 16> Memory::ReadTile(uint8_t tileID, MemoryAccessor caller) {
+    std::array<uint8_t, 16> tileData{};
+    uint16_t addressToRead = 0x8000 + (tileID * 16);
+
+    //if lcdc4 is 1, then we look starting in block 0. else, tile id becomes its signed version so we
+    if (((Read(0xFF40) & 0x10)) == 0) {
+        //start at the beginning of block 2, the tileID might be negative and this will go to block 1 for us
+        addressToRead = 0x9000 + static_cast<int8_t>(tileID) * 16;
+    }
+
+    for(uint8_t curByte = 0; curByte < 16; curByte++) {
+        tileData[curByte] = Read(addressToRead + curByte);
+    }
+
+    return tileData;
+}
+
+
 
 //write to the scanline register to indicate which scanline we are on
 void Memory::WriteScanline(uint8_t value) {
@@ -25,7 +48,8 @@ uint8_t Memory::Read(uint16_t address, MemoryAccessor caller) {
 
     if (address <= 0x9FFF) {
         //subtract 0x8000 for the vram offset
-        return vram[address - 0x8000];
+        //disable during draw phase for cpu
+        return (ppu->currentMode==PPUMode::Draw  && caller != MemoryAccessor::PPU) ? 0xFF : vram[address - 0x8000];
     }
 
     if (address <= 0xBFFF) {
@@ -45,7 +69,7 @@ uint8_t Memory::Read(uint16_t address, MemoryAccessor caller) {
 
     if (address <= 0xFE9F) {
         //sprite memory
-        return (isOAMDisabledByPPU & caller == MemoryAccessor::CPU) ? 0xFF : oam[address - 0xFE00];
+        return (isOAMDisabledByPPU & caller != MemoryAccessor::PPU) ? 0xFF : oam[address - 0xFE00];
     }
 
     if (address <= 0xFEFF) {
@@ -73,6 +97,9 @@ uint8_t Memory::Read(uint16_t address, MemoryAccessor caller) {
 
 void Memory::Write(uint16_t address, uint8_t byteToWrite) {
     //handles eram disable/enable
+    if (address == 0xFF02 && ((byteToWrite == 0x81))) {
+        std::cout << Read(0xFF01) << std::flush;
+    }
     if (address <= 0x1FFF) {
         //takes only the lower 4 bits of the byte we are writing
         uint8_t lower4Bits = (byteToWrite & 0x0F);

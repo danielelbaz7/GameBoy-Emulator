@@ -5,6 +5,7 @@
 #ifndef GAMEBOYEMULATOR_PLATFORM_H
 #define GAMEBOYEMULATOR_PLATFORM_H
 #include "CPU.h"
+#include <chrono>
 
 //the platform class holds the actual entire computer's logic, pulling from game boy, ppu, etc.
 class Platform {

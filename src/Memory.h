@@ -8,6 +8,7 @@
 #define GAMEBOYEMULATOR_MEMORY_H
 
 enum class MemoryAccessor { CPU, PPU };
+class PPU;
 
 class Memory {
 public:
@@ -15,12 +16,17 @@ public:
 
     void WriteScanline(uint8_t value);
 
+    std::array<uint8_t, 16> ReadTile(uint8_t tileID, MemoryAccessor caller = MemoryAccessor::CPU);
+
     uint8_t Read(uint16_t address, MemoryAccessor caller = MemoryAccessor::CPU);
     void Write(uint16_t address, uint8_t byteToWrite);
 
     void setOAMDisabled(const bool setTo) {
         isOAMDisabledByPPU = setTo;
     }
+
+    void SetPPU(PPU* p) { ppu = p; };
+
 
 private:
     // All addresses/memory available to the Gameboy, 16-bit addresses
@@ -34,6 +40,8 @@ private:
     //work ram, no banking in the original gameboy, only the gameboy color which we are not implementing
     uint8_t wram[0x2000]{};
 
+    // pointer to ppu object (for accessing mode)
+    PPU* ppu = nullptr;
 
     uint8_t oam[0xA0]{}; //object attribute memory, stores up to 40 sprites, 160 bytes
     uint8_t io[0x80]{}; //input output ports, stores data about different physical pieces of the gameboy (like buttons)

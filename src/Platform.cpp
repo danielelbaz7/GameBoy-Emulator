@@ -33,7 +33,7 @@ void Platform::Run() {
         }
 
         cyclesUsed -= TcyclesPerFrame;
-        std::cout << cyclesUsed << std::endl;
+        //std::cout << cyclesUsed << std::endl;
 
         // both framestarttime and now() are time_points, so cast their difference's duration to microseconds
         auto timeSinceLastFrame = std::chrono::duration_cast<std::chrono::microseconds>
