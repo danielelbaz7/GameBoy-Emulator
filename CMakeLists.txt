@@ -15,3 +15,19 @@ add_executable(GameBoyEmulator src/main.cpp
         src/PPU.h
         src/Memory.cpp
         src/Memory.h)
+
+target_include_directories(GameBoyEmulator PRIVATE
+        /opt/homebrew/include
+)
+
+target_link_directories(GameBoyEmulator PRIVATE
+        /opt/homebrew/lib
+)
+
+target_link_libraries(GameBoyEmulator PRIVATE
+        SDL2
+)
+
+target_link_libraries(GameBoyEmulator PRIVATE
+        /opt/homebrew/opt/sdl2/lib/libSDL2.dylib)
+

@@ -1,5 +1,7 @@
 #include "PPU.h"
 
+#include <SDL2/SDL_render.h>
+
 PPU::PPU(Memory& m) : mem(m) {
     mem.WriteScanline(currentScanline);
     mem.setOAMDisabled(true);
@@ -103,4 +105,5 @@ void PPU::UpdatePPU(uint8_t TcyclesSinceLastUpdate) {
         }
     }
 }
+
 
