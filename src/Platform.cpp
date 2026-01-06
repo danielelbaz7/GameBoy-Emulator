@@ -61,10 +61,11 @@ void Platform::Run() {
         auto timeSinceLastFrame = std::chrono::duration_cast<std::chrono::microseconds>
         (std::chrono::steady_clock::now() - frameStartTime);
 
+        std::cout << timeSinceLastFrame << std::endl;
+
         //if its been less than 16,744 microseconds (16.744 milliseconds, approx 59.73 fps), wait until it's been that long. else wait no time
         std::chrono::microseconds timeToWait{microSecondsPerFrame - timeSinceLastFrame};
 
-        std::cout << timeSinceLastFrame << std::endl;
 
         if (timeToWait > std::chrono::microseconds{0}) {
             std::this_thread::sleep_for(timeToWait);
