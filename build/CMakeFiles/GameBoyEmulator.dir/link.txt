@@ -1,3 +1,0 @@
-"C:\Program Files\CMake\bin\cmake.exe" -E rm -f CMakeFiles\GameBoyEmulator.dir/objects.a
-C:\ProgramData\mingw64\mingw64\bin\ar.exe qc CMakeFiles\GameBoyEmulator.dir/objects.a @CMakeFiles\GameBoyEmulator.dir\objects1.rsp
-C:\ProgramData\mingw64\mingw64\bin\c++.exe -Wl,--whole-archive CMakeFiles\GameBoyEmulator.dir/objects.a -Wl,--no-whole-archive -o GameBoyEmulator.exe -Wl,--out-implib,libGameBoyEmulator.dll.a -Wl,--major-image-version,0,--minor-image-version,0 @CMakeFiles\GameBoyEmulator.dir\linkLibs.rsp

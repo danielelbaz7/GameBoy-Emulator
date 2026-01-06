@@ -1,3 +1,0 @@
-C:/projects/GameBoy-Emulator/build/CMakeFiles/GameBoyEmulator.dir
-C:/projects/GameBoy-Emulator/build/CMakeFiles/edit_cache.dir
-C:/projects/GameBoy-Emulator/build/CMakeFiles/rebuild_cache.dir
