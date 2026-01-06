@@ -4,6 +4,7 @@
 
 #include "Platform.h"
 
+#include <iostream>
 #include <thread>
 
 Platform::Platform(const char* filename)
@@ -34,12 +35,6 @@ void Platform::Run() {
             break;
         }
 
-        SDL_Event e;
-        while (SDL_PollEvent(&e)) {
-            if (e.type == SDL_QUIT)
-                quit = true;
-        }
-
 
         //only handles fetch, decode, execute, won't do anything if the gameboy is halted
         //call PPU with the same amount of instructions we used in the CPU
@@ -52,7 +47,12 @@ void Platform::Run() {
         }
 
         cyclesUsed -= TcyclesPerFrame;
-        //std::cout << cyclesUsed << std::endl;
+
+        SDL_Event e;
+        if (SDL_PollEvent(&e)) {
+            if (e.type == SDL_QUIT)
+                quit = true;
+        }
 
         //render last so we account for the time it takes to render in our frametime waiter
         DrawFramebuffer(ppu.getFrameBuffer(), ppu.getColCount() * 4);
@@ -64,9 +64,12 @@ void Platform::Run() {
         //if its been less than 16,744 microseconds (16.744 milliseconds, approx 59.73 fps), wait until it's been that long. else wait no time
         std::chrono::microseconds timeToWait{microSecondsPerFrame - timeSinceLastFrame};
 
+        std::cout << timeSinceLastFrame << std::endl;
+
         if (timeToWait > std::chrono::microseconds{0}) {
             std::this_thread::sleep_for(timeToWait);
         }
+
 
         frameStartTime = std::chrono::time_point_cast<std::chrono::microseconds>(
                 std::chrono::steady_clock::now()
