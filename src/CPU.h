@@ -74,7 +74,8 @@ private:
     const uint8_t FLAG_C = 0x10; // 0001 0000
 
     //ime used to disable or enable all interrupts, IME=1/true is enabled, IME=0/false is disabled
-    bool IME{}; //interrupt master enable flag
+    bool IME{false}; //interrupt master enable flag
+    bool handleInterrupts(); // returns true if interrupt is 'used' and pc jumps
 
 
     void BuildOpcodeTables();

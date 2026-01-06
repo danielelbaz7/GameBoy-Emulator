@@ -178,11 +178,11 @@ void Memory::Write(uint16_t address, uint8_t byteToWrite, MemoryAccessor caller)
     }
 
     if (address <= 0xFE9F) {
-        oam[address - 0xFE00] = byteToWrite;
         // disable during draw and oam phase for cpu
         if ((mode == PPUMode::Draw || mode==PPUMode::OAM) && caller == MemoryAccessor::CPU) {
             return;
         }
+        oam[address - 0xFE00] = byteToWrite;
         return;
     }
 
