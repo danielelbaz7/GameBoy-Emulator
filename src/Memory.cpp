@@ -35,7 +35,7 @@ void Memory::WriteScanline(uint8_t value) {
     io[68] = value;
 }
 
-uint8_t Memory::Read(uint16_t address, MemoryAccessor callerm) {
+uint8_t Memory::Read(uint16_t address, MemoryAccessor caller) {
     if (address <= 0x3FFF) {
         return rom[address];
     }
@@ -49,6 +49,9 @@ uint8_t Memory::Read(uint16_t address, MemoryAccessor callerm) {
     if (address <= 0x9FFF) {
         //subtract 0x8000 for the vram offset
         //disable during draw phase for cpu
+        if (mode == PPUMode::Draw && caller == MemoryAccessor::CPU) {
+            return 0xFF;
+        }
         return vram[address - 0x8000];
     }
 
@@ -69,6 +72,10 @@ uint8_t Memory::Read(uint16_t address, MemoryAccessor callerm) {
 
     if (address <= 0xFE9F) {
         //sprite memory
+        // disbale during draw and OAM for CPU
+        if ((mode == PPUMode::Draw || mode == PPUMode::OAM) && caller == MemoryAccessor::CPU) {
+            return 0xFF;
+        }
         return oam[address - 0xFE00];
     }
 
@@ -95,7 +102,7 @@ uint8_t Memory::Read(uint16_t address, MemoryAccessor callerm) {
 
 }
 
-void Memory::Write(uint16_t address, uint8_t byteToWrite) {
+void Memory::Write(uint16_t address, uint8_t byteToWrite, MemoryAccessor caller) {
     //handles eram disable/enable
     if (address == 0xFF02 && ((byteToWrite == 0x81))) {
         std::cout << Read(0xFF01) << std::flush;
@@ -145,6 +152,9 @@ void Memory::Write(uint16_t address, uint8_t byteToWrite) {
     if (address <= 0x9FFF) {
         //subtract 0x8000 for the vram offset
         //disable during draw phase for cpu
+        if (mode == PPUMode::Draw && caller == MemoryAccessor::CPU) {
+            return;
+        }
         vram[address - 0x8000] = byteToWrite;
         return;
     }
@@ -169,6 +179,10 @@ void Memory::Write(uint16_t address, uint8_t byteToWrite) {
 
     if (address <= 0xFE9F) {
         oam[address - 0xFE00] = byteToWrite;
+        // disable during draw and oam phase for cpu
+        if ((mode == PPUMode::Draw || mode==PPUMode::OAM) && caller == MemoryAccessor::CPU) {
+            return;
+        }
         return;
     }
 

@@ -23,8 +23,10 @@ void PPU::UpdatePPU(uint8_t TcyclesSinceLastUpdate) {
         mem.setOAMDisabled(false);
         if (currentScanline >= 143) {
             currentMode = PPUMode::VBlank;
+            mem.setMode(currentMode);
         } else {
             currentMode = PPUMode::OAM;
+            mem.setMode(currentMode);
             mem.setOAMDisabled(true);
         }
     }
@@ -72,6 +74,7 @@ void PPU::UpdatePPU(uint8_t TcyclesSinceLastUpdate) {
             frameBuffer[currentScanline]);
 
         currentMode = PPUMode::HBlank;
+        mem.setMode(currentMode);
         mem.setOAMDisabled(false);
     }
 
@@ -99,6 +102,7 @@ void PPU::UpdatePPU(uint8_t TcyclesSinceLastUpdate) {
 
         }
         currentMode = PPUMode::Draw;
+        mem.setMode(currentMode);
     }
 
     else if (TcyclesSinceLastScanline >= 456 && currentMode == PPUMode::VBlank) {
@@ -109,10 +113,13 @@ void PPU::UpdatePPU(uint8_t TcyclesSinceLastUpdate) {
             currentScanline = 0;
             mem.WriteScanline(currentScanline);
             currentMode = PPUMode::OAM;
+            mem.setMode(currentMode);
             mem.setOAMDisabled(true);
         }
     }
-    mem.setMode(currentMode);
+    else {
+        mem.setMode(PPUMode::Off);
+    }
 }
 
 

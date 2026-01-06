@@ -13,7 +13,8 @@ enum class PPUMode : uint8_t {
     HBlank = 0,
     VBlank = 1,
     OAM    = 2,
-    Draw   = 3
+    Draw   = 3,
+    Off    = 4
 };
 
 enum class MemoryAccessor { CPU, PPU };
@@ -27,7 +28,7 @@ public:
     std::array<uint8_t, 16> ReadTile(uint8_t tileID, MemoryAccessor caller = MemoryAccessor::CPU);
 
     uint8_t Read(uint16_t address, MemoryAccessor caller = MemoryAccessor::CPU);
-    void Write(uint16_t address, uint8_t byteToWrite);
+    void Write(uint16_t address, uint8_t byteToWrite, MemoryAccessor caller = MemoryAccessor::CPU);
 
     void setOAMDisabled(const bool setTo) {
         isOAMDisabledByPPU = setTo;
@@ -39,7 +40,7 @@ public:
 
 private:
 
-    PPUMode mode;
+    PPUMode mode = PPUMode::HBlank;
 
     // All addresses/memory available to the Gameboy, 16-bit addresses
     // Video Memory (VRAM): 8000-9FFF (8KB)

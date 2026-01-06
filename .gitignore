@@ -1,0 +1,32 @@
+# Build directories
+build/
+cmake-build-*/
+
+# Compiled binaries
+*.exe
+*.out
+*.o
+*.obj
+gb
+gb.exe
+
+# IDE files
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# CMake
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+Makefile
+
+# ROM files (if you don't want to commit test ROMs)
+*.gb
+*.gbc
+
+# OS files
+.DS_Store
+Thumbs.db
