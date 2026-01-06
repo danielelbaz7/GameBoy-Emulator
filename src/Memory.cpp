@@ -35,7 +35,7 @@ void Memory::WriteScanline(uint8_t value) {
     io[68] = value;
 }
 
-uint8_t Memory::Read(uint16_t address, MemoryAccessor caller) {
+uint8_t Memory::Read(uint16_t address, MemoryAccessor callerm) {
     if (address <= 0x3FFF) {
         return rom[address];
     }

@@ -1,15 +1,7 @@
 #ifndef GAMEBOYEMULATOR_PPU_H
 #define GAMEBOYEMULATOR_PPU_H
-#include "CPU.h"
-
-enum class PPUMode : uint8_t {
-        HBlank = 0,
-        VBlank = 1,
-        OAM    = 2,
-        Draw   = 3
-    };
-    //then mode 0 is horizontal blank, and mode 1 is vertical blank
-
+#include <cstdint>
+#include "Memory.h"
 
 class PPU {
 

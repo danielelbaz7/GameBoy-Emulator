@@ -1,0 +1,7 @@
+{
+	"InstallScripts" : 
+	[
+		"C:/projects/GameBoy-Emulator/build/cmake_install.cmake"
+	],
+	"Parallel" : false
+}

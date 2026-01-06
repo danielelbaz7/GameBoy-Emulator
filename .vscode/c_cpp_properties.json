@@ -1,0 +1,18 @@
+{
+    "configurations": [
+        {
+            "name": "Win32",
+            "includePath": [
+                "${workspaceFolder}/**",
+                "C:/sdl2/SDL2-2.30.10/x86_64-w64-mingw32/include/SDL2",
+                "C:/SDL2/SDL2-2.30.10/x86_64-w64-mingw32/include"
+            ],
+            "defines": [],
+            "windowsSdkVersion": "10.0.19041.0",
+            "cStandard": "c17",
+            "cppStandard": "c++17",
+            "intelliSenseMode": "windows-msvc-x64"
+        }
+    ],
+    "version": 4
+}

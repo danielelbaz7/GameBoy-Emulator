@@ -1,4 +1,5 @@
 #include "PPU.h"
+#include "Memory.h"
 
 #include <iostream>
 #include <array>
@@ -8,6 +9,7 @@ PPU::PPU(Memory& m) : mem(m) {
     mem.WriteScanline(currentScanline);
     mem.setOAMDisabled(true);
 }
+
 
 void PPU::UpdatePPU(uint8_t TcyclesSinceLastUpdate) {
     TcyclesSinceLastScanline += TcyclesSinceLastUpdate;
@@ -110,6 +112,7 @@ void PPU::UpdatePPU(uint8_t TcyclesSinceLastUpdate) {
             mem.setOAMDisabled(true);
         }
     }
+    mem.setMode(currentMode);
 }
 
 

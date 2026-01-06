@@ -1,13 +1,22 @@
 //
 // Created by Daniel Elbaz on 1/4/26.
 //
-#include <vector>
-#include  <cstdint>
 #ifndef GAMEBOYEMULATOR_MEMORY_H
 #define GAMEBOYEMULATOR_MEMORY_H
+#include <vector>
+#include <cstdint>
+#include <array>
+
+class PPU;
+
+enum class PPUMode : uint8_t {
+    HBlank = 0,
+    VBlank = 1,
+    OAM    = 2,
+    Draw   = 3
+};
 
 enum class MemoryAccessor { CPU, PPU };
-class PPU;
 
 class Memory {
 public:
@@ -26,8 +35,12 @@ public:
 
     void InitializeMemory();
 
+    void setMode(PPUMode currentMode) {mode = currentMode;};
 
 private:
+
+    PPUMode mode;
+
     // All addresses/memory available to the Gameboy, 16-bit addresses
     // Video Memory (VRAM): 8000-9FFF (8KB)
     uint8_t vram[0x2000]{};
