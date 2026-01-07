@@ -20,7 +20,7 @@ class Memory {
 public:
     void LoadRom(char const* filename);
 
-    void WriteScanline(uint8_t value, MemoryAccessor caller = MemoryAccessor::PPU);
+    void WriteScanline(uint8_t value, MemoryAccessor caller);
 
     std::array<uint8_t, 16> ReadTile(uint8_t tileID, MemoryAccessor caller = MemoryAccessor::PPU);
     std::array<uint8_t, 16> ReadSpriteTile(uint8_t tileID, MemoryAccessor caller = MemoryAccessor::PPU);
@@ -30,7 +30,7 @@ public:
 
     void InitializeMemory();
 
-    void setMode(PPUMode currentMode) {mode = currentMode;};
+    void setMode(PPUMode newMode);
 
 private:
     // set to default mode (VBlank)

@@ -2631,9 +2631,12 @@ uint8_t CPU::OP_0xF2() {
     return 2;
 }
 
+
+// IME CHANGE
 //disables interrupts
 uint8_t CPU::OP_0xF3() {
     IME = false;
+    imeRequest =false;
     return 1;
 }
 
@@ -2694,9 +2697,10 @@ uint8_t CPU::OP_0xFA() {
     return 4;
 }
 
+// IME CHANGE
 //enable interrupts
 uint8_t CPU::OP_0xFB() {
-    IME = true;
+    imeRequest = true; // enable the REQUEST
     return 1;
 }
 

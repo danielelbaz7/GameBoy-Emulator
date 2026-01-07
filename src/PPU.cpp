@@ -10,6 +10,16 @@ PPU::PPU(Memory& m) : mem(m) {
     mem.WriteScanline(currentScanline, MemoryAccessor::PPU);
 }
 
+void checkStatInterrupt(uint8_t line) {
+    // everytime under currentScanLine++ or change etc
+    // does line (currentScanline) = lyc? (assuming other conditions are met)
+    // yes? set IF bit 1 and change bit 2 of stat to 1
+    // no ? set bit 2 of stat to 0
+    
+
+    // TODO : implement logic & put under scanline changes
+}
+
 void PPU::UpdatePPU(uint8_t TcyclesSinceLastUpdate) {
     TcyclesSinceLastScanline += TcyclesSinceLastUpdate;
 

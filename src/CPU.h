@@ -64,6 +64,8 @@ private:
     hl hl{0x014D};
 
     bool handleInterrupts();
+    // can be changed to read in the function | might be slower tho
+    bool checkInterrupt(uint8_t IF, uint8_t IE, int bitToCheck);
 
 
 
@@ -78,6 +80,7 @@ private:
 
     //ime used to disable or enable all interrupts, IME=1/true is enabled, IME=0/false is disabled
     bool IME{}; //interrupt master enable flag
+    bool imeRequest{};
 
     void BuildOpcodeTables();
 

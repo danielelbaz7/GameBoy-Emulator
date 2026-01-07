@@ -20,7 +20,69 @@ void CPU::write(uint16_t address, uint8_t byteToWrite) {
     return mem.Write(address, byteToWrite);
 }
 
+bool CPU::checkInterrupt(uint8_t IF, uint8_t IE, int bitToCheck) {
+    // mask to current bit
+    uint8_t mask = 1u << bitToCheck;
+    IF = IF & mask;
+    IE = IE & mask;
+
+    if ((IE & IF) !=0) {
+        return true; // interrupt to handle for this bit
+    }
+
+    return false;
+}
+
 bool CPU::handleInterrupts() {
+
+    uint8_t IF = read(0xFF0F);
+    uint8_t IE = read(0xFFFF);
+    uint8_t mask = 0x1F;
+    if (((IF & mask) & (IE & mask)) == 0) {
+        return false; // no interrupts to handle
+    }
+    halted = false;
+
+    if (!IME) {
+        return false; // interrupts disabled
+    }    
+    IME = false;
+
+    // handle interrupts (ONE MAX) from bit 0 to bit 7
+    // push pc onto stack
+    mem.Write(--sp, static_cast<uint8_t>((pc & 0xFF00) >> 8u));
+    mem.Write(--sp, static_cast<uint8_t>(pc & 0x00FF));
+    if (checkInterrupt(IF, IE, 0)) {
+        // handle vblank jump and reset bit 0
+        pc = 0x0040;
+        mem.Write(0xFF0F, (IF & 0xFE));
+        return true;
+    }
+    if (checkInterrupt(IF, IE, 1)) {
+        // handle LCD jump and reset bit 1
+        pc = 0x0048;
+        mem.Write(0xFF0F, (IF & 0xFD));
+        return true;
+    }
+    if (checkInterrupt(IF, IE, 2)) {
+        // handle timer jump and reset bit 2
+        pc = 0x0050;
+        mem.Write(0xFF0F, (IF & 0xFB));
+        return true;
+    }
+    if (checkInterrupt(IF, IE, 3)) {
+        // handle serial jump and reset bit 3
+        pc = 0x0058;
+        mem.Write(0xFF0F, (IF & 0xF7));
+        return true;
+    }
+    if (checkInterrupt(IF, IE, 4)) {
+        // handle fleshlight jump and reset bit 4
+        pc = 0x0060;
+        mem.Write(0xFF0F, (IF & 0xEF));
+        return true;
+    }
+
     return false;
 }
 
@@ -51,6 +113,10 @@ uint8_t CPU::Step() {
         cycleCount = (this->*CBopcodeTable[CBOpcode])();
     } else {
         cycleCount = (this->*opcodeTable[opcode])();
+    }
+    if (imeRequest) {
+        IME = true;
+        imeRequest = false; // used to create a 1 instruction delay between interrupt handlings
     }
     //always increment after, we built it to expect this
     pc++;

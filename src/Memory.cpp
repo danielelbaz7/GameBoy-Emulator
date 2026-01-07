@@ -11,10 +11,36 @@
 #include "PPU.h"
 
 
+
 bool Memory::isLcdOn() {
     uint8_t mask = 1 << 7u;
     uint8_t lcd = io[0x40];
     return (lcd & mask) != 0;
+}
+
+void Memory::setMode(PPUMode newMode) {
+    // check current mode to handle setting interrupts
+    // v-blank check
+    if (mode != PPUMode::VBlank && newMode == PPUMode::VBlank) {
+        io[0x0F] = (1u | io[0x0F]); // set bit 0 of IF
+    }
+
+    // stat reg check (bit 1) | 4 modes to check
+    uint8_t statReg = io[0x41];
+    bool bit3 = (statReg & 0x08) != 0;
+    if (newMode == PPUMode::HBlank && bit3) {
+        io[0x0F] = (2u | io[0x0F]); // set bit 1 of IF
+    }
+    bool bit4 = (statReg & 0x10) != 0;
+    if (newMode == PPUMode::VBlank && bit4) {
+        io[0x0F] = (2u | io[0x0F]); // set bit 1 of IF
+    }
+    bool bit5 = (statReg & 0x20) != 0;
+    if (newMode == PPUMode::OAM && bit5) {
+        io[0x0F] = (2u | io[0x0F]); // set bit 1 of IF
+    }    
+
+    return;
 }
 
 std::array<uint8_t, 16> Memory::ReadTile(uint8_t tileID, MemoryAccessor caller) {
