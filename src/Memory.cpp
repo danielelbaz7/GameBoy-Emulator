@@ -7,22 +7,28 @@
 #include <fstream>
 #include <iostream>
 #include <array>
-#include <cstdint>
+// #include <cstdint>
 #include "PPU.h"
 
+
+bool Memory::isLcdOn() {
+    uint8_t mask = 1 << 7u;
+    uint8_t lcd = io[0x40];
+    return (lcd & mask) != 0;
+}
 
 std::array<uint8_t, 16> Memory::ReadTile(uint8_t tileID, MemoryAccessor caller) {
     std::array<uint8_t, 16> tileData{};
     uint16_t addressToRead = 0x8000 + (tileID * 16);
 
     //if lcdc4 is 1, then we look starting in block 0. else, tile id becomes its signed version so we
-    if (((Read(0xFF40) & 0x10)) == 0) {
+    if (((Read(0xFF40, caller) & 0x10)) == 0) {
         //start at the beginning of block 2, the tileID might be negative and this will go to block 1 for us
         addressToRead = 0x9000 + static_cast<int8_t>(tileID) * 16;
     }
 
     for(uint8_t curByte = 0; curByte < 16; curByte++) {
-        tileData[curByte] = Read(addressToRead + curByte);
+        tileData[curByte] = Read((addressToRead + curByte), caller);
     }
 
     return tileData;
@@ -33,7 +39,7 @@ std::array<uint8_t, 16> Memory::ReadSpriteTile(uint8_t tileID, MemoryAccessor ca
     uint16_t addressToRead = 0x8000 + (tileID * 16);
 
     for(uint8_t curByte = 0; curByte < 16; curByte++) {
-        tileData[curByte] = Read(addressToRead + curByte);
+        tileData[curByte] = Read((addressToRead + curByte), caller);
     }
 
     return tileData;
@@ -60,11 +66,13 @@ uint8_t Memory::Read(uint16_t address, MemoryAccessor caller) {
     }
 
     if (address <= 0x9FFF) {
-        //subtract 0x8000 for the vram offset
+        
         //disable during draw phase for cpu
-        if (mode == PPUMode::Draw && caller == MemoryAccessor::CPU) {
-            return 0xFF;
+        // LCD must be ON
+        if (isLcdOn() && mode == PPUMode::Draw && caller == MemoryAccessor::CPU) {
+            return 0xFF; // Blocked
         }
+        //subtract 0x8000 for the vram offset
         return vram[address - 0x8000];
     }
 
@@ -84,11 +92,11 @@ uint8_t Memory::Read(uint16_t address, MemoryAccessor caller) {
     }
 
     if (address <= 0xFE9F) {
-        //sprite memory
-        // disbale during draw and OAM for CPU
-        if ((mode == PPUMode::Draw || mode == PPUMode::OAM) && caller == MemoryAccessor::CPU) {
-            return 0xFF;
+        // disbale during draw and OAM for CPU (LCD must be ON)
+        if (isLcdOn() && (mode == PPUMode::Draw || mode == PPUMode::OAM) && caller == MemoryAccessor::CPU) {
+            return 0xFF; // Blocked
         }
+        //sprite memory
         return oam[address - 0xFE00];
     }
 
@@ -164,9 +172,9 @@ void Memory::Write(uint16_t address, uint8_t byteToWrite, MemoryAccessor caller)
 
     if (address <= 0x9FFF) {
         //subtract 0x8000 for the vram offset
-        //disable during draw phase for cpu
-        if (mode == PPUMode::Draw && caller == MemoryAccessor::CPU) {
-            return;
+        //disable during draw phase for cpu (LCD must be ON)
+        if (isLcdOn() && mode == PPUMode::Draw && caller == MemoryAccessor::CPU) {
+            return; // Blocked
         }
         vram[address - 0x8000] = byteToWrite;
         return;
@@ -191,9 +199,9 @@ void Memory::Write(uint16_t address, uint8_t byteToWrite, MemoryAccessor caller)
     }
 
     if (address <= 0xFE9F) {
-        // disable during draw and oam phase for cpu
-        if ((mode == PPUMode::Draw || mode==PPUMode::OAM) && caller == MemoryAccessor::CPU) {
-            return;
+        // disable during draw and oam phase for cpu (LCD must be ON)
+        if (isLcdOn() && (mode == PPUMode::Draw || mode == PPUMode::OAM) && caller == MemoryAccessor::CPU) {
+        return; // Blocked
         }
         oam[address - 0xFE00] = byteToWrite;
         return;
@@ -219,7 +227,6 @@ void Memory::Write(uint16_t address, uint8_t byteToWrite, MemoryAccessor caller)
     }
 
 }
-
 //rom loading function
 
 void Memory::LoadRom(char const* filename) {

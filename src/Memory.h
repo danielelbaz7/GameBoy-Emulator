@@ -11,8 +11,7 @@ enum class PPUMode : uint8_t {
     HBlank = 0,
     VBlank = 1,
     OAM    = 2,
-    Draw   = 3,
-    Off    = 4
+    Draw   = 3
 };
 
 enum class MemoryAccessor { CPU, PPU };
@@ -21,10 +20,10 @@ class Memory {
 public:
     void LoadRom(char const* filename);
 
-    void WriteScanline(uint8_t value, MemoryAccessor caller = MemoryAccessor::CPU);
+    void WriteScanline(uint8_t value, MemoryAccessor caller = MemoryAccessor::PPU);
 
-    std::array<uint8_t, 16> ReadTile(uint8_t tileID, MemoryAccessor caller = MemoryAccessor::CPU);
-    std::array<uint8_t, 16> ReadSpriteTile(uint8_t tileID, MemoryAccessor caller = MemoryAccessor::CPU);
+    std::array<uint8_t, 16> ReadTile(uint8_t tileID, MemoryAccessor caller = MemoryAccessor::PPU);
+    std::array<uint8_t, 16> ReadSpriteTile(uint8_t tileID, MemoryAccessor caller = MemoryAccessor::PPU);
 
     uint8_t Read(uint16_t address, MemoryAccessor caller = MemoryAccessor::CPU);
     void Write(uint16_t address, uint8_t byteToWrite, MemoryAccessor caller = MemoryAccessor::CPU);
@@ -34,8 +33,9 @@ public:
     void setMode(PPUMode currentMode) {mode = currentMode;};
 
 private:
-
-    PPUMode mode = PPUMode::HBlank;
+    // set to default mode (VBlank)
+    PPUMode mode = PPUMode::VBlank;
+    bool isLcdOn();
 
     // All addresses/memory available to the Gameboy, 16-bit addresses
     // Video Memory (VRAM): 8000-9FFF (8KB)

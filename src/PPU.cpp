@@ -100,9 +100,7 @@ void PPU::UpdatePPU(uint8_t TcyclesSinceLastUpdate) {
             mem.setMode(currentMode);
         }
     }
-    else {
-        mem.setMode(PPUMode::Off);
-    }
+    // update the mode in memory | used for mem blocking and interrupts
 }
 
 void PPU::DrawBackground(uint32_t *scanline, uint8_t *bgWindowScanline) {

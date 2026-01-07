@@ -21,19 +21,7 @@ void CPU::write(uint16_t address, uint8_t byteToWrite) {
 }
 
 bool CPU::handleInterrupts() {
-    if (!IME) {
-        return false; // interupts disbaled
-    }
-    uint8_t IE = read(0xFFFF);
-    uint8_t IF = read(0xFF0F);  
-
-    if ((IE & IF) == 0) {
-        return false; // no interupts
-    }
-
-    // handle interrupts
-    // TODO
-    return true;
+    return false;
 }
 
 // Step function, executes exactly one instruction
@@ -64,7 +52,6 @@ uint8_t CPU::Step() {
     } else {
         cycleCount = (this->*opcodeTable[opcode])();
     }
-    
     //always increment after, we built it to expect this
     pc++;
     return cycleCount * dotsPerMCycle;
