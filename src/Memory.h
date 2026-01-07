@@ -4,10 +4,7 @@
 #ifndef GAMEBOYEMULATOR_MEMORY_H
 #define GAMEBOYEMULATOR_MEMORY_H
 #include <vector>
-#include <cstdint>
 #include <array>
-
-class PPU;
 
 enum class PPUMode : uint8_t {
     HBlank = 0,
@@ -22,16 +19,13 @@ class Memory {
 public:
     void LoadRom(char const* filename);
 
-    void WriteScanline(uint8_t value);
+    void WriteScanline(uint8_t value, MemoryAccessor caller = MemoryAccessor::CPU);
 
     std::array<uint8_t, 16> ReadTile(uint8_t tileID, MemoryAccessor caller = MemoryAccessor::CPU);
+    std::array<uint8_t, 16> ReadSpriteTile(uint8_t tileID, MemoryAccessor caller = MemoryAccessor::CPU);
 
     uint8_t Read(uint16_t address, MemoryAccessor caller = MemoryAccessor::CPU);
     void Write(uint16_t address, uint8_t byteToWrite);
-
-    void setOAMDisabled(const bool setTo) {
-        isOAMDisabledByPPU = setTo;
-    }
 
     void InitializeMemory();
 
@@ -88,7 +82,6 @@ private:
 
     uint8_t bankModeToUse{ROM_MODE};
 
-    bool isOAMDisabledByPPU{};
 
 };
 

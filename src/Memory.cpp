@@ -28,14 +28,27 @@ std::array<uint8_t, 16> Memory::ReadTile(uint8_t tileID, MemoryAccessor caller) 
     return tileData;
 }
 
+std::array<uint8_t, 16> Memory::ReadSpriteTile(uint8_t tileID, MemoryAccessor caller) {
+    std::array<uint8_t, 16> tileData{};
+    uint16_t addressToRead = 0x8000 + (tileID * 16);
+
+    for(uint8_t curByte = 0; curByte < 16; curByte++) {
+        tileData[curByte] = Read(addressToRead + curByte);
+    }
+
+    return tileData;
+}
+
 
 
 //write to the scanline register to indicate which scanline we are on
-void Memory::WriteScanline(uint8_t value) {
-    io[68] = value;
+void Memory::WriteScanline(uint8_t value, MemoryAccessor caller) {
+    if (caller == MemoryAccessor::PPU) {
+        io[68] = value;
+    }
 }
 
-uint8_t Memory::Read(uint16_t address, MemoryAccessor callerm) {
+uint8_t Memory::Read(uint16_t address, MemoryAccessor caller) {
     if (address <= 0x3FFF) {
         return rom[address];
     }
@@ -233,7 +246,7 @@ void Memory::InitializeMemory() {
     Write(0xFF24, 0x77); // NR50
     Write(0xFF25, 0xF3); // NR51
     Write(0xFF26, 0xF1); // NR52
-    Write(0xFF40, 0x91); // LCDC - LCD on, BG on
+    Write(0xFF40, 0xFF); // LCDC - LCD on, BG on
     Write(0xFF42, 0x00); // SCY
     Write(0xFF43, 0x00); // SCX
     Write(0xFF45, 0x00); // LYC

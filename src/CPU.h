@@ -76,7 +76,6 @@ private:
     //ime used to disable or enable all interrupts, IME=1/true is enabled, IME=0/false is disabled
     bool IME{}; //interrupt master enable flag
 
-
     void BuildOpcodeTables();
 
     bool halted = false;
