@@ -5,6 +5,7 @@
 #define GAMEBOYEMULATOR_MEMORY_H
 #include <vector>
 #include <array>
+#include <cstdint>
 
 enum class PPUMode : uint8_t {
     HBlank = 0,

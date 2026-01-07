@@ -4,6 +4,7 @@
 #include <iostream>
 #include <array>
 #include <SDL2/SDL_render.h>
+#include <algorithm>
 
 PPU::PPU(Memory& m) : mem(m) {
     mem.WriteScanline(currentScanline, MemoryAccessor::PPU);
