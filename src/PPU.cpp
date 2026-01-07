@@ -233,6 +233,7 @@ void PPU::DrawSprites(uint32_t *scanline, uint8_t *bgWindowScanline) {
 
             //flip if the flip flags are set
             if (SpriteFlagBitValue(s, 5)) { spriteX = 7 - spriteX; }
+            if (SpriteFlagBitValue(s, 6)) { spriteY = (spriteHeight()-1) - spriteY; }
 
             std::array<uint8_t, 16> tileData;
             if (spriteHeight() == 16) {
@@ -245,8 +246,6 @@ void PPU::DrawSprites(uint32_t *scanline, uint8_t *bgWindowScanline) {
             } else {
                 tileData = mem.ReadSpriteTile(s.tile);
             }
-
-            if (SpriteFlagBitValue(s, 6)) { spriteY = (spriteHeight()-1) - spriteY; }
 
             uint8_t pixelColor{};
             pixelColor = (tileData[spriteY * 2] & (0x01 << (7-spriteX))) >> (7-spriteX);
