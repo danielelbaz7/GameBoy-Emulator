@@ -31,14 +31,17 @@ void PPU::UpdatePPU(uint8_t TcyclesSinceLastUpdate) {
     //252 = 80 + 172
     else if(TcyclesSinceLastScanline >= (252) && currentMode == PPUMode::Draw) {
         uint32_t scanline[160]{};
+        uint8_t bgWindowScanline[160]{};
 
-        DrawBackground(scanline);
+        DrawBackground(scanline, bgWindowScanline);
         if (windowEnabled() && currentScanline >= windowStartY()) {
-            DrawWindow(scanline);
+            DrawWindow(scanline, bgWindowScanline);
             windowLinesWritten++;
         }
+
+
         if (spritesEnabled()) {
-            DrawSprites(scanline);
+            DrawSprites(scanline, bgWindowScanline);
         }
 
 
@@ -100,7 +103,7 @@ void PPU::UpdatePPU(uint8_t TcyclesSinceLastUpdate) {
     mem.setMode(currentMode);
 }
 
-void PPU::DrawBackground(uint32_t *scanline) {
+void PPU::DrawBackground(uint32_t *scanline, uint8_t *bgWindowScanline) {
     //iterates through every pixel in scanline
     for(uint8_t pixel = 0; pixel < 160; pixel++) {
         //background pixel detection
@@ -134,12 +137,13 @@ void PPU::DrawBackground(uint32_t *scanline) {
 
         //then grab the shade this colorID represents from
         uint8_t shade = (Read(0xFF47) & (0x03 << (pixelColor * 2))) >> (pixelColor * 2);
+        bgWindowScanline[pixel] = shade;
         scanline[pixel] = colors[shade];
     }
 }
 
 
-void PPU::DrawWindow(uint32_t *scanline) {
+void PPU::DrawWindow(uint32_t *scanline, uint8_t *bgWindowScanline) {
     //iterates through every pixel in scanline
     for(uint8_t pixel = 0; pixel < 160; pixel++) {
         //the current x position is offset by 7, so the window starts at 7 less than what is in the register
@@ -184,15 +188,17 @@ void PPU::DrawWindow(uint32_t *scanline) {
 
         //then grab the shade this colorID represents from
         uint8_t shade = (Read(0xFF47) & (0x03 << (pixelColor * 2))) >> (pixelColor * 2);
+        bgWindowScanline[pixel] = shade;
         scanline[pixel] = colors[shade];
     }
 }
 
 
-void PPU::DrawSprites(uint32_t *scanline) {
+void PPU::DrawSprites(uint32_t *scanline, uint8_t *bgWindowScanline) {
     //iterates through every pixel in scanline
     for(uint8_t pixel = 0; pixel < 160; pixel++) {
-        for (Sprite s : spriteBuffer) {
+        for (int i = 0; i < 10; i++) {
+            Sprite s = spriteBuffer[i];
             //sprite.x stores the starting x position + 8 (same as ending x position),
             //so x >= s.x-8 and x < s.x means sprite is rendered on this pixel
             if (pixel < (s.x - 8) || pixel >= s.x) {
@@ -232,7 +238,7 @@ void PPU::DrawSprites(uint32_t *scanline) {
             //s.flags & 0x80 is the priority bit, determines whether sprite gets priority over bg and window
             //
             if (s.flags & 0x80) {
-                if (scanline[pixel] == colors[0]) {
+                if (bgWindowScanline[pixel] == 0) {
                     uint16_t paletteAddress = SpriteFlagBitValue(s, 4) ? 0xFF49 : 0xFF48;
                     uint8_t shade = (Read(paletteAddress) & (0x03 << (pixelColor * 2))) >> (pixelColor * 2);
                     scanline[pixel] = colors[shade];
