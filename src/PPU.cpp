@@ -134,6 +134,7 @@ void PPU::DrawBackground(uint32_t *scanline, uint8_t *bgWindowScanline) {
     }
     //iterates through every pixel in scanline
     for(uint8_t pixel = 0; pixel < 160; pixel++) {
+
         //background pixel detection
         //scroll registers tell us how far right and how far down we have scrolled
         uint8_t xScroll = Read(0xFF43);

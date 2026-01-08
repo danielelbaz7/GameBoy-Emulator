@@ -34,7 +34,7 @@ public:
     void UpdateTIMA(uint16_t oldCounter, uint16_t newCounter);
     void SetJoypadInterrupt();
     void SetButtonStatus(std::unordered_map<std::string, KeyStatus> &buttonStatusRef) { buttonStatus = &buttonStatusRef; };
-    
+
 
 private:
     // set to default mode (VBlank)

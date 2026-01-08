@@ -59,7 +59,7 @@ void Memory::UpdateCounter(uint8_t Tcycles) {
 void Memory::setMode(PPUMode newMode) {
     // check current mode to handle setting interrupts
     //set bits 0 and 1 to the current mode that we are changing to
-    io[41] = ((io[41] & 0xFC) | static_cast<uint8_t>(newMode));
+    io[0x41] = ((io[0x41] & 0xFC) | static_cast<uint8_t>(newMode));
 
     // v-blank check
     if (mode != PPUMode::VBlank && newMode == PPUMode::VBlank) {
@@ -104,22 +104,21 @@ std::array<uint8_t, 16> Memory::ReadTile(uint8_t tileID, MemoryAccessor caller) 
 
 std::array<uint8_t, 16> Memory::ReadSpriteTile(uint8_t tileID, MemoryAccessor caller) {
     std::array<uint8_t, 16> tileData{};
-    uint16_t addressToRead = 0x8000 + (tileID * 16);
+    uint16_t addressToRead = static_cast<uint16_t>(0x8000 + (tileID * 16));
 
-    for(uint8_t curByte = 0; curByte < 16; curByte++) {
-        tileData[curByte] = Read((addressToRead + curByte), caller);
+    for (uint8_t curByte = 0; curByte < 16; curByte++) {
+        tileData[curByte] = Read(static_cast<uint16_t>(addressToRead + curByte), caller);
     }
 
     return tileData;
 }
 
 
-
 //write to the scanline register to indicate which scanline we are on
 void Memory::WriteScanline(uint8_t value, MemoryAccessor caller) {
     if (caller == MemoryAccessor::PPU) {
         //this is 0xFF44, LY register
-        io[68] = value;
+        io[0x44] = value;
     }
 }
 
@@ -224,7 +223,7 @@ void Memory::Write(uint16_t address, uint8_t byteToWrite, MemoryAccessor caller)
         if (lower5Bits == 0x00) {
             lower5Bits = 0x01;
         }
-        currentRomWindow = (currentRomWindow & ~0x1Fu) | lower5Bits;
+        currentRomWindow = (currentRomWindow & 0x60u) | lower5Bits;
         return;
     }
 
@@ -381,7 +380,7 @@ void Memory::InitializeMemory() {
     Write(0xFF24, 0x77); // NR50
     Write(0xFF25, 0xF3); // NR51
     Write(0xFF26, 0xF1); // NR52
-    Write(0xFF40, 0xFF); // LCDC - LCD on, BG on
+    Write(0xFF40, 0x91); // LCDC - LCD on, BG on
     Write(0xFF42, 0x00); // SCY
     Write(0xFF43, 0x00); // SCX
     Write(0xFF45, 0x00); // LYC
