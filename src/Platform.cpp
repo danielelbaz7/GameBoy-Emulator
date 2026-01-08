@@ -33,6 +33,7 @@ void Platform::Run() {
     while (!quit) {
 
         if (cpu.stopped) {
+            cpu.Step();
             SDL_Event e;
             while (SDL_PollEvent(&e)) {
             switch (e.type) {
@@ -60,7 +61,7 @@ void Platform::Run() {
             }
 
         }
-            break;
+            continue;
         }
 
         //only handles fetch, decode, execute, won't do anything if the gameboy is halted

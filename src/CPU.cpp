@@ -34,7 +34,6 @@ bool CPU::checkInterrupt(uint8_t IF, uint8_t IE, int bitToCheck) {
 }
 
 bool CPU::handleInterrupts() {
-
     uint8_t IF = read(0xFF0F);
     uint8_t IE = read(0xFFFF);
     uint8_t mask = 0x1F;
@@ -42,11 +41,13 @@ bool CPU::handleInterrupts() {
         return false; // no interrupts to handle
     }
     halted = false;
-
+    stopped = false;
     if (!IME) {
         return false; // interrupts disabled
     }
+
     IME = false;
+
 
     // handle interrupts (ONE MAX) from bit 0 to bit 7
     // push pc onto stack
@@ -151,7 +152,7 @@ bool CPU::readFlag(unsigned char flagName) const {
             return (af.f & (FLAG_H)) != 0;
         case 'C':
             return (af.f & (FLAG_C)) != 0;
-        default: return false;;
+        default: return false;
     }
 }
 

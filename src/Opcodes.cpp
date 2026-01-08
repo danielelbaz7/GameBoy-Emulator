@@ -700,6 +700,7 @@ uint8_t CPU::OP_0x0F() {
 //STOP FUNCTION
 // when exiting 'stop', incremement pc twice because two byte instruction ( 0x 10 00)
 uint8_t CPU::OP_0x10() {
+    pc++;
     stopped = true;
     return 1;
 }
