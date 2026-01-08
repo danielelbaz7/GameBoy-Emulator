@@ -42,7 +42,7 @@ private:
     std::unordered_map<std::string, std::string> keysToButtons = 
     {{"W", "up"}, {"S", "down"}, {"A", "left"}, {"D", "right"}, {"Z", "a"}, {"X", "b"}, {"C", "select"}, {"V", "start"}};
     
-    void SetButtonStatus(std::string key, KeyStatus status);
+    void SetButtonStatusInMemory(std::string key, KeyStatus status);
 };
 
 

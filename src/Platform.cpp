@@ -9,7 +9,7 @@
 
 Platform::Platform(const char* filename)
     : window(SDL_CreateWindow("Gameboy", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
-        160 * 5, 144 * 5, SDL_WINDOW_SHOWN)),
+        160 * 3, 144 * 3, SDL_WINDOW_SHOWN)),
     renderer(SDL_CreateRenderer( window, -1, SDL_RENDERER_ACCELERATED )),
     texture(SDL_CreateTexture( renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_STREAMING, 160, 144)) {
     //initializes the draw color, and this whole constructor places the rom into memory and creates an SDL window
@@ -53,8 +53,44 @@ void Platform::Run() {
         // A button -> Z, B button -> X, Start -> C, Select -> V
         SDL_Event e;
         if (SDL_PollEvent(&e)) {
-            if (e.type == SDL_QUIT)
-                quit = true;
+            switch (e.type) {
+                //quit the program if the user quits the application
+                case SDL_QUIT: {
+                    quit = true;
+                } break;
+
+                case SDL_KEYDOWN: {
+                    switch (e.key.keysym.sym) {
+                        //direction buttons
+                        case SDLK_w: { SetButtonStatusInMemory("W", KeyStatus::Pressed); break; }
+                        case SDLK_a: { SetButtonStatusInMemory("A", KeyStatus::Pressed); break; }
+                        case SDLK_s: { SetButtonStatusInMemory("S", KeyStatus::Pressed); break; }
+                        case SDLK_d: { SetButtonStatusInMemory("D", KeyStatus::Pressed); break; }
+
+                        case SDLK_z: { SetButtonStatusInMemory("Z", KeyStatus::Pressed); break; }
+                        case SDLK_x: { SetButtonStatusInMemory("X", KeyStatus::Pressed); break; }
+                        case SDLK_c: { SetButtonStatusInMemory("C", KeyStatus::Pressed); break; }
+                        case SDLK_v: { SetButtonStatusInMemory("V", KeyStatus::Pressed); break; }
+
+                    }
+                }
+
+                case SDL_KEYUP: {
+                    switch (e.key.keysym.sym) {
+                        //direction buttons
+                        case SDLK_w: { SetButtonStatusInMemory("W", KeyStatus::Released); break; }
+                        case SDLK_a: { SetButtonStatusInMemory("A", KeyStatus::Released); break; }
+                        case SDLK_s: { SetButtonStatusInMemory("S", KeyStatus::Released); break; }
+                        case SDLK_d: { SetButtonStatusInMemory("D", KeyStatus::Released); break; }
+
+                        case SDLK_z: { SetButtonStatusInMemory("Z", KeyStatus::Released); break; }
+                        case SDLK_x: { SetButtonStatusInMemory("X", KeyStatus::Released); break; }
+                        case SDLK_c: { SetButtonStatusInMemory("C", KeyStatus::Released); break; }
+                        case SDLK_v: { SetButtonStatusInMemory("V", KeyStatus::Released); break; }
+
+                    }
+                }
+            }
 
         }
 
@@ -95,10 +131,10 @@ void Platform::DrawFramebuffer(uint32_t *frameBuffer, uint16_t colCount) {
     SDL_RenderPresent(renderer);
 }
 
-void Platform::SetButtonStatus(std::string key, KeyStatus status) {
+void Platform::SetButtonStatusInMemory(std::string key, KeyStatus status) {
     KeyStatus oldStatus = buttonStatus[keysToButtons[key]];
     //set the new status
-    buttonStatus[keysToButtons[key]] = KeyStatus::Pressed;
+    buttonStatus[keysToButtons[key]] = status;
 
     if(status == KeyStatus::Pressed && oldStatus == KeyStatus::Released) {
         mem.SetInputInterrupt();
