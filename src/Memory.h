@@ -29,6 +29,7 @@ public:
     void setMode(PPUMode newMode);
     void WriteCoincidence(bool LYEqualsLYC);
     void UpdateCounter(uint8_t TcyclesSinceLastInstr);
+    void UpdateTIMA(uint16_t oldCounter, uint16_t newCounter);
     
 
 private:
@@ -83,9 +84,9 @@ private:
 
     uint8_t bankModeToUse{ROM_MODE};
 
-    
     uint16_t internalCounter{};
 
+    uint16_t TACValues[4]{1024, 16, 64, 256};
 
 
 };

@@ -26,8 +26,24 @@ void Memory::WriteCoincidence(bool LYEqualsLYC) { //sets stat bit 2 (read only) 
     else { io[0x41] &= ~0x04; }
 };
 
+void Memory::UpdateTIMA(uint16_t oldCounter, uint16_t newCounter) {
+    uint8_t TAC = (io[0x07] & 0x03); // tac register (bits 0 and 1 only)
+    uint16_t waitTime = TACValues[TAC];
+    if((newCounter / waitTime) > (oldCounter / waitTime)) {
+        io[0x05]++;
+        //check if we overflowed
+        if(io[0x05] == 0x0) {
+            io[0x0F] |= 0x04; // set bit 2 of IF to 1
+            io[0x05] = io[0x06]; // set TIMA to value in TMA register
+        }
+    }
+}
+
+
 void Memory::UpdateCounter(uint8_t Tcycles) {
+    uint16_t old = internalCounter;
     internalCounter += Tcycles;
+    UpdateTIMA(old, internalCounter);
     return;
 }
 
