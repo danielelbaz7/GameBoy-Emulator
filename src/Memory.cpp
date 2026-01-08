@@ -24,7 +24,11 @@ void Memory::WriteCoincidence(bool LYEqualsLYC) { //sets stat bit 2 (read only) 
         }
     }
     else { io[0x41] &= ~0x04; }
-};
+}
+
+void Memory::SetInputInterrupt() {
+    io[0x41] |= 0x10;
+}
 
 void Memory::UpdateTIMA(uint16_t oldCounter, uint16_t newCounter) {
     uint8_t TAC = (io[0x07] & 0x03); // tac register (bits 0 and 1 only)

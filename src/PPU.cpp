@@ -56,6 +56,7 @@ void PPU::UpdatePPU(uint8_t TcyclesSinceLastUpdate) {
         mem.setMode(currentMode);
     }
 
+    // this is at the end of drawing a scanline, transition to OAM if we haven't drawn all scanlines
     else if (TcyclesSinceLastScanline >= 456 && currentMode == PPUMode::HBlank) {
         //reset to a new line, subtracting 456 also keeps overflow if it exists
         currentScanline++;
@@ -72,6 +73,7 @@ void PPU::UpdatePPU(uint8_t TcyclesSinceLastUpdate) {
         }
     }
 
+    //this is for at the end of drawing a frame, transition to OAM once we have finished drawing a frame
     else if (TcyclesSinceLastScanline >= 456 && currentMode == PPUMode::VBlank) {
         currentScanline++;
         mem.WriteScanline(currentScanline, MemoryAccessor::PPU);
@@ -161,6 +163,7 @@ void PPU::DrawBackground(uint32_t *scanline, uint8_t *bgWindowScanline) {
         pixelColor = (tileData[tileRow * 2] & (0x01 << tileColumn)) >> tileColumn;
         pixelColor |= ((tileData[(tileRow * 2) + 1] & (0x01 << tileColumn)) >> tileColumn) << 1u;
 
+        //store original pixel color ID so sprites can determine priority
         bgWindowScanline[pixel] = pixelColor;
         //then grab the shade this colorID represents from
         //0xFF47 is the palette for windows and bg

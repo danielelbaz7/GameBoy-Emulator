@@ -9,7 +9,7 @@
 
 Platform::Platform(const char* filename)
     : window(SDL_CreateWindow("Gameboy", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
-        160 * 3, 144 * 3, SDL_WINDOW_SHOWN)),
+        160 * 5, 144 * 5, SDL_WINDOW_SHOWN)),
     renderer(SDL_CreateRenderer( window, -1, SDL_RENDERER_ACCELERATED )),
     texture(SDL_CreateTexture( renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_STREAMING, 160, 144)) {
     //initializes the draw color, and this whole constructor places the rom into memory and creates an SDL window
@@ -49,6 +49,8 @@ void Platform::Run() {
 
         cyclesUsed -= TcyclesPerFrame;
 
+        //keyboard mappings: WASD -> D-pad (Direction buttons)
+        // A button -> Z, B button -> X, Start -> C, Select -> V
         SDL_Event e;
         if (SDL_PollEvent(&e)) {
             if (e.type == SDL_QUIT)
@@ -90,4 +92,14 @@ void Platform::DrawFramebuffer(uint32_t *frameBuffer, uint16_t colCount) {
     //first nullptr means we use the entire source texture, second one means fill the entire renderer
     SDL_RenderCopy(renderer, texture, nullptr, nullptr);
     SDL_RenderPresent(renderer);
+}
+
+void Platform::SetButtonStatus(std::string key, KeyStatus status) {
+    KeyStatus oldStatus = buttonStatus[keysToButtons[key]] ? KeyStatus::PRESSED : KeyStatus::RELEASED;
+    //set the new status
+    buttonStatus[keysToButtons[key]] = (status == KeyStatus::PRESSED);
+
+    if(status == KeyStatus::PRESSED && oldStatus == KeyStatus::RELEASED) {
+        mem.SetInputInterrupt();
+    }
 }

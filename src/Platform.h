@@ -6,6 +6,7 @@
 #define GAMEBOYEMULATOR_PLATFORM_H
 #include "CPU.h"
 #include <chrono>
+#include <unordered_map>
 
 #include <SDL2/SDL.h>
 
@@ -30,6 +31,20 @@ private:
     const unsigned int TcyclesPerFrame{70224};
     const std::chrono::microseconds microSecondsPerFrame = std::chrono::microseconds{16744};
 
+    //keyboard mappings: WASD -> D-pad (Direction buttons)
+    // A button -> Z, B button -> X, Start -> C, Select -> V
+    std::unordered_map<std::string, bool> buttonStatus = 
+    {{"up", true}, {"down", true}, {"left", true}, {"right", true}, {"a", true}, {"b", true}, {"shift", true}, {"select", true}};
+    
+    std::unordered_map<std::string, std::string> keysToButtons = 
+    {{"W", "up"}, {"S", "down"}, {"A", "left"}, {"D", "right"}, {"Z", "a"}, {"X", "b"}, {"C", "start"}, {"V", "select"}};
+
+    enum class KeyStatus : bool {
+        PRESSED = false,
+        RELEASED = true
+    };
+
+    void SetButtonStatus(std::string key, KeyStatus status);
 };
 
 
