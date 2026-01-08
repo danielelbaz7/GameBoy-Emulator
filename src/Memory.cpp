@@ -256,9 +256,6 @@ void Memory::Write(uint16_t address, uint8_t byteToWrite, MemoryAccessor caller)
     }
 
     if (address <= 0xFF7F) {
-        if (address == 0xFF46) {
-            std::copy(std::begin(wram), std::begin(wram) + 160, oam);
-        }
         io[address - 0xFF00] = byteToWrite;
         return;
     }
