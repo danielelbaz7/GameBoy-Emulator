@@ -306,9 +306,6 @@ void Memory::Write(uint16_t address, uint8_t byteToWrite, MemoryAccessor caller)
             return;
         }
         if (address == 0xFF46) {
-            io[address - 0xFF00] = 0;
-        }
-        if (address == 0xFF46) {
             //the byte to write is the upper 2 bytes of the source addresses
             //destination is always FE00-FE9F
             uint16_t sourceAddress{static_cast<uint16_t>((byteToWrite) << 8u)};
@@ -317,6 +314,7 @@ void Memory::Write(uint16_t address, uint8_t byteToWrite, MemoryAccessor caller)
             for (int i = 0; i < 160; i++) {
                 Write(destinationAddress + i, Read(sourceAddress + i));
             }
+            return;
         }
         io[address - 0xFF00] = byteToWrite;
         return;
