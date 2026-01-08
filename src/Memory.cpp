@@ -118,6 +118,7 @@ std::array<uint8_t, 16> Memory::ReadSpriteTile(uint8_t tileID, MemoryAccessor ca
 //write to the scanline register to indicate which scanline we are on
 void Memory::WriteScanline(uint8_t value, MemoryAccessor caller) {
     if (caller == MemoryAccessor::PPU) {
+        //this is 0xFF44, LY register
         io[68] = value;
     }
 }
@@ -180,6 +181,9 @@ uint8_t Memory::Read(uint16_t address, MemoryAccessor caller) {
 
         if(address == 0xFF04) {
             return internalCounter >> 8u;
+        }
+        if (address == 0xFF41) {
+            return (io[address - 0xFF00] | 0x80);
         }
         //io port
         return io[address - 0xFF00];
@@ -276,7 +280,7 @@ void Memory::Write(uint16_t address, uint8_t byteToWrite, MemoryAccessor caller)
     if (address <= 0xFE9F) {
         // disable during draw and oam phase for cpu (LCD must be ON)
         if (isLcdOn() && (mode == PPUMode::Draw || mode == PPUMode::OAM) && caller == MemoryAccessor::CPU) {
-        return; // Blocked
+            return; // Blocked
         }
         oam[address - 0xFE00] = byteToWrite;
         return;
@@ -294,6 +298,15 @@ void Memory::Write(uint16_t address, uint8_t byteToWrite, MemoryAccessor caller)
         if (address == 0xFF04) {
             internalCounter = 0; // when DIV/internalCounter is written to, set to 0
             return;
+        }
+        if (address == 0xFF41) {
+            //mask the address to only take the original bits, so the middle 3-6 are zero,
+            //then or with byte to write's bits there
+            io[address - 0xFF00] = (io[address - 0xFF00] & 0x87) | (byteToWrite & 0x78);
+            return;
+        }
+        if (address == 0xFF46) {
+            io[address - 0xFF00] = 0;
         }
         if (address == 0xFF46) {
             //the byte to write is the upper 2 bytes of the source addresses
@@ -336,13 +349,13 @@ void Memory::LoadRom(char const* filename) {
     }
     //resize the external ram based on the size stored in rom[0x149]
     switch (rom[0x149]) {
-        case 0x00: eRam.resize(0);
-        case 0x01: eRam.resize(0);
-        case 0x02: eRam.resize(0x2000);
-        case 0x03: eRam.resize(0x8000);
-        case 0x04: eRam.resize(0x20000);
-        case 0x05: eRam.resize(0x10000);
-        default: eRam.resize(0);
+        case 0x00: eRam.resize(0); break;
+        case 0x01: eRam.resize(0); break;
+        case 0x02: eRam.resize(0x2000); break;
+        case 0x03: eRam.resize(0x8000); break;
+        case 0x04: eRam.resize(0x20000); break;
+        case 0x05: eRam.resize(0x10000); break;
+        default: eRam.resize(0); break;
     }
 }
 
