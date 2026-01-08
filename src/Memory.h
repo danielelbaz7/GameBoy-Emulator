@@ -16,6 +16,7 @@ enum class PPUMode : uint8_t {
 };
 
 enum class MemoryAccessor { CPU, PPU };
+enum class KeyStatus : bool { Pressed = false, Released = true };
 
 class Memory {
 public:
@@ -32,7 +33,7 @@ public:
     void UpdateCounter(uint8_t TcyclesSinceLastInstr);
     void UpdateTIMA(uint16_t oldCounter, uint16_t newCounter);
     void SetInputInterrupt();
-    void SetButtonStatus(std::unordered_map<std::string, bool> &buttonStatusRef) { buttonStatus = buttonStatusRef; };
+    void SetButtonStatus(std::unordered_map<std::string, KeyStatus> &buttonStatusRef) { buttonStatus = &buttonStatusRef; };
     
 
 private:
@@ -91,7 +92,10 @@ private:
 
     uint16_t TACValues[4]{1024, 16, 64, 256};
 
-    const std::unordered_map<std::string, bool> *buttonStatus;
+    uint8_t selectedGroup{0x30}; // 0x30 means no group selected, 0x20 is direction (WASD)
+    //0x10 is action buttons, 0x00 is both groups selected
+    const std::unordered_map<std::string, KeyStatus> *buttonStatus;
+    uint8_t SetJoypadBits();
 
 };
 

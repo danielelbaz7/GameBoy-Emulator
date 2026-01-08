@@ -12,7 +12,6 @@
 
 #include "PPU.h"
 
-enum class KeyStatus : bool { Pressed = false, Released = true };
 
 //the platform class holds the actual entire computer's logic, pulling from cpu, ppu, etc.
 class Platform {
@@ -35,11 +34,13 @@ private:
 
     //keyboard mappings: WASD -> D-pad (Direction buttons)
     // A button -> Z, B button -> X, Start -> C, Select -> V
-    std::unordered_map<std::string, bool> buttonStatus = 
-    {{"up", true}, {"down", true}, {"left", true}, {"right", true}, {"a", true}, {"b", true}, {"shift", true}, {"select", true}};
+    std::unordered_map<std::string, KeyStatus> buttonStatus =
+    {{"up", KeyStatus::Released}, {"down", KeyStatus::Released}, {"left", KeyStatus::Released},
+        {"right", KeyStatus::Released}, {"a", KeyStatus::Released}, {"b", KeyStatus::Released},
+        {"select", KeyStatus::Released}, {"start", KeyStatus::Released}};
     
     std::unordered_map<std::string, std::string> keysToButtons = 
-    {{"W", "up"}, {"S", "down"}, {"A", "left"}, {"D", "right"}, {"Z", "a"}, {"X", "b"}, {"C", "start"}, {"V", "select"}};
+    {{"W", "up"}, {"S", "down"}, {"A", "left"}, {"D", "right"}, {"Z", "a"}, {"X", "b"}, {"C", "select"}, {"V", "start"}};
     
     void SetButtonStatus(std::string key, KeyStatus status);
 };

@@ -95,11 +95,11 @@ void Platform::DrawFramebuffer(uint32_t *frameBuffer, uint16_t colCount) {
 }
 
 void Platform::SetButtonStatus(std::string key, KeyStatus status) {
-    KeyStatus oldStatus = buttonStatus[keysToButtons[key]] ? KeyStatus::PRESSED : KeyStatus::RELEASED;
+    KeyStatus oldStatus = buttonStatus[keysToButtons[key]] ? KeyStatus::Pressed : KeyStatus::Released;
     //set the new status
-    buttonStatus[keysToButtons[key]] = (status == KeyStatus::PRESSED);
+    buttonStatus[keysToButtons[key]] = (status == KeyStatus::Pressed);
 
-    if(status == KeyStatus::PRESSED && oldStatus == KeyStatus::RELEASED) {
+    if(status == KeyStatus::Pressed && oldStatus == KeyStatus::Released) {
         mem.SetInputInterrupt();
     }
 }

@@ -119,18 +119,6 @@ void Memory::WriteScanline(uint8_t value, MemoryAccessor caller) {
 }
 
 uint8_t Memory::Read(uint16_t address, MemoryAccessor caller) {
-    //always returning no buttons pressed when reading, this is for debugging
-    if (address == 0xFF00) {
-
-        uint8_t inputReg = io[0];
-        if ((0x20 & inputReg) == 0) {
-            if (buttonStatus["a"] == KeyMode::Pressed ) {
-                io[0]
-            }
-        }
-        return 0xFF;
-    }
-
     if (address <= 0x3FFF) {
         return rom[address];
     }
@@ -182,6 +170,10 @@ uint8_t Memory::Read(uint16_t address, MemoryAccessor caller) {
     }
 
     if (address <= 0xFF7F) {
+        if (address == 0xFF00) {
+            return SetJoypadBits();
+        }
+
         if(address == 0xFF04) {
             return internalCounter >> 8u;
         }
@@ -291,6 +283,9 @@ void Memory::Write(uint16_t address, uint8_t byteToWrite, MemoryAccessor caller)
     }
 
     if (address <= 0xFF7F) {
+        if (address == 0xFF00) {
+            selectedGroup == byteToWrite & 0x30;
+        }
         if (address == 0xFF04) {
             internalCounter = 0; // when DIV/internalCounter is written to, set to 0
             return;
@@ -370,4 +365,44 @@ void Memory::InitializeMemory() {
     Write(0xFF4A, 0x00); // WY
     Write(0xFF4B, 0x00); // WX
     Write(0xFFFF, 0x00); // IE
+}
+
+//when we read from the joypad, we need to do this
+uint8_t Memory::SetJoypadBits() {
+    //begin with the selected group data plus the first 4 bits unpressed
+    uint8_t baseValue = selectedGroup | 0x0F;
+    //if bit 4 is 0, that means action buttons are selected (could be both, but at least direction)
+    if ((baseValue & 0x20) == 0) {
+        //set each pressed button to 0 on the register
+        if (buttonStatus->at("a") == KeyStatus::Pressed) {
+            baseValue &= ~0x01;
+        }
+        if (buttonStatus->at("b") == KeyStatus::Pressed) {
+            baseValue &= ~0x02;
+        }
+        if (buttonStatus->at("select") == KeyStatus::Pressed) {
+            baseValue &= ~0x04;
+        }
+        if (buttonStatus->at("select") == KeyStatus::Pressed) {
+            baseValue &= ~0x08;
+        }
+    }
+    //this is for direction buttons
+    if ((baseValue & 0x10) == 0) {
+        //set each pressed button to 0 on the register
+        if (buttonStatus->at("right") == KeyStatus::Pressed) {
+            baseValue &= ~0x01;
+        }
+        if (buttonStatus->at("left") == KeyStatus::Pressed) {
+            baseValue &= ~0x02;
+        }
+        if (buttonStatus->at("up") == KeyStatus::Pressed) {
+            baseValue &= ~0x04;
+        }
+        if (buttonStatus->at("down") == KeyStatus::Pressed) {
+            baseValue &= ~0x08;
+        }
+    }
+
+    return baseValue;
 }

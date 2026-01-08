@@ -6,8 +6,10 @@
     <inspection_tool class="AngularCliAddDependency" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="AngularDeferBlockOnTrigger" enabled="false" level="ERROR" enabled_by_default="false" />
     <inspection_tool class="AngularForBlockNonIterableVar" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="AngularIllegalForLoopTrackAccess" enabled="false" level="ERROR" enabled_by_default="false" />
     <inspection_tool class="AngularInaccessibleSymbol" enabled="false" level="ERROR" enabled_by_default="false" />
     <inspection_tool class="AngularIncorrectBlockUsage" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="AngularIncorrectLetUsage" enabled="false" level="ERROR" enabled_by_default="false" />
     <inspection_tool class="AngularIncorrectTemplateDefinition" enabled="false" level="ERROR" enabled_by_default="false" />
     <inspection_tool class="AngularInsecureBindingToEvent" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="AngularInvalidAnimationTriggerAssignment" enabled="false" level="ERROR" enabled_by_default="false" />
@@ -27,6 +29,9 @@
     <inspection_tool class="AngularUndefinedBinding" enabled="false" level="ERROR" enabled_by_default="false" />
     <inspection_tool class="AngularUndefinedModuleExport" enabled="false" level="ERROR" enabled_by_default="false" />
     <inspection_tool class="AngularUndefinedTag" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="AngularUnresolvedPipe" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="AngularUnsupportedSyntax" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="AngularUnusedComponentImport" enabled="false" level="ERROR" enabled_by_default="false" />
     <inspection_tool class="Annotator" enabled="false" level="ERROR" enabled_by_default="false" />
     <inspection_tool class="AnonymousFunctionJS" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="ArgumentSelectionDefects" enabled="false" level="WARNING" enabled_by_default="false" />
@@ -54,6 +59,7 @@
     <inspection_tool class="Clazy" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="CommaExpressionJS" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="CommandLineInspection" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="ComposeErroneousRelation" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="ComposeMissingKeys" enabled="false" level="ERROR" enabled_by_default="false" />
     <inspection_tool class="ComposeUnknownKeys" enabled="false" level="ERROR" enabled_by_default="false" />
     <inspection_tool class="ComposeUnknownValues" enabled="false" level="ERROR" enabled_by_default="false" />
@@ -125,6 +131,7 @@
     <inspection_tool class="CppDependentTemplateWithoutTemplateKeyword" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="CppDependentTypeWithoutTypenameKeyword" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="CppDeprecatedEntity" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="CppDeprecatedOverridenMethod" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="CppDeprecatedRegisterStorageClassSpecifier" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="CppDereferenceOperatorLimitExceeded" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="CppDiscardedPostfixOperatorResult" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
@@ -181,6 +188,7 @@
     <inspection_tool class="CppMismatchedClassTags" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="CppMissingIncludeGuard" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="CppMissingKeywordThrow" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="CppModulePartitionWithSeveralPartitionUnits" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="CppMsExtAddressOfClassRValue" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="CppMsExtBindingRValueToLvalueReference" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="CppMsExtCopyElisionInCopyInitDeclarator" enabled="false" level="WARNING" enabled_by_default="false" />
@@ -237,12 +245,14 @@
     <inspection_tool class="CppRedundantEmptyDeclaration" enabled="false" level="HINT" enabled_by_default="false" />
     <inspection_tool class="CppRedundantEmptyStatement" enabled="false" level="HINT" enabled_by_default="false" />
     <inspection_tool class="CppRedundantExportKeyword" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="CppRedundantFwdClassOrEnumSpecifier" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
     <inspection_tool class="CppRedundantInlineSpecifier" enabled="false" level="HINT" enabled_by_default="false" />
     <inspection_tool class="CppRedundantLambdaParameterList" enabled="false" level="HINT" enabled_by_default="false" />
     <inspection_tool class="CppRedundantMemberInitializer" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
     <inspection_tool class="CppRedundantNamespaceDefinition" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
     <inspection_tool class="CppRedundantParentheses" enabled="false" level="HINT" enabled_by_default="false" />
     <inspection_tool class="CppRedundantQualifier" enabled="false" level="HINT" enabled_by_default="false" />
+    <inspection_tool class="CppRedundantQualifierADL" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="CppRedundantStaticSpecifierOnMemberAllocationFunction" enabled="false" level="HINT" enabled_by_default="false" />
     <inspection_tool class="CppRedundantStaticSpecifierOnThreadLocalLocalVariable" enabled="false" level="HINT" enabled_by_default="false" />
     <inspection_tool class="CppRedundantTemplateArguments" enabled="false" level="HINT" enabled_by_default="false" />
@@ -341,16 +351,22 @@
     <inspection_tool class="CssUnusedSymbol" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="CustomRegExpInspection" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="CyclicJobDependency" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="CyclomaticComplexityInspection" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="CyclomaticComplexityJS" enabled="false" level="WARNING" enabled_by_default="false">
       <option name="m_limit" value="10" />
     </inspection_tool>
     <inspection_tool class="DebuggerStatementJS" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="DefaultNotLastCaseInSwitchJS" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="DevContainerIdeSettings" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="DevcontainerFolder" enabled="false" level="ERROR" enabled_by_default="false" />
     <inspection_tool class="DivideByZeroJS" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="DockerFileAddOrCopyPaths" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="DockerFileArgumentCount" enabled="false" level="ERROR" enabled_by_default="false" />
     <inspection_tool class="DockerFileAssignments" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="DockerFileCopyHeredoc" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="DockerFileDuplicatedStageName" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="DockerFileEntrypointWithoutExec" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="DockerFileHeredocDelimiters" enabled="false" level="ERROR" enabled_by_default="false" />
     <inspection_tool class="DockerFileRunCommandMissingContinuation" enabled="false" level="ERROR" enabled_by_default="false" />
     <inspection_tool class="DockerJsonFormStringLiterals" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="DocumentWriteJS" enabled="false" level="WARNING" enabled_by_default="false" />
@@ -376,7 +392,10 @@
     <inspection_tool class="DtsUndeclaredProperty" enabled="false" level="ERROR" enabled_by_default="false" />
     <inspection_tool class="DtsUnitName" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="DuplicateConditionJS" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="DuplicateKeyInSection" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="DuplicateSectionInFile" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="DuplicatedCode" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
+    <inspection_tool class="DuplicatedJobUsage" enabled="false" level="ERROR" enabled_by_default="false" />
     <inspection_tool class="DynamicallyGeneratedCodeJS" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="ES6BindWithArrowFunction" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="ES6ClassMemberInitializationOrder" enabled="false" level="WARNING" enabled_by_default="false" />
@@ -463,12 +482,16 @@
     </inspection_tool>
     <inspection_tool class="HtmlUnknownTarget" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="HtmlWrongAttributeValue" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="HttpClientDuplicateImportInspection" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
     <inspection_tool class="HttpClientInappropriateProtocolUsageInspection" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
+    <inspection_tool class="HttpClientRunRequestNameInspection" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
     <inspection_tool class="HttpClientUnresolvedAuthId" enabled="false" level="ERROR" enabled_by_default="false" />
     <inspection_tool class="HttpClientUnresolvedVariable" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="HttpRequestAmbiguityEncoding" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
     <inspection_tool class="HttpRequestContentLengthIsIgnored" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="HttpRequestCustomHttpMethodInspection" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="HttpRequestEnvironmentAuthConfigurationValidationInspection" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="HttpRequestJsonBodyInspection" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="HttpRequestPlaceholder" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="HttpRequestRequestSeparatorJsonBodyInspection" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
     <inspection_tool class="HttpRequestRequestSeparatorXmlBodyInspection" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
@@ -574,6 +597,7 @@
     <inspection_tool class="JSXNamespaceValidation" enabled="false" level="INFORMATION" enabled_by_default="false" />
     <inspection_tool class="JSXSyntaxUsed" enabled="false" level="ERROR" enabled_by_default="false" />
     <inspection_tool class="JSXUnresolvedComponent" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
+    <inspection_tool class="JsCoverageInspection" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="Json5StandardCompliance" enabled="false" level="ERROR" enabled_by_default="false" />
     <inspection_tool class="JsonDuplicatePropertyKeys" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="JsonPathEvaluateUnknownKey" enabled="false" level="WARNING" enabled_by_default="false" />
@@ -640,6 +664,7 @@
     <inspection_tool class="OraMissingBodyInspection" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="OraOverloadInspection" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="OraUnmatchedForwardDeclarationInspection" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="OutdatedRequirementInspection" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
     <inspection_tool class="OverlyComplexArithmeticExpressionJS" enabled="false" level="WARNING" enabled_by_default="false">
       <option name="m_limit" value="6" />
     </inspection_tool>
@@ -668,11 +693,13 @@
     <inspection_tool class="PostCssMediaRange" enabled="false" level="ERROR" enabled_by_default="false" />
     <inspection_tool class="PostCssNesting" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="PostCssUnresolvedModuleValueReference" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="PpParserError" enabled="false" level="ERROR" enabled_by_default="false" />
     <inspection_tool class="PreprocessorComment" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="ProblematicWhitespace" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="PyAbstractClassInspection" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
     <inspection_tool class="PyArgumentEqualDefaultInspection" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
     <inspection_tool class="PyArgumentListInspection" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="PyAssertTypeInspection" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="PyAssignmentToLoopOrWithParameterInspection" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
     <inspection_tool class="PyAsyncCallInspection" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="PyAttributeOutsideInitInspection" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
@@ -703,12 +730,14 @@
     <inspection_tool class="PyDictDuplicateKeysInspection" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="PyDocstringTypesInspection" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
     <inspection_tool class="PyDunderSlotsInspection" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="PyEnumInspection" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="PyExceptClausesOrderInspection" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="PyExceptionInheritInspection" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="PyFinalInspection" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="PyFromFutureImportInspection" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="PyGlobalUndefinedInspection" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
     <inspection_tool class="PyInconsistentIndentationInspection" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="PyInconsistentReturnsInspection" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
     <inspection_tool class="PyIncorrectDocstringInspection" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
     <inspection_tool class="PyInitNewSignatureInspection" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="PyInterpreterInspection" enabled="false" level="WARNING" enabled_by_default="false" />
@@ -724,6 +753,7 @@
     <inspection_tool class="PyNamedTupleInspection" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="PyNestedDecoratorsInspection" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
     <inspection_tool class="PyNewStyleGenericSyntaxInspection" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="PyNewTypeInspection" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="PyNonAsciiCharInspection" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="PyNoneFunctionAssignmentInspection" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
     <inspection_tool class="PyOldStyleClassesInspection" enabled="false" level="WARNING" enabled_by_default="false" />
@@ -731,9 +761,7 @@
     <inspection_tool class="PyOverridesInspection" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="PyPackageRequirementsInspection" enabled="false" level="WARNING" enabled_by_default="false">
       <option name="ignoredPackages">
-        <value>
-          <list size="0" />
-        </value>
+        <list />
       </option>
     </inspection_tool>
     <inspection_tool class="PyPandasSeriesToListInspection" enabled="false" level="WARNING" enabled_by_default="false" />
@@ -769,6 +797,7 @@
     <inspection_tool class="PyUnnecessaryBackslashInspection" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="PyUnreachableCodeInspection" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="PyUnresolvedReferencesInspection" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="PyUnusedImportsInspection" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="PyUnusedLocalInspection" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
     <inspection_tool class="RadGlobal" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="ReassignedToPlainText" enabled="false" level="WARNING" enabled_by_default="false" />
@@ -840,6 +869,7 @@
     <inspection_tool class="SqlInsertIntoGeneratedColumnInspection" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="SqlInsertNullIntoNotNullInspection" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="SqlInsertValuesInspection" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="SqlJoinCountInspection" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="SqlJoinWithoutOnInspection" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="SqlMisleadingReferenceInspection" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="SqlMissingColumnAliasesInspection" enabled="false" level="WARNING" enabled_by_default="false" />
@@ -857,6 +887,7 @@
     <inspection_tool class="SqlShouldBeInGroupByInspection" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="SqlSideEffectsInspection" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="SqlSignatureInspection" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="SqlSingleSessionModeInspection" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="SqlStorageInspection" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="SqlStringLengthExceededInspection" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="SqlTransactionStatementInTriggerInspection" enabled="false" level="WARNING" enabled_by_default="false" />
@@ -904,7 +935,9 @@
     <inspection_tool class="TypeScriptValidateGenericTypes" enabled="false" level="ERROR" enabled_by_default="false" />
     <inspection_tool class="TypeScriptValidateTypes" enabled="false" level="ERROR" enabled_by_default="false" />
     <inspection_tool class="UndefinedAction" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="UndefinedJob" enabled="false" level="ERROR" enabled_by_default="false" />
     <inspection_tool class="UndefinedParamsPresent" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="UndefinedStage" enabled="false" level="ERROR" enabled_by_default="false" />
     <inspection_tool class="UnnecessaryContinueJS" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="UnnecessaryLabelJS" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="UnnecessaryLabelOnBreakStatementJS" enabled="false" level="WARNING" enabled_by_default="false" />
