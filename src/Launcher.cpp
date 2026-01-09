@@ -3,8 +3,14 @@
 //
 
 #include "Launcher.h"
-#include <windows.h>
-#include <commdlg.h>
+
+#ifdef _WIN32
+    #include <windows.h>
+    #include <commdlg.h>
+#elif __APPLE__
+    // macOS headers for file dialog
+    #include <Cocoa/Cocoa.h>
+#endif
 
 
 Launcher::Launcher() {
@@ -22,6 +28,8 @@ bool Launcher::IsClickInRect(int x, int y, SDL_Rect& rect) {
 }
 
 std::string Launcher::OpenFileDialog(const char* filter) {
+#ifdef _WIN32
+    // Windows implementation
     OPENFILENAMEA ofn;
     char szFile[260]{};
     
@@ -38,6 +46,24 @@ std::string Launcher::OpenFileDialog(const char* filter) {
         return std::string(szFile);
     }
     return "";  // cancelled
+    
+#elif __APPLE__
+    // macOS implementation
+    @autoreleasepool {
+        NSOpenPanel* panel = [NSOpenPanel openPanel];
+        [panel setCanChooseFiles:YES];
+        [panel setCanChooseDirectories:NO];
+        [panel setAllowsMultipleSelection:NO];
+        
+        if ([panel runModal] == NSModalResponseOK) {
+            NSURL* url = [[panel URLs] objectAtIndex:0];
+            return std::string([[url path] UTF8String]);
+        }
+    }
+    return "";  // cancelled
+    
+
+#endif
 }
 
 arguments Launcher::Run() {
