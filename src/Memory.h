@@ -7,6 +7,7 @@
 #include <array>
 #include <cstdint>
 #include <unordered_map>
+#include <string>
 
 enum class PPUMode : uint8_t {
     HBlank = 0,
