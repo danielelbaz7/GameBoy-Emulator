@@ -220,6 +220,7 @@ void Memory::Write(uint16_t address, uint8_t byteToWrite, MemoryAccessor caller)
     // handles rom bank switching & validation
     if (address <= 0x3FFF) {
         uint8_t lower5Bits = (byteToWrite & 0x1F);
+        //if we are selecting bank 0, we actually select bank 1
         if (lower5Bits == 0x00) {
             lower5Bits = 0x01;
         }

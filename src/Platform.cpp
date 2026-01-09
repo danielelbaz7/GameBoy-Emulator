@@ -8,7 +8,7 @@
 #include <thread>
 
 Platform::Platform(const char* filename)
-    : window(SDL_CreateWindow("Gameboy", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
+    : window(SDL_CreateWindow("Game Boy", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
         160 * 3, 144 * 3, SDL_WINDOW_SHOWN)),
     renderer(SDL_CreateRenderer( window, -1, SDL_RENDERER_ACCELERATED )),
     texture(SDL_CreateTexture( renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_STREAMING, 160, 144)) {
