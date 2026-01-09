@@ -11,6 +11,7 @@
 struct arguments {
     std::string romPath;
     std::string savePath;
+    bool pressStart = false;
 };
 
 class Launcher {
@@ -19,7 +20,7 @@ class Launcher {
 
     std::string OpenFileDialog(const char* filter);
 
-    void RenderText(const char* text, int x, int y, SDL_Color color, bool centered = false, bool isTitle = false);
+    void RenderText(const char* text, int x, int y, SDL_Color color, bool centered = false, bool isTitle = false, SDL_Rect* clipRect = nullptr);
     void DrawRoundedRect(SDL_Rect rect, SDL_Color color, int radius);
     std::string GetFilename(const std::string& path);
 

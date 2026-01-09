@@ -63,7 +63,7 @@ bool Launcher::IsClickInRect(int x, int y, SDL_Rect& rect) {
             y >= rect.y && y <= rect.y + rect.h);
 }
 
-void Launcher::RenderText(const char* text, int x, int y, SDL_Color color, bool centered, bool isTitle) {
+void Launcher::RenderText(const char* text, int x, int y, SDL_Color color, bool centered, bool isTitle, SDL_Rect* clipRect) {
     TTF_Font* useFont = isTitle ? titleFont : font;
     if (!useFont || !text) return;
 
@@ -72,12 +72,21 @@ void Launcher::RenderText(const char* text, int x, int y, SDL_Color color, bool 
 
     SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);
     if (texture) {
+        if (clipRect) {
+            SDL_RenderSetClipRect(renderer, clipRect);
+        }
+        
         int finalX = x;
         if (centered) {
             finalX = x - (surface->w / 2);
         }
         SDL_Rect destRect = {finalX, y, surface->w, surface->h};
         SDL_RenderCopy(renderer, texture, NULL, &destRect);
+        
+        if (clipRect) {
+            SDL_RenderSetClipRect(renderer, NULL);
+        }
+        
         SDL_DestroyTexture(texture);
     }
     SDL_FreeSurface(surface);
@@ -217,6 +226,7 @@ arguments Launcher::Run() {
                     }
                     else if (IsClickInRect(mouseX, mouseY, startButton)) {
                         // exit loop
+                        romAndSave.pressStart= true;
                         quit = true;
                     }
                 }
@@ -249,7 +259,7 @@ arguments Launcher::Run() {
         DrawRoundedRect(romButton, romButtonHovered ? buttonHoverColor : buttonColor, 8);
         if (!romAndSave.romPath.empty()) {
             std::string filename = GetFilename(romAndSave.romPath);
-            RenderText(filename.c_str(), 240, 152, whiteColor, true);
+            RenderText(filename.c_str(), 240, 152, whiteColor, true, false, &romButton);
         } else {
             RenderText("Click to select ROM", 240, 152, whiteColor, true);
         }
@@ -259,7 +269,7 @@ arguments Launcher::Run() {
         DrawRoundedRect(saveButton, saveButtonHovered ? buttonHoverColor : buttonColor, 8);
         if (!romAndSave.savePath.empty()) {
             std::string filename = GetFilename(romAndSave.savePath);
-            RenderText(filename.c_str(), 240, 242, whiteColor, true);
+            RenderText(filename.c_str(), 240, 242, whiteColor, true, false, &saveButton);
         } else {
             RenderText("Click to select SAV", 240, 242, whiteColor, true);
         }

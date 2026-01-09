@@ -23,8 +23,10 @@ int main(int argc, char* argv[]) {
             std::cerr << "No ROM file selected\n";
             return -1;
         }
-        Platform platform(runInfo.romPath.c_str(), runInfo.savePath.c_str());
-        platform.Run();
+        if (runInfo.pressStart) {
+            Platform platform(runInfo.romPath.c_str(), runInfo.savePath.c_str());
+            platform.Run();
+        }
         return 0;;
 
     }
