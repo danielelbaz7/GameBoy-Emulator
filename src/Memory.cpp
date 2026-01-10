@@ -204,6 +204,10 @@ uint8_t Memory::Read(uint16_t address, MemoryAccessor caller) {
         if (address == 0xFF41) {
             return (io[address - 0xFF00] | 0x80);
         }
+        //
+        if (address == 0xFF4D) {
+            return 0xFF;
+        }
         //io port
         return io[address - 0xFF00];
     }
