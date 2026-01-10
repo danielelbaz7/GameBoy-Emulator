@@ -20,7 +20,7 @@ Platform::Platform(const char* filename, const char* savefile)
 
     //load from the default save file if none exists, and if it does then load from the specified one
     //LoadFromSaveFile will check if that default file exists
-    if(!savefile) { mem.LoadFromSaveFile(); }
+    if(!savefile || savefile == "") { mem.LoadFromSaveFile(); }
     else { mem.LoadFromSaveFile(savefile); }
 
     mem.SetButtonStatus(buttonStatus);
@@ -28,6 +28,8 @@ Platform::Platform(const char* filename, const char* savefile)
 
 //overall run, manages input, interrupts, etc.
 void Platform::Run() {
+    std::chrono::microseconds totalTime{};
+    int frameCount{};
     unsigned int cyclesUsed = 0;
     //using steady clock so we don't rely on the user's computer system time
     auto frameStartTime =
@@ -138,23 +140,24 @@ void Platform::Run() {
         auto timeSinceLastFrame = std::chrono::duration_cast<std::chrono::microseconds>
         (std::chrono::steady_clock::now() - frameStartTime);
 
-        std::cout << timeSinceLastFrame << std::endl;
+        totalTime += timeSinceLastFrame;
+        frameCount++;
 
         //if its been less than 16,744 microseconds (16.744 milliseconds, approx 59.73 fps), wait until it's been that long. else wait no time
         std::chrono::microseconds timeToWait{microSecondsPerFrame - timeSinceLastFrame};
 
-
         if (timeToWait > std::chrono::microseconds{0}) {
             std::this_thread::sleep_for(timeToWait);
         }
-
 
         frameStartTime = std::chrono::time_point_cast<std::chrono::microseconds>(
                 std::chrono::steady_clock::now()
             );
     }
 
-    //there should ALWAYS be a save file to dump to but in the case that there isn't
+    std::cout << totalTime << frameCount << std::endl;
+
+    //there should ALWAYS be a save file to dump to but in the case that there isn't, dump to default
     if(!savefile) { mem.DumpToSaveFile(); }
     else { mem.DumpToSaveFile(savefile); }
 }

@@ -23,10 +23,11 @@ int main(int argc, char* argv[]) {
             return -1;
         }
         if (runInfo.pressStart) {
-            Platform platform(runInfo.romPath.c_str(), runInfo.savePath.c_str());
+            //pass a nullptr if we didnt choose a savefile
+            Platform platform(runInfo.romPath.c_str(), runInfo.savePath == "" ? nullptr : runInfo.savePath.c_str());
             platform.Run();
         }
-        return 0;;
+        return 0;
 
     }
     return 0;
