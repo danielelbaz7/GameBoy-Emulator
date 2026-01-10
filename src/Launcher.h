@@ -38,6 +38,6 @@ private:
     TTF_Font* font = nullptr;
     TTF_Font* titleFont = nullptr;
     launcherStatus currentLauncherStatus;
-
+    const int resScale = 1; // how much resolution is scaled by
 
 };

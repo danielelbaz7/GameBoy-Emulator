@@ -27,6 +27,7 @@ Makefile
 *.gb
 *.gbc
 *.sav
+*.txt
 # OS files
 .DS_Store
 Thumbs.db

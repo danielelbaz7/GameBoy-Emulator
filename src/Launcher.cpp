@@ -12,20 +12,46 @@ Launcher::Launcher() {
     SDL_Init(SDL_INIT_VIDEO);
     TTF_Init();
 
+    // sharper text hint
+    //SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "2");
+
     //create window & renderer (same as platform mostly)
     window = SDL_CreateWindow("Game Boy Emulator - Launcher",
         SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
-        160 * 3, 144 * 3, SDL_WINDOW_SHOWN);
+        160 * 3*resScale, 144 * 3*resScale, SDL_WINDOW_SHOWN);
     renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
 
-    // Load fonts
+    // set higher resolution (2x)
+    //SDL_RenderSetLogicalSize(renderer, 160* 3 * resScale, 144*3 * resScale);
+
+    // Load fonts | use pixelated font for 'authentic' look (and bc font sharpness sucks)
 #ifdef _WIN32
-    font = TTF_OpenFont("C:\\Windows\\Fonts\\arial.ttf", 16);
-    titleFont = TTF_OpenFont("C:\\Windows\\Fonts\\arialbd.ttf", 32);
+    font = TTF_OpenFont("fonts/PressStart2P-Regular.ttf", 12*resScale);
+    if (!font) {
+        font = TTF_OpenFont("C:/Windows/Fonts/arial.ttf", 14*resScale);
+    }
+    titleFont = TTF_OpenFont("fonts/PressStart2P-Regular.ttf", 20*resScale);
+    if (!titleFont) {
+        titleFont = TTF_OpenFont("C:/Windows/Fonts/arial.ttf", 24*resScale);
+    }
 #elif __APPLE__
-    font = TTF_OpenFont("/System/Library/Fonts/Helvetica.ttc", 16);
-    titleFont = TTF_OpenFont("/System/Library/Fonts/Helvetica.ttc", 32);
+    font = TTF_OpenFont("fonts/PressStart2P-Regular.ttf", 12*resScale);
+    if (!font) {
+        font = TTF_OpenFont("/System/Library/Fonts/Helvetica.ttc", 14*resScale);
+    }
+    titleFont = TTF_OpenFont("fonts/PressStart2P-Regular.ttf", 20*resScale);
+    if (!titleFont) {
+        titleFont = TTF_OpenFont("/System/Library/Fonts/Helvetica.ttc", 24*resScale);
+    }
 #endif
+
+    // higher res text
+    if (font) {
+        TTF_SetFontHinting(font, TTF_HINTING_NONE);
+    }
+    if (titleFont) {
+        TTF_SetFontHinting(titleFont, TTF_HINTING_NONE);
+    }
 
     if (!font) {
         std::cerr << "Warning: Could not load font\n";
@@ -67,6 +93,8 @@ void Launcher::RenderText(const char* text, int x, int y, SDL_Color color, bool 
 
     SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);
     if (texture) {
+        // texture filtering
+        SDL_SetTextureScaleMode(texture, SDL_ScaleModeLinear);
         if (clipRect) {
             SDL_RenderSetClipRect(renderer, clipRect);
         }
@@ -87,30 +115,29 @@ void Launcher::RenderText(const char* text, int x, int y, SDL_Color color, bool 
     SDL_FreeSurface(surface);
 }
 
+// draws NON-ROUND rect w 8-bit border
 void Launcher::DrawRoundedRect(SDL_Rect rect, SDL_Color color, int radius) {
+    // Fill button
     SDL_SetRenderDrawColor(renderer, color.r, color.g, color.b, color.a);
+    SDL_RenderFillRect(renderer, &rect);
 
-    // Draw main rectangles
-    SDL_Rect topRect = {rect.x + radius, rect.y, rect.w - 2 * radius, radius};
-    SDL_Rect middleRect = {rect.x, rect.y + radius, rect.w, rect.h - 2 * radius};
-    SDL_Rect bottomRect = {rect.x + radius, rect.y + rect.h - radius, rect.w - 2 * radius, radius};
-
-    SDL_RenderFillRect(renderer, &topRect);
-    SDL_RenderFillRect(renderer, &middleRect);
-    SDL_RenderFillRect(renderer, &bottomRect);
-
-    // Draw corners (approximated with filled rectangles)
-    for (int w = 0; w < radius * 2; w++) {
-        for (int h = 0; h < radius * 2; h++) {
-            int dx = radius - w;
-            int dy = radius - h;
-            if ((dx*dx + dy*dy) <= (radius * radius)) {
-                SDL_RenderDrawPoint(renderer, rect.x + w, rect.y + h);
-                SDL_RenderDrawPoint(renderer, rect.x + rect.w - w - 1, rect.y + h);
-                SDL_RenderDrawPoint(renderer, rect.x + w, rect.y + rect.h - h - 1);
-                SDL_RenderDrawPoint(renderer, rect.x + rect.w - w - 1, rect.y + rect.h - h - 1);
-            }
-        }
+    // 8-bit beveled effect (2px thick)
+    // Dark border (bottom + right) - 2 pixels
+    SDL_SetRenderDrawColor(renderer, 15, 56, 15, 255); // color_0 (darkest)
+    for (int i = 0; i < 2; i++) {
+        SDL_RenderDrawLine(renderer, rect.x + i, rect.y + rect.h - 1 - i, 
+                          rect.x + rect.w - 1 - i, rect.y + rect.h - 1 - i); // bottom
+        SDL_RenderDrawLine(renderer, rect.x + rect.w - 1 - i, rect.y + i, 
+                          rect.x + rect.w - 1 - i, rect.y + rect.h - 1 - i); // right
+    }
+    
+    // Light highlight (top + left) - 2 pixels
+    SDL_SetRenderDrawColor(renderer, 155, 188, 15, 255); // color_2 (brightest)
+    for (int i = 0; i < 2; i++) {
+        SDL_RenderDrawLine(renderer, rect.x + i, rect.y + i, 
+                          rect.x + rect.w - 1 - i, rect.y + i); // top
+        SDL_RenderDrawLine(renderer, rect.x + i, rect.y + i, 
+                          rect.x + i, rect.y + rect.h - 1 - i); // left
     }
 } // claude function
 
@@ -170,9 +197,9 @@ launcherStatus Launcher::Run() {
     bool startButtonHovered = false;
 
     // button positions (x | y | width | height)
-    SDL_Rect romButton = {65, 140, 350, 45};
-    SDL_Rect saveButton = {65, 230, 350, 45};
-    SDL_Rect startButton = {125, 330, 230, 55};
+    SDL_Rect romButton = {65*resScale, 140*resScale, 350*resScale, 45*resScale};
+    SDL_Rect saveButton = {65*resScale, 230*resScale, 350*resScale, 45*resScale};
+    SDL_Rect startButton = {125*resScale, 360*resScale, 230*resScale, 45*resScale};
 
     //make a vector for recent roms which will store the 10 most recent roms
     std::vector<std::string> recentROMs;
@@ -262,51 +289,51 @@ launcherStatus Launcher::Run() {
             }
         }
 
-        // Render - gradient background
-        for (int y = 0; y < 144 * 3; y++) {
-            int r = 15 + (y * 10 / (144 * 3));
-            int g = 20 + (y * 15 / (144 * 3));
-            int b = 40 + (y * 30 / (144 * 3));
-            SDL_SetRenderDrawColor(renderer, r, g, b, 255);
-            SDL_RenderClear(renderer); // fixed visual artifacting bug, clears the window's backbuffer before rerender
-            SDL_RenderDrawLine(renderer, 0, y, 160 * 3, y);
-        }
-
+        //SDL_RenderClear(renderer); // fixed visual artifacting bug, clears the window's backbuffer before rerender
+    
+        // COLOR SCHEME
         SDL_Color whiteColor = {255, 255, 255, 255};
-        SDL_Color titleColor = {230, 240, 255, 255};
-        SDL_Color darkTextColor = {20, 25, 35, 255};
-        SDL_Color subtleWhite = {220, 230, 245, 255};
-        SDL_Color buttonColor = {70, 150, 230, 255};
-        SDL_Color buttonHoverColor = {90, 170, 250, 255};
-        SDL_Color startColor = {80, 200, 120, 255};
-        SDL_Color startHoverColor = {100, 220, 140, 255};
-
+        SDL_Color titleColor = {188, 201, 116, 255}; // bright lime for title
+        SDL_Color darkTextColor = {15, 56, 15, 255}; // dark green for START button text
+        SDL_Color subtleWhite = {188, 201, 116, 255}; // LIGHTER lime-yellow for labels (better contrast)
+        SDL_Color buttonColor = {48, 98, 48, 255}; // medium green
+        SDL_Color buttonHoverColor = {67, 117, 67, 255}; // lighter green hover
+        SDL_Color startColor = {155, 188, 15, 255}; // bright lime
+        SDL_Color startHoverColor = {175, 203, 30, 255}; // brighter lime hover
+        SDL_Color bgColor = {0, 0, 0, 255}; // DARK green background
+        
+        SDL_SetRenderDrawColor(renderer, bgColor.r, bgColor.g, bgColor.b, bgColor.a);
+        SDL_RenderClear(renderer);
         // Title
-        RenderText("Game Boy Launcher", 240, 30, titleColor, true, true);
+        RenderText("Game Boy Launcher", 240*resScale, 30*resScale, titleColor, true, true);
 
         // ROM section
-        RenderText("Choose ROM", 75, 115, subtleWhite);
-        DrawRoundedRect(romButton, romButtonHovered ? buttonHoverColor : buttonColor, 8);
+        RenderText("Choose ROM", 75*resScale, 120*resScale, subtleWhite);
+        DrawRoundedRect(romButton, romButtonHovered ? buttonHoverColor : buttonColor, 8*resScale);
+        // adjusted width to account for borders
+        SDL_Rect romClip = {romButton.x + 2, romButton.y, romButton.w - 4, romButton.h};
         if (!currentLauncherStatus.romPath.empty()) {
             std::string filename = GetFilename(currentLauncherStatus.romPath);
-            RenderText(filename.c_str(), 240, 152, whiteColor, true, false, &romButton);
+            RenderText(filename.c_str(), romButton.x + 8*resScale, 158*resScale, whiteColor, false, false, &romClip); // align left
         } else {
-            RenderText("Click to select ROM", 240, 152, whiteColor, true);
+            RenderText("Click to select ROM", 240*resScale, 158*resScale, whiteColor, true, false, &romClip);
         }
 
         // Save section
-        RenderText("Choose SAV (Optional)", 75, 205, subtleWhite);
-        DrawRoundedRect(saveButton, saveButtonHovered ? buttonHoverColor : buttonColor, 8);
+        RenderText("Choose SAV (Optional)", 75*resScale, 210*resScale, subtleWhite);
+        DrawRoundedRect(saveButton, saveButtonHovered ? buttonHoverColor : buttonColor, 8*resScale);
+        // adjusted width to account for borders
+        SDL_Rect saveClip = {saveButton.x + 2, saveButton.y, saveButton.w - 4, saveButton.h};
         if (!currentLauncherStatus.savePath.empty()) {
             std::string filename = GetFilename(currentLauncherStatus.savePath);
-            RenderText(filename.c_str(), 240, 242, whiteColor, true, false, &saveButton);
+            RenderText(filename.c_str(), saveButton.x + 8*resScale, 248*resScale, whiteColor, false, false, &saveClip); //align left
         } else {
-            RenderText("Click to select SAV", 240, 242, whiteColor, true);
+            RenderText("Click to select SAV", 240*resScale, 248*resScale, whiteColor, true, false, &saveClip);
         }
 
         // Start button
-        DrawRoundedRect(startButton, startButtonHovered ? startHoverColor : startColor, 8);
-        RenderText("START", 240, 345, darkTextColor, true);
+        DrawRoundedRect(startButton, startButtonHovered ? startHoverColor : startColor, 8*resScale);
+        RenderText("START", 240*resScale, 377*resScale, darkTextColor, true);
 
         SDL_RenderPresent(renderer);
     }
