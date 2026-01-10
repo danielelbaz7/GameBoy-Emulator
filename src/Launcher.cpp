@@ -3,6 +3,9 @@
 //
 
 #include "Launcher.h"
+
+#include <fstream>
+
 #include "portable-file-dialogs.h"
 
 Launcher::Launcher() {
@@ -170,6 +173,21 @@ launcherStatus Launcher::Run() {
     SDL_Rect romButton = {65, 140, 350, 45};
     SDL_Rect saveButton = {65, 230, 350, 45};
     SDL_Rect startButton = {125, 330, 230, 55};
+
+    std::vector<std::string> recentROMs;
+
+    std::ifstream recentROMsFile("recent_roms.txt");
+    std::string line;
+    while (std::getline(recentROMsFile, line)) {
+        recentROMs.push_back(line);
+    }
+
+    std::vector<std::string> recentSaves;
+
+    std::ifstream recentSavesFile("recent_savs.txt");
+    while (std::getline(recentSavesFile, line)) {
+        recentSaves.push_back(line);
+    }
 
     while(!quit) {
         // Handle events
