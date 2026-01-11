@@ -255,10 +255,10 @@ launcherStatus Launcher::Run() {
                     //modify) then erase the beginning one, and push either way the newest selected one
                     // if recent rom contains select rom, push selected rom to top, remove 'lower' duplicate
                     if (IsClickInRect(mouseX, mouseY, romButton)) {
-                        romDropOpen = !romDropOpen;
-                        saveDropOpen = false;
-                    }
-                        else if (false) {// prompt user to choose rom | update struct
+                        // romDropOpen = !romDropOpen;
+                        // saveDropOpen = false;
+                    
+                        //else if (false) {// prompt user to choose rom | update struct
                         std::string path = OpenFileDialog("Game Boy ROMs");
                         // check for existing duplicate
                         auto dupe = std::find(recentROMs.begin(), recentROMs.end(), path);
