@@ -231,8 +231,6 @@ launcherStatus Launcher::Run() {
 
     while(!quit) {
         // Handle events
-        SDL_RenderClear(renderer);
-
         while (SDL_PollEvent(&e) != 0) {
             if (e.type == SDL_QUIT) {
                 quit = true;
@@ -241,9 +239,6 @@ launcherStatus Launcher::Run() {
             if (e.type == SDL_MOUSEMOTION) {
                 mouseX = e.motion.x;
                 mouseY = e.motion.y;
-                romButtonHovered = IsClickInRect(mouseX, mouseY, romButton);
-                saveButtonHovered = IsClickInRect(mouseX, mouseY, saveButton);
-                startButtonHovered = IsClickInRect(mouseX, mouseY, startButton);
             }
 
             if (e.type == SDL_MOUSEBUTTONDOWN) {
@@ -309,7 +304,11 @@ launcherStatus Launcher::Run() {
                 }
             }
         }
-    
+
+        romButtonHovered = IsClickInRect(mouseX, mouseY, romButton);
+        saveButtonHovered = IsClickInRect(mouseX, mouseY, saveButton);
+        startButtonHovered = IsClickInRect(mouseX, mouseY, startButton);
+
         // COLOR SCHEME
         SDL_Color whiteColor = {255, 255, 255, 255};
         SDL_Color titleColor = {188, 201, 116, 255}; // bright lime for title
@@ -372,6 +371,7 @@ launcherStatus Launcher::Run() {
         RenderText("START", 240*resScale, 377*resScale, darkTextColor, true);
 
         SDL_RenderPresent(renderer);
+        SDL_Delay(16);
     }
 
     return currentLauncherStatus;
