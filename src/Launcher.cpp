@@ -8,6 +8,22 @@
 
 #include "portable-file-dialogs.h"
 
+void Launcher::CreateVectors()  {
+    //open an if stream of the file that stores the recent roms
+    std::ifstream recentROMsFile("recent_roms.txt");
+    std::string line;
+    //write every line (each rom) to the vector
+    while (std::getline(recentROMsFile, line)) {
+        recentROMs.push_back(line);
+    }
+    //if there is a most recent rom, set the launcher's current rom path
+
+    std::ifstream recentSavesFile("recent_saves.txt");
+    while (std::getline(recentSavesFile, line)) {
+        recentSaves.push_back(line);
+    }
+}
+
 Launcher::Launcher() {
     SDL_Init(SDL_INIT_VIDEO);
     TTF_Init();
@@ -17,6 +33,16 @@ Launcher::Launcher() {
         SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
         160 * 3*resScale, 144 * 3*resScale, SDL_WINDOW_SHOWN);
     renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+
+    // Read in recent Saves and Roms
+    CreateVectors();
+
+    // create drop down rects
+    romDropdownRect = {65*resScale, 185*resScale, 350*resScale, 200*resScale};
+    saveDropdownRect = {65*resScale, 275*resScale, 350*resScale, 200*resScale};
+
+    
+
 
     // Load fonts | use pixelated font for 'authentic' look (and bc font sharpness sucks)
 #ifdef _WIN32
@@ -195,31 +221,18 @@ launcherStatus Launcher::Run() {
     SDL_Rect saveButton = {65*resScale, 230*resScale, 350*resScale, 45*resScale};
     SDL_Rect startButton = {125*resScale, 360*resScale, 230*resScale, 45*resScale};
 
-    //make a vector for recent roms which will store the 10 most recent roms
-    std::vector<std::string> recentROMs;
-
-    //open an if stream of the file that stores the recent roms
-    std::ifstream recentROMsFile("recent_roms.txt");
-    std::string line;
-    //write every line (each rom) to the vector
-    while (std::getline(recentROMsFile, line)) {
-        recentROMs.push_back(line);
-    }
-
-    //if there is a most recent rom, set the launcher's current rom path
+    // std::vector<std::string> recentROMs;
     currentLauncherStatus.romPath = !recentROMs.empty() ? recentROMs.back() : "";
-
-    //same logic w saves
-    std::vector<std::string> recentSaves;
-
-    std::ifstream recentSavesFile("recent_saves.txt");
-    while (std::getline(recentSavesFile, line)) {
-        recentSaves.push_back(line);
-    }
+    //std::vector<std::string> recentSaves;
     currentLauncherStatus.savePath = !recentSaves.empty() ? recentSaves.back() : "";
+
+
+    
 
     while(!quit) {
         // Handle events
+        SDL_RenderClear(renderer);
+
         while (SDL_PollEvent(&e) != 0) {
             if (e.type == SDL_QUIT) {
                 quit = true;
@@ -242,7 +255,10 @@ launcherStatus Launcher::Run() {
                     //modify) then erase the beginning one, and push either way the newest selected one
                     // if recent rom contains select rom, push selected rom to top, remove 'lower' duplicate
                     if (IsClickInRect(mouseX, mouseY, romButton)) {
-                        // prompt user to choose rom | update struct
+                        romDropOpen = !romDropOpen;
+                        saveDropOpen = false;
+                    }
+                        else if (false) {// prompt user to choose rom | update struct
                         std::string path = OpenFileDialog("Game Boy ROMs");
                         // check for existing duplicate
                         auto dupe = std::find(recentROMs.begin(), recentROMs.end(), path);
@@ -320,6 +336,23 @@ launcherStatus Launcher::Run() {
             RenderText(filename.c_str(), romButton.x + 8*resScale, 158*resScale, whiteColor, false, false, &romClip); // align left
         } else {
             RenderText("Click to select ROM", 240*resScale, 158*resScale, whiteColor, true, false, &romClip);
+        }
+        // Dropdown for ROMs
+        if (romDropOpen && !recentROMs.empty()) {
+            SDL_SetRenderDrawColor(renderer, 48, 98, 48, 255);
+            SDL_RenderFillRect(renderer, &romDropdownRect);
+            int const itemHeight = 40*resScale;
+            for (int i = recentROMs.size()-1; i >= 0; i--) {
+                int y = romDropdownRect.y + ((recentROMs.size()-1-i) * itemHeight);
+                SDL_Rect itemRect = {romDropdownRect.x, y, romDropdownRect.w, itemHeight};
+                bool itemHovered = IsClickInRect(mouseX, mouseY, itemRect);
+                if (itemHovered) {
+                    SDL_SetRenderDrawColor(renderer, 67, 117, 67, 255);
+                    SDL_RenderFillRect(renderer, &itemRect);
+                }
+                std::string filename = GetFilename(recentROMs[i]);
+                RenderText(filename.c_str(), romDropdownRect.x + 8*resScale, y + 10*resScale, whiteColor);
+            }
         }
 
         // Save section

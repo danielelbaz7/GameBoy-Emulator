@@ -3,6 +3,7 @@
 #include <iostream>
 #include <thread>
 #include <SDL2/SDL.h>
+#include <vector>
 #include <SDL2/SDL_ttf.h>
 
 
@@ -19,6 +20,7 @@ class Launcher {
     bool IsClickInRect(int x, int y, SDL_Rect& rect);
 
     std::string OpenFileDialog(const char* filter);
+    void CreateVectors();
 
     void RenderText(const char* text, int x, int y, SDL_Color color, bool centered = false, bool isTitle = false, SDL_Rect* clipRect = nullptr);
     void DrawRoundedRect(SDL_Rect rect, SDL_Color color, int radius);
@@ -39,5 +41,14 @@ private:
     TTF_Font* titleFont = nullptr;
     launcherStatus currentLauncherStatus;
     const int resScale = 1; // how much resolution is scaled by
+
+    // Drop down vars
+    bool romDropOpen = false;
+    bool saveDropOpen = false;
+    std::vector<std::string> recentROMs;
+    std::vector<std::string> recentSaves;
+    SDL_Rect romDropdownRect;
+    SDL_Rect saveDropdownRect;
+
 
 };
