@@ -14,13 +14,19 @@ void Launcher::CreateVectors()  {
     std::string line;
     //write every line (each rom) to the vector
     while (std::getline(recentROMsFile, line)) {
-        recentROMs.push_back(line);
+        // dont read blank lines or whitespace-only lines
+        if (!line.empty() && line.find_first_not_of(" \t\r\n") != std::string::npos) {
+            recentROMs.push_back(line);
+        }
     }
     //if there is a most recent rom, set the launcher's current rom path
 
     std::ifstream recentSavesFile("recent_saves.txt");
     while (std::getline(recentSavesFile, line)) {
-        recentSaves.push_back(line);
+        // dont read blank lines or whitespace-only lines
+        if (!line.empty() && line.find_first_not_of(" \t\r\n") != std::string::npos) {
+            recentSaves.push_back(line);
+        }
     }
 }
 
@@ -38,7 +44,7 @@ Launcher::Launcher() {
     CreateVectors();
 
     // create drop down rects
-    romDropdownRect = {65*resScale, 185*resScale, 350*resScale, 200*resScale};
+    romDropdownRect = {371*resScale, 140*resScale, 44*resScale, 45*resScale};
     saveDropdownRect = {65*resScale, 275*resScale, 350*resScale, 200*resScale};
 
     
@@ -50,6 +56,10 @@ Launcher::Launcher() {
     if (!font) {
         font = TTF_OpenFont("C:/Windows/Fonts/arial.ttf", 14*resScale);
     }
+    smallFont = TTF_OpenFont("fonts/PressStart2P-Regular.ttf", 9*resScale);
+    if (!smallFont) {
+        smallFont = TTF_OpenFont("C:/Windows/Fonts/arial.ttf", 11*resScale);
+    }
     titleFont = TTF_OpenFont("fonts/PressStart2P-Regular.ttf", 20*resScale);
     if (!titleFont) {
         titleFont = TTF_OpenFont("C:/Windows/Fonts/arial.ttf", 24*resScale);
@@ -58,6 +68,10 @@ Launcher::Launcher() {
     font = TTF_OpenFont("fonts/PressStart2P-Regular.ttf", 12*resScale);
     if (!font) {
         font = TTF_OpenFont("/System/Library/Fonts/Helvetica.ttc", 14*resScale);
+    }
+    smallFont = TTF_OpenFont("fonts/PressStart2P-Regular.ttf", 9*resScale);
+    if (!smallFont) {
+        smallFont = TTF_OpenFont("/System/Library/Fonts/Helvetica.ttc", 11*resScale);
     }
     titleFont = TTF_OpenFont("fonts/PressStart2P-Regular.ttf", 20*resScale);
     if (!titleFont) {
@@ -68,6 +82,9 @@ Launcher::Launcher() {
     // higher res text
     if (font) {
         TTF_SetFontHinting(font, TTF_HINTING_NONE);
+    }
+    if (smallFont) {
+        TTF_SetFontHinting(smallFont, TTF_HINTING_NONE);
     }
     if (titleFont) {
         TTF_SetFontHinting(titleFont, TTF_HINTING_NONE);
@@ -85,6 +102,9 @@ Launcher::Launcher() {
 Launcher::~Launcher() {
     if (titleFont != nullptr && titleFont != font) {
         TTF_CloseFont(titleFont);
+    }
+    if (smallFont != nullptr && smallFont != font) {
+        TTF_CloseFont(smallFont);
     }
     if (font != nullptr) {
         TTF_CloseFont(font);
@@ -104,8 +124,8 @@ bool Launcher::IsClickInRect(int x, int y, SDL_Rect& rect) {
             y >= rect.y && y <= rect.y + rect.h);
 }
 
-void Launcher::RenderText(const char* text, int x, int y, SDL_Color color, bool centered, bool isTitle, SDL_Rect* clipRect) {
-    TTF_Font* useFont = isTitle ? titleFont : font;
+void Launcher::RenderText(const char* text, int x, int y, SDL_Color color, bool centered, bool isTitle, SDL_Rect* clipRect, bool isSmall) {
+    TTF_Font* useFont = isTitle ? titleFont : (isSmall ? smallFont : font);
     if (!useFont || !text) return;
 
     SDL_Surface* surface = TTF_RenderText_Blended(useFont, text, color);
@@ -136,28 +156,49 @@ void Launcher::RenderText(const char* text, int x, int y, SDL_Color color, bool 
 }
 
 // draws NON-ROUND rect w 8-bit border
-void Launcher::DrawRoundedRect(SDL_Rect rect, SDL_Color color, int radius) {
+void Launcher::DrawRoundedRect(SDL_Rect rect, SDL_Color color, int radius, bool useGreyBorder) {
     // Fill button
     SDL_SetRenderDrawColor(renderer, color.r, color.g, color.b, color.a);
     SDL_RenderFillRect(renderer, &rect);
 
-    // 8-bit beveled effect (2px thick)
-    // Dark border (bottom + right) - 2 pixels
-    SDL_SetRenderDrawColor(renderer, 15, 56, 15, 255); // color_0 (darkest)
-    for (int i = 0; i < 2; i++) {
-        SDL_RenderDrawLine(renderer, rect.x + i, rect.y + rect.h - 1 - i, 
-                          rect.x + rect.w - 1 - i, rect.y + rect.h - 1 - i); // bottom
-        SDL_RenderDrawLine(renderer, rect.x + rect.w - 1 - i, rect.y + i, 
-                          rect.x + rect.w - 1 - i, rect.y + rect.h - 1 - i); // right
-    }
-    
-    // Light highlight (top + left) - 2 pixels
-    SDL_SetRenderDrawColor(renderer, 155, 188, 15, 255); // color_2 (brightest)
-    for (int i = 0; i < 2; i++) {
-        SDL_RenderDrawLine(renderer, rect.x + i, rect.y + i, 
-                          rect.x + rect.w - 1 - i, rect.y + i); // top
-        SDL_RenderDrawLine(renderer, rect.x + i, rect.y + i, 
-                          rect.x + i, rect.y + rect.h - 1 - i); // left
+    if (useGreyBorder) {
+        // Grey-themed borders for grey buttons
+        // Dark border (bottom + right) - 2 pixels
+        SDL_SetRenderDrawColor(renderer, 64, 64, 64, 255); // dark grey
+        for (int i = 0; i < 2; i++) {
+            SDL_RenderDrawLine(renderer, rect.x + i, rect.y + rect.h - 1 - i, 
+                              rect.x + rect.w - 1 - i, rect.y + rect.h - 1 - i); // bottom
+            SDL_RenderDrawLine(renderer, rect.x + rect.w - 1 - i, rect.y + i, 
+                              rect.x + rect.w - 1 - i, rect.y + rect.h - 1 - i); // right
+        }
+        
+        // Light highlight (top + left) - 2 pixels
+        SDL_SetRenderDrawColor(renderer, 192, 192, 192, 255); // light grey
+        for (int i = 0; i < 2; i++) {
+            SDL_RenderDrawLine(renderer, rect.x + i, rect.y + i, 
+                              rect.x + rect.w - 1 - i, rect.y + i); // top
+            SDL_RenderDrawLine(renderer, rect.x + i, rect.y + i, 
+                              rect.x + i, rect.y + rect.h - 1 - i); // left
+        }
+    } else {
+        // Green-themed borders for green buttons
+        // Dark border (bottom + right) - 2 pixels
+        SDL_SetRenderDrawColor(renderer, 15, 56, 15, 255); // color_0 (darkest)
+        for (int i = 0; i < 2; i++) {
+            SDL_RenderDrawLine(renderer, rect.x + i, rect.y + rect.h - 1 - i, 
+                              rect.x + rect.w - 1 - i, rect.y + rect.h - 1 - i); // bottom
+            SDL_RenderDrawLine(renderer, rect.x + rect.w - 1 - i, rect.y + i, 
+                              rect.x + rect.w - 1 - i, rect.y + rect.h - 1 - i); // right
+        }
+        
+        // Light highlight (top + left) - 2 pixels
+        SDL_SetRenderDrawColor(renderer, 155, 188, 15, 255); // color_2 (brightest)
+        for (int i = 0; i < 2; i++) {
+            SDL_RenderDrawLine(renderer, rect.x + i, rect.y + i, 
+                              rect.x + rect.w - 1 - i, rect.y + i); // top
+            SDL_RenderDrawLine(renderer, rect.x + i, rect.y + i, 
+                              rect.x + i, rect.y + rect.h - 1 - i); // left
+        }
     }
 } // claude function
 
@@ -215,11 +256,19 @@ launcherStatus Launcher::Run() {
     bool romButtonHovered = false;
     bool saveButtonHovered = false;
     bool startButtonHovered = false;
+    bool romDropdownHovered = false;
 
     // button positions (x | y | width | height)
-    SDL_Rect romButton = {65*resScale, 140*resScale, 350*resScale, 45*resScale};
+    SDL_Rect romButton = {65*resScale, 140*resScale, 306*resScale, 45*resScale};
     SDL_Rect saveButton = {65*resScale, 230*resScale, 350*resScale, 45*resScale};
     SDL_Rect startButton = {125*resScale, 360*resScale, 230*resScale, 45*resScale};
+    SDL_Rect romMenu = {60*resScale, 70*resScale, 360*resScale, 280*resScale};
+    SDL_Rect closeButtonRectROM = {
+    romMenu.x + romMenu.w - 10*resScale - 10*resScale*2,  // x position with some extra padding
+    romMenu.y + 6*resScale,                       // y position
+    10*resScale*2,                                       // width (make it a bit bigger than the X for easier clicking)
+    10*resScale*2                                        // height
+};
 
     // std::vector<std::string> recentROMs;
     currentLauncherStatus.romPath = !recentROMs.empty() ? recentROMs.back() : "";
@@ -249,11 +298,7 @@ launcherStatus Launcher::Run() {
                     //if the recent roms is full (10 roms, don't do GEQ bc if it went over 10 user modified, let them
                     //modify) then erase the beginning one, and push either way the newest selected one
                     // if recent rom contains select rom, push selected rom to top, remove 'lower' duplicate
-                    if (IsClickInRect(mouseX, mouseY, romButton)) {
-                        // romDropOpen = !romDropOpen;
-                        // saveDropOpen = false;
-                    
-                        //else if (false) {// prompt user to choose rom | update struct
+                    if (!romDropOpen && IsClickInRect(mouseX, mouseY, romButton)) {
                         std::string path = OpenFileDialog("Game Boy ROMs");
                         // check for existing duplicate
                         auto dupe = std::find(recentROMs.begin(), recentROMs.end(), path);
@@ -267,7 +312,7 @@ launcherStatus Launcher::Run() {
                         currentLauncherStatus.romPath = path;
                         //trunc mode explicitly clears the file
                     }
-                    else if (IsClickInRect(mouseX, mouseY, saveButton)) {
+                    else if (!romDropOpen && IsClickInRect(mouseX, mouseY, saveButton)) {
                         // prompt user to choose sav | update struct
                         std::string path = OpenFileDialog("Save Files");
                         //same as above but for saves, not roms
@@ -282,7 +327,7 @@ launcherStatus Launcher::Run() {
                         recentSaves.push_back(path);
                         currentLauncherStatus.savePath = path;
                     }
-                    else if (IsClickInRect(mouseX, mouseY, startButton)) {
+                    else if (!romDropOpen && IsClickInRect(mouseX, mouseY, startButton)) {
                         //push the roms list to the roms file after wiping the file
                         std::ofstream outROMs("recent_roms.txt", std::ios::trunc);
                         for (std::string save : recentROMs) {
@@ -301,6 +346,33 @@ launcherStatus Launcher::Run() {
                         currentLauncherStatus.pressStart= true;
                         quit = true;
                     }
+                    else if (IsClickInRect(mouseX, mouseY, romDropdownRect)) {
+                        //open the rom menu
+                        romDropOpen = true;
+                    }
+                    else if (romDropOpen && IsClickInRect(mouseX, mouseY, closeButtonRectROM)) {
+                        romDropOpen = false;
+                    }
+                    // handle recent rom clikc
+                    else if (romDropOpen) {
+                        int itemHeight = 25*resScale;
+                        int startY = romMenu.y + 45*resScale;
+
+                        for (int i =recentROMs.size() -1; i >= 0; i--) {
+                            int itemY = startY + ((recentROMs.size()-1-i) * itemHeight);
+                            SDL_Rect itemRect = {romMenu.x + 4, itemY, romMenu.w - 8, itemHeight - 1};
+                            if (IsClickInRect(mouseX, mouseY, itemRect)) {
+                                // handle dupe
+                                std::string selectedPath = recentROMs[i];
+                                recentROMs.erase(recentROMs.begin() + i);
+                                recentROMs.push_back(selectedPath);
+                                currentLauncherStatus.romPath = selectedPath;
+
+                                romDropOpen = false;
+                            }
+
+                        }
+                    }
                 }
             }
         }
@@ -308,6 +380,7 @@ launcherStatus Launcher::Run() {
         romButtonHovered = IsClickInRect(mouseX, mouseY, romButton);
         saveButtonHovered = IsClickInRect(mouseX, mouseY, saveButton);
         startButtonHovered = IsClickInRect(mouseX, mouseY, startButton);
+        romDropdownHovered = IsClickInRect(mouseX, mouseY, romDropdownRect);
 
         // COLOR SCHEME
         SDL_Color whiteColor = {255, 255, 255, 255};
@@ -318,6 +391,10 @@ launcherStatus Launcher::Run() {
         SDL_Color buttonHoverColor = {67, 117, 67, 255}; // lighter green hover
         SDL_Color startColor = {155, 188, 15, 255}; // bright lime
         SDL_Color startHoverColor = {175, 203, 30, 255}; // brighter lime hover
+        SDL_Color plusButtonColor = {128, 128, 128, 255}; // medium grey
+        SDL_Color plusButtonHoverColor = {160, 160, 160, 255}; // lighter grey hover
+        SDL_Color menuBgColor = {64, 64, 64, 255}; // dark grey for menu background
+        SDL_Color menuItemHoverColor = {96, 96, 96, 255}; // lighter grey for hover
         SDL_Color bgColor = {0, 0, 0, 255}; // DARK green background
         
         SDL_SetRenderDrawColor(renderer, bgColor.r, bgColor.g, bgColor.b, bgColor.a);
@@ -332,28 +409,38 @@ launcherStatus Launcher::Run() {
         SDL_Rect romClip = {romButton.x + 2, romButton.y, romButton.w - 4, romButton.h};
         if (!currentLauncherStatus.romPath.empty()) {
             std::string filename = GetFilename(currentLauncherStatus.romPath);
-            RenderText(filename.c_str(), romButton.x + 8*resScale, 158*resScale, whiteColor, false, false, &romClip); // align left
+            RenderText(filename.c_str(), romButton.x + 8*resScale, 158*resScale, whiteColor, false, false, &romClip, false); // align left, big font
         } else {
-            RenderText("Click to select ROM", 240*resScale, 158*resScale, whiteColor, true, false, &romClip);
-        }
-        // Dropdown for ROMs
-        if (romDropOpen && !recentROMs.empty()) {
-            SDL_SetRenderDrawColor(renderer, 48, 98, 48, 255);
-            SDL_RenderFillRect(renderer, &romDropdownRect);
-            int const itemHeight = 40*resScale;
-            for (int i = recentROMs.size()-1; i >= 0; i--) {
-                int y = romDropdownRect.y + ((recentROMs.size()-1-i) * itemHeight);
-                SDL_Rect itemRect = {romDropdownRect.x, y, romDropdownRect.w, itemHeight};
-                bool itemHovered = IsClickInRect(mouseX, mouseY, itemRect);
-                if (itemHovered) {
-                    SDL_SetRenderDrawColor(renderer, 67, 117, 67, 255);
-                    SDL_RenderFillRect(renderer, &itemRect);
-                }
-                std::string filename = GetFilename(recentROMs[i]);
-                RenderText(filename.c_str(), romDropdownRect.x + 8*resScale, y + 10*resScale, whiteColor);
-            }
+            RenderText("Click to select ROM", 240*resScale, 158*resScale, whiteColor, true, false, &romClip, false);
         }
 
+        // Menu button for ROMs
+        DrawRoundedRect(romDropdownRect, romDropdownHovered ? plusButtonHoverColor : plusButtonColor, 0, true);
+        // Draw white downward arrow/triangle (pixelated/retro style)
+        SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255); // white
+        int centerX = romDropdownRect.x + romDropdownRect.w / 2;
+        int centerY = romDropdownRect.y + romDropdownRect.h / 2;
+        int pixelSize = 3*resScale; // size of each pixel block (increased for slightly bigger triangle)
+        // Draw pixelated downward triangle (widest at top, point at bottom)
+        // Top row: 7 pixels (widest)
+        for (int i = -3; i <= 3; i++) {
+            SDL_Rect pixel = {centerX + i*pixelSize - pixelSize/2, centerY - 2*pixelSize, pixelSize, pixelSize};
+            SDL_RenderFillRect(renderer, &pixel);
+        }
+        // Second row: 5 pixels
+        for (int i = -2; i <= 2; i++) {
+            SDL_Rect pixel = {centerX + i*pixelSize - pixelSize/2, centerY - pixelSize, pixelSize, pixelSize};
+            SDL_RenderFillRect(renderer, &pixel);
+        }
+        // Third row: 3 pixels
+        for (int i = -1; i <= 1; i++) {
+            SDL_Rect pixel = {centerX + i*pixelSize - pixelSize/2, centerY, pixelSize, pixelSize};
+            SDL_RenderFillRect(renderer, &pixel);
+        }
+        // Bottom tip: 1 pixel
+        SDL_Rect tipPixel = {centerX - pixelSize/2, centerY + pixelSize, pixelSize, pixelSize};
+        SDL_RenderFillRect(renderer, &tipPixel);
+        
         // Save section
         RenderText("Choose SAV (Optional)", 75*resScale, 210*resScale, subtleWhite);
         DrawRoundedRect(saveButton, saveButtonHovered ? buttonHoverColor : buttonColor, 8*resScale);
@@ -364,6 +451,51 @@ launcherStatus Launcher::Run() {
             RenderText(filename.c_str(), saveButton.x + 8*resScale, 248*resScale, whiteColor, false, false, &saveClip); //align left
         } else {
             RenderText("Click to select SAV", 240*resScale, 248*resScale, whiteColor, true, false, &saveClip);
+        }
+
+        //DROPDOWNS
+        if (romDropOpen) {
+            DrawRoundedRect(romMenu, menuBgColor, 8*resScale, true);
+            
+            // Title at top center
+            int menuCenterX = romMenu.x + romMenu.w / 2;
+            RenderText("Recent ROMs", menuCenterX, romMenu.y + 15*resScale, whiteColor, true, false, nullptr, false);
+            
+            // Close button (X) in top right
+            int xSize = 10*resScale;
+            int xPadding = 10*resScale;
+            int xCenterX = romMenu.x + romMenu.w - xPadding - xSize/2;
+            int xCenterY = romMenu.y + 10*resScale + 6*resScale; // align with text baseline
+            SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255); // white
+            // Draw X with diagonal lines
+            for (int i = 0; i < 2; i++) {
+                // Top-left to bottom-right
+                SDL_RenderDrawLine(renderer, xCenterX - xSize/2 + i, xCenterY - xSize/2, xCenterX + xSize/2 + i, xCenterY + xSize/2);
+                // Top-right to bottom-left
+                SDL_RenderDrawLine(renderer, xCenterX + xSize/2 - i, xCenterY - xSize/2, xCenterX - xSize/2 - i, xCenterY + xSize/2);
+            }
+            
+            // Display recent ROMs
+            int itemHeight = 25*resScale;
+            int startY = romMenu.y + 45*resScale; // Adjusted to start below title
+            SDL_Rect menuClip = {romMenu.x + 4, romMenu.y + 4, romMenu.w - 8, romMenu.h - 8};
+            
+            for (int i = recentROMs.size() - 1; i >= 0; i--) {
+                int itemY = startY + ((recentROMs.size() - 1 - i) * itemHeight);
+                SDL_Rect itemRect = {romMenu.x + 4, itemY, romMenu.w - 8, itemHeight - 1};  // -1 to prevent overlap
+                
+                // Check if this item is hovered
+                bool itemHovered = IsClickInRect(mouseX, mouseY, itemRect);
+                if (itemHovered) {
+                    SDL_SetRenderDrawColor(renderer, menuItemHoverColor.r, menuItemHoverColor.g, menuItemHoverColor.b, menuItemHoverColor.a);
+                    SDL_RenderFillRect(renderer, &itemRect);
+                }
+                
+                std::string filename = GetFilename(recentROMs[i]);
+                // Center text vertically within the item rectangle
+                int textY = itemY + (itemHeight / 2) - 6*resScale; // Roughly center the 12pt font
+                RenderText(filename.c_str(), romMenu.x + 10*resScale, textY, whiteColor, false, false, &menuClip, false);
+            }
         }
 
         // Start button

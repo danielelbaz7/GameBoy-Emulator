@@ -22,8 +22,8 @@ class Launcher {
     std::string OpenFileDialog(const char* filter);
     void CreateVectors();
 
-    void RenderText(const char* text, int x, int y, SDL_Color color, bool centered = false, bool isTitle = false, SDL_Rect* clipRect = nullptr);
-    void DrawRoundedRect(SDL_Rect rect, SDL_Color color, int radius);
+    void RenderText(const char* text, int x, int y, SDL_Color color, bool centered = false, bool isTitle = false, SDL_Rect* clipRect = nullptr, bool isSmall = false);
+    void DrawRoundedRect(SDL_Rect rect, SDL_Color color, int radius, bool useGreyBorder = false);
     std::string GetFilename(const std::string& path);
 
 public:
@@ -39,6 +39,7 @@ private:
     SDL_Renderer* renderer = nullptr;
     TTF_Font* font = nullptr;
     TTF_Font* titleFont = nullptr;
+    TTF_Font* smallFont = nullptr;
     launcherStatus currentLauncherStatus;
     const int resScale = 1; // how much resolution is scaled by
 
